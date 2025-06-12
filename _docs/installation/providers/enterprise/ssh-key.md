@@ -4,19 +4,19 @@ type: docs
 permalink: /docs/helpers/ssh-key/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2025-06-11
+last_modified_at: 2025-06-12
 last_modified_by: Mohammad_Asif
 toc: true
 title: "SSH Key Authentication Setup Guide"
 ---
 
 
-<img src="https://lcdung.top/wp-content/uploads/2016/10/Create-SSH-Key.png" alt="" style=" width:650px ; height:170px ">
+<img src="https://lcdung.top/wp-content/uploads/2016/10/Create-SSH-Key.png" alt="" style=" width:600px ; height:170px ">
 
 ---
 
 # Introduction
-SSH keys are a secure and convenient method to log in to remote systems without needing to enter a password each time. Instead of using a password, a pair of cryptographic keys (a public key and a private key) are used to authenticate the user.
+SSH keys are a secure and convenient method to log in to remote systems without needing to enter a password each time. Instead of using a password, a pair of cryptographic keys *(a public key and a private key)* are used to authenticate the user.
 
 ## Why Use SSH Key Authentication?
 - **Improved Security:** SSH keys are more secure than passwords.
@@ -44,7 +44,7 @@ sudo chown www-data:www-data /var/www/.ssh
 sudo chmod 700 /var/www/.ssh
 ```
 
-Copy generated SSH keys to /var/www/.ssh):
+Copy generated SSH keys to /var/www/.ssh:
 
 ```
 sudo cp /root/.ssh/id_rsa /var/www/.ssh/id_rsa
@@ -75,6 +75,7 @@ To connect to other devices without password prompts, we must store the public k
 ### For Linux/Mac Devices:
 
 - Open the authorized keys file:
+
 ```
 nano ~/.ssh/authorized_keys
 ```
@@ -103,11 +104,13 @@ PubkeyAuthentication yes
 
 - Then restart the SSH service:
 
-- For Linux
+- For Linux:
+
 ```
 sudo systemctl restart ssh
 ```
-- For Mac
+- For Mac:
+
 ```
 sudo launchctl stop com.openssh.sshd
 sudo launchctl start com.openssh.sshd

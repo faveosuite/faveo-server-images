@@ -11,7 +11,7 @@ title: "SSH Key Authentication Setup Guide"
 ---
 
 
-<img src="https://lcdung.top/wp-content/uploads/2016/10/Create-SSH-Key.png" alt="" style=" width:650px ; height:130px ">
+<img src="https://lcdung.top/wp-content/uploads/2016/10/Create-SSH-Key.png" alt="" style=" width:650px ; height:150px ">
 
 ---
 

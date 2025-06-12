@@ -11,7 +11,7 @@ title: "SSH Key Authentication Setup Guide"
 ---
 
 
-<img src="https://lcdung.top/wp-content/uploads/2016/10/Create-SSH-Key.png" alt="" style=" width:650px ; height:150px ">
+<img src="https://lcdung.top/wp-content/uploads/2016/10/Create-SSH-Key.png" alt="" style=" width:650px ; height:170px ">
 
 ---
 
@@ -74,40 +74,39 @@ To connect to other devices without password prompts, we must store the public k
 
 ### For Linux/Mac Devices:
 
-1. Open the authorized keys file:
+- Open the authorized keys file:
 ```
 nano ~/.ssh/authorized_keys
 ```
 
-2. Paste your public key (from <code><b>/var/www/.ssh/id_rsa.pub</b></code>) into the file. 
+- Paste your public key (from <code><b>/var/www/.ssh/id_rsa.pub</b></code>) into the file. 
 Ensure no extra spaces or line breaks are added.
 
-3. Set correct permissions:
+- Set correct permissions:
 
 ```
 chmod 700 ~/.ssh
 chmod 600 ~/.ssh/authorized_keys
 ```
 
-4. Ensure SSH server accepts key-based login:
+- Ensure SSH server accepts key-based login:
 
 ```
 sudo nano /etc/ssh/sshd_config
 ```
 
-5. Make sure the following line exists and is not commented out:
+Make sure the following line exists and is not commented out:
 
 ```
 PubkeyAuthentication yes
 ```
 
-6. Then restart the SSH service:
+- Then restart the SSH service:
 
 - For Linux
 ```
 sudo systemctl restart ssh
 ```
-
 - For Mac
 ```
 sudo launchctl stop com.openssh.sshd
@@ -116,19 +115,19 @@ sudo launchctl start com.openssh.sshd
 
 ### For Windows Devices:
 
-1. Ensure SSH Server is installed
-- [Follow this guide](/docs/helper/enable-ssh/)
+- Ensure SSH Server is installed
+  - [Follow this guide](/docs/helper/enable-ssh/)
 
-2. Create the authorized keys file using below powershell command:
+- Create the authorized keys file using below powershell command:
 
 ```
 New-Item -Path "C:\ProgramData\ssh\administrators_authorized_keys" -ItemType File -Force
 notepad "C:\ProgramData\ssh\administrators_authorized_keys"
 ```
 
-3. Paste your public key (from <code><b>/var/www/.ssh/id_rsa.pub</b></code>) into the file and save.
+- Paste your public key (from <code><b>/var/www/.ssh/id_rsa.pub</b></code>) into the file and save.
 
-3. Set file permissions by the below powershell commands:
+- Set file permissions by the below powershell commands:
 
 ```
 icacls "C:\ProgramData\ssh\administrators_authorized_keys" /inheritance:r
@@ -142,7 +141,7 @@ icacls "C:\ProgramData\ssh" /grant "Administrators:F"
 icacls "C:\ProgramData\ssh" /grant "SYSTEM:F"
 ```
 
-5. Ensure key authentication is enabled:
+- Ensure key authentication is enabled:
 
 ```
 notepad C:\ProgramData\ssh\sshd_config
@@ -154,7 +153,7 @@ Make sure the line below exists and is uncommented:
 PubkeyAuthentication yes
 ```
 
-6. Restart the SSH service:
+- Restart the SSH service:
 
 ```
 Restart-Service sshd

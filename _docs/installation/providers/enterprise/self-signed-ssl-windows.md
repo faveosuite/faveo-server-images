@@ -86,7 +86,7 @@ subjectAltName = @alt_names
 [alt_names]
 DNS.1 = faveo-helpdesk.local
 ```
-> Note: Please provide the below details according to your need:
+> **Note:** Please provide the below details according to your need:
 
 <code><b>C = IN
 ST = Karnataka
@@ -98,7 +98,7 @@ DNS.1 = faveo-helpdesk.local</b></code>
 
 ### <strong>Generate Certificate and Private Key</strong>
 
-From the command prompt from the SSL Directory and run the below command which will create the certificate and the private key.
+Open the command prompt from the SSL Directory and run the below command which will create the certificate and the private key.
 
 ```
 openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout private.key -out faveo.crt -config openssl.cnf -extensions v3_req
@@ -106,13 +106,13 @@ openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout private.key -out fa
 
 ### <strong>Compiling the created certificate and key file as .pfx file</strong>
 
-- As windows need the certificate file in .pfx format which will contain the both certificate and the key file, so we need to convert the created files to .pfx format, this can be done with the below command.
+As windows need the certificate file in .pfx format which will contain the both certificate and the key file, so we need to convert the created files to .pfx format, this can be done with the below command.
 
 ```
 openssl pkcs12 -export -inkey private.key -in faveo.crt -out faveo.pfx
 ```
 
-- The above command will create a .pfx file with the name *faveo.pfx* in the SSL directory.
+The above command will create a .pfx file with the name *faveo.pfx* in the SSL directory.
 
 ### <strong>Installing the SSL certificate</strong>
 
@@ -162,7 +162,7 @@ openssl.cafile = "C:\php8.2\cacert.pem"
 
 The certificate is installed successfully, since this is a self-signed certificate the browser will show not valid since the faveo considers the server-side SSL certificates in the probe page Domain SSL will be valid.
 
-**Note:** If the SSL certificate is not shown in the Bindings tab then follow the below steps:
+> **Note:** If the SSL certificate is not shown in the Bindings tab then follow the below steps:
 
 - Open IIS manager and go to *Server Certificates*, double click on it a new tab will appear.
 

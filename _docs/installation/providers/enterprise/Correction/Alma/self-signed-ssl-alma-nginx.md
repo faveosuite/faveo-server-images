@@ -4,7 +4,7 @@ type: docs
 permalink: /docs/installation/providers/enterprise/self-signed-ssl-alma-nginx/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2023-11-05
+last_modified_at: 2025-06-13
 toc: true
 title: Install Self-Signed SSL for Faveo on Alma Linux
 ---
@@ -139,7 +139,7 @@ nano /etc/hosts
 - After the above is done then we need to add the the ca-cert file path to the <b>/etc/php.ini</b> file add the path to the openssl.cafile like this :
 
 ```
-openssl.cafile = "/etc/pki/tls/certs/ca-bundle.crt"
+openssl.cafile = "/etc/pki/ca-trust/source/anchors/faveorootCA.crt"
 ```
 
 ```

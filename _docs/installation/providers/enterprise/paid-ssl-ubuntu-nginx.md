@@ -4,8 +4,8 @@ type: docs
 permalink: /docs/installation/providers/enterprise/paid-ssl-ubuntu-nginx/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2024-11-20
-last_modified_by: Mohammad_Asif
+last_modified_at: 2025-06-13
+last_modified_by: Sivakumar
 toc: true
 title: Install Paid SSL for Faveo on Ubuntu
 ---
@@ -65,7 +65,11 @@ server {
 }
 ```
 
-## After Creating the Virtual Host file we need to add the local host for the domain.
+## After Creating the Virtual Host file we need to enable the Nginx SSL virtual host configuration and add the local host for the domain.
+- Then need to enable the Nginx SSL virtual host configuration.
+```
+sudo ln -s /etc/nginx/sites-available/faveo-ssl.conf /etc/nginx/sites-enabled/
+```
 - Then need to update the CA certificate's to that run the below command.
 ```
 sudo update-ca-certificates
@@ -79,13 +83,13 @@ nano /etc/hosts
 ```
 127.0.0.1  ---Domain or IP---
 ```
-- After the above is done then we need to add the the ca-cert file path to the <b>/etc/php/8.1/fpm/php.ini</b> file add the path to the openssl.cafile like this : 
+- After the above is done then we need to add the the ca-cert file path to the <b>/etc/php/8.2/fpm/php.ini</b> file add the path to the openssl.cafile like this : 
 ```
 openssl.cafile = "/usr/local/share/ca-certificates/your_domain-CA.crt"
 ```
 - After adding the above path restart the webserver and php-fpm service.
 ```
-systemctl restart php8.1-fpm
+systemctl restart php8.2-fpm
 systemctl restart nginx
 ```
 

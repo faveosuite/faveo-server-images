@@ -4,8 +4,8 @@ type: docs
 permalink: /docs/installation/providers/enterprise/paid-ssl-debian-nginx/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2024-09-12
-last_modified_by: Mohammad_Asif
+last_modified_at: 2025-06-13
+last_modified_by: Sivakumar
 toc: true
 title: Install Paid SSL for Faveo on Debain
 ---
@@ -65,7 +65,15 @@ server {
 }
 ```
 
-## After Creating the Virtual Host file we need to add the local host for the domain.
+## After Creating the Virtual Host file we need to enable the Nginx SSL virtual host configuration and add the local host for the domain.
+- Then need to enable the Nginx SSL virtual host configuration.
+```
+sudo ln -s /etc/nginx/sites-available/faveo-ssl.conf /etc/nginx/sites-enabled/
+```
+- Then need to enable an Apache SSL virtual host configuration.
+```
+a2ensite faveo-ssl.conf
+```
 - Then need to update the CA certificate's to that run the below command.
 ```
 sudo update-ca-certificates
@@ -79,7 +87,7 @@ nano /etc/hosts
 ```
 127.0.0.1  ---Domain or IP---
 ```
-- After the above is done then we need to add the the ca-cert file path to the <b>/etc/php/8.1/fpm/php.ini</b> file add the path to the openssl.cafile like this : 
+- After the above is done then we need to add the the ca-cert file path to the <b>/etc/php/8.2/fpm/php.ini</b> file add the path to the openssl.cafile like this : 
 ```
 openssl.cafile = "/usr/local/share/ca-certificates/your_domain-CA.crt"
 ```

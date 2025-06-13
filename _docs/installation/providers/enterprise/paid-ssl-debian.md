@@ -4,8 +4,8 @@ type: docs
 permalink: /docs/installation/providers/enterprise/paid-ssl-debian/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2024-11-20
-last_modified_by: Mohammad_Asif
+last_modified_at: 2025-06-13
+last_modified_by: Sivakumar
 toc: true
 title: Install Paid SSL for Faveo on Debian
 ---
@@ -73,7 +73,11 @@ nano /etc/apache2/sites-available/faveo-ssl.conf
 </IfModule>
 ```
 
-## After Creating the Virtual Host file we need to add the local host for the domain.
+## After Creating the Virtual Host file we need to enable an Apache SSL virtual host configuration and add the local host for the domain.
+- Then need to enable an Apache SSL virtual host configuration.
+```
+a2ensite faveo-ssl.conf
+```
 - Then need to update the CA certificate's to that run the below command.
 ```
 sudo update-ca-certificates

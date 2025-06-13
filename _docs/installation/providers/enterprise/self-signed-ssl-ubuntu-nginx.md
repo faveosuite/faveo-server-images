@@ -4,8 +4,8 @@ type: docs
 permalink: /docs/installation/providers/enterprise/self-signed-ssl-ubuntu-nginx/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2023-11-20
-last_modified_by: Mohammad_Asif
+last_modified_at: 2025-06-13
+last_modified_by: Sivakumar
 toc: true
 title: Install Self-Signed SSL for Faveo on Ubuntu
 ---
@@ -148,12 +148,15 @@ server {
 }
 ```
 
-## After Creating the Virtual Host file we need to add the local host for the domain.
+## After Creating the Virtual Host file we need to enable the Nginx SSL virtual host configuration and add the local host for the domain.
+- Then need to enable the Nginx SSL virtual host configuration.
+```
+sudo ln -s /etc/nginx/sites-available/faveo-ssl.conf /etc/nginx/sites-enabled/
+```
 - Then need to update the CA certificate's to that run the below command.
 ```
 sudo update-ca-certificates
 ```
-
 - After adding the SSL certificates and virtual hosts we need to add the domain to the hosts file to the local host as below.
 ```
 nano /etc/hosts
@@ -164,7 +167,7 @@ nano /etc/hosts
 ```
 - After the above is done then we need to add the the ca-cert file path to the <b>/etc/php/8.2/fpm/php.ini</b> file add the path to the openssl.cafile like this : 
 ```
-openssl.cafile = "/etc/pki/tls/certs/ca-bundle.crt"
+openssl.cafile = "/usr/local/share/ca-certificates/faveorootCA.crt"
 ```
 ```
 systemctl restart php8.2-fpm

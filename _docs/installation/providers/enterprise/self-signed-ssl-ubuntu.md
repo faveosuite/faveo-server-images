@@ -4,7 +4,7 @@ type: docs
 permalink: /docs/installation/providers/enterprise/self-signed-ssl-ubuntu/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2024-11-20
+last_modified_at: 2025-06-13
 toc: true
 title: Install Self-Signed SSL for Faveo on Ubuntu
 ---
@@ -153,7 +153,11 @@ nano /etc/apache2/sites-available/faveo-ssl.conf
 </IfModule>
 ```
 
-## After Creating the Virtual Host file we need to add the local host for the domain.
+## After Creating the Virtual Host file we need to enable an Apache SSL virtual host configuration and add the local host for the domain.
+- Then need to enable an Apache SSL virtual host configuration.
+```
+a2ensite faveo-ssl.conf
+```
 - Then need to update the CA certificate's to that run the below command.
 ```
 sudo update-ca-certificates
@@ -167,6 +171,13 @@ nano /etc/hosts
 ```
 127.0.0.1  ---Domain or IP---
 ```
-- After the above is done then we need to add the the ca-cert file path to the php.ini file add the path to the openssl.cafile like this : "<b>openssl.cafile = "/etc/pki/tls/certs/ca-bundle.crt"</b> 
-
+- After the above is done then we need to add the the ca-cert file path to the php.ini file add the path to the openssl.cafile like this : 
+```
+openssl.cafile = "/usr/local/share/ca-certificates/faveorootCA.crt" 
+```
+- After adding the above path restart the webserver and php-fpm service.
+```
+systemctl restart php8.2-fpm
+systemctl restart nginx
+```
 - Now check the faveo on the Browser it will take you to probe page, if everything is good then you can proceed with the installation in Browser.

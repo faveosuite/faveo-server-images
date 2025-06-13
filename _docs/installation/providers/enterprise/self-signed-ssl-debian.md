@@ -176,6 +176,6 @@ openssl.cafile = "/usr/local/share/ca-certificates/faveorootCA.crt"
 - After adding the above path restart the webserver and php-fpm service.
 ```
 systemctl restart php8.2-fpm
-systemctl restart nginx
+systemctl restart apache2
 ```
 - Now check the faveo on the Browser it will take you to probe page, if everything is good then you can proceed with the installation in Browser.

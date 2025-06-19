@@ -1,14 +1,16 @@
 #!/bin/bash
 
 ##### This is a Basic troubleshooting script for Faveo helpdesk #####
-##### This Script can be used in all Linux Dirstros #################
-##### (Note: Tested with Debain and RHEL OS Distro's) ###############
+##### This Script can be used in all Linux distributions ############
+##### (Note: Tested with Debian and RHEL OS Distro's) ###############
 ##### (Usage: sudo ./basic_troubleshoot.sh) #########################
-##### Created anad maintained by Faveo Helpdesk #####################
+##### Created and maintained by Faveo Helpdesk ######################
 ##### For Any Queries reach (support.faveohelpdesk.com) #############
+##### version of the script: 1.0 ####################################
+##### Author: thirumoorthi.duraipandi@faveohelpdesk.com #############
 
 
-# Color Codes
+# Colour Codes
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -66,7 +68,7 @@ fi
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LOG_FILE="$SCRIPT_DIR/faveo-check.log"
 
-# Clear log file at the beginning
+# Clearing the log file at the beginning
 > "$LOG_FILE"
 
 # Time & Date Header

@@ -84,7 +84,7 @@ FAVEO_ROOT=${FAVEO_ROOT:-/var/www/faveo}
 # Domain Validation
 validate_domain() {
     APP_URL=$(grep APP_URL "$FAVEO_ROOT/.env" 2>/dev/null | cut -d '=' -f2 | tr -d '[:space:]')
-    CLEAN_DOMAIN=$(echo "$APP_URL" | sed -E 's@https?://@@' | tr -d '/')
+    CLEAN_DOMAIN=$(echo "$APP_URL" | sed -E 's@^https?://@@; s@/*$@@')
 
     echo -e "${YELLOW}Faveo APP_URL from .env: ${RESET}$CLEAN_DOMAIN" | tee -a "$LOG_FILE"
 

@@ -239,12 +239,12 @@ Cron jobs for user: www-data
 artisan commands found:
 * * * * * /usr/bin/php /var/www/faveo/artisan schedule:run 2>&1
 Estimating last run time from system logs:
-Jun 19 11:14:01 Fvaeo CRON[80731]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
-Jun 19 11:15:01 Fvaeo CRON[81560]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
-Jun 19 11:16:01 Fvaeo CRON[82303]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
-Jun 19 11:17:01 Fvaeo CRON[83040]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
-Jun 19 11:18:01 Fvaeo CRON[83801]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
-Jun 19 11:19:01 Fvaeo CRON[84840]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
+Jun 19 11:14:01 Faveo CRON[80731]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
+Jun 19 11:15:01 Faveo CRON[81560]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
+Jun 19 11:16:01 Faveo CRON[82303]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
+Jun 19 11:17:01 Faveo CRON[83040]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
+Jun 19 11:18:01 Faveo CRON[83801]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
+Jun 19 11:19:01 Faveo CRON[84840]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
 
 Cron jobs for user: root
 None

@@ -98,7 +98,9 @@ docs:
       - title: Install Node
         url: /docs/helpers/node      
       - title: Install NATS Server
-        url: /docs/helpers/nats 
+        url: /docs/helpers/nats
+      - title: Troubleshooting script
+        url: /docs/installation/providers/enterprise/basic-troubleshooting-script
 #      - title: Install Agora Invoicing
  #       url: /docs/installation/providers/community/agora-home
 

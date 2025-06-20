@@ -41,9 +41,9 @@ Faveo can be installed on a variety of platforms. The choice of the platform is 
 - [Installation instructions for specific platforms](#installation-instructions-for-specific-platforms)
 - [Installation instructions for Freelancer, Paid, Enterprise and Community editions](#installation-instructions-for-freelancer-paid-enterprise-and-community-editions)
 - [Installation on a shared server](#installation-on-a-shared-server)
-  - [Help](#help)
-  - [One click installers](#one-click-installers)
-  - [Installation via scripts](#installation-via-scripts)
+- [One click installers](#one-click-installers)
+- [Installation via scripts](#installation-via-scripts)
+- [Help](#help)
 
 
 ## How To's <button class="button NEW"><b>NEW</b></button>
@@ -63,6 +63,7 @@ Faveo can be installed on a variety of platforms. The choice of the platform is 
 - Secure Server for security implications [click here](/docs/helpers/server-hardening/home)
 - Install Node for Graphical reports [click here](/docs/helpers/node)
 - Install NATS Server for Agent Software [click here](/docs/helpers/nats)
+- Troubleshooting script [click here](/docs/installation/providers/enterprise/basic-troubleshooting-script)
 
 
 <a id="markdown-requirements" name="requirements"></a>
@@ -128,10 +129,7 @@ Faveo Helpdesk Community can be installed using following installers
 ### Installation via scripts 
 Bash script to Auto Installation of Faveo Helpdesk on the following Linux Operating System Ubuntu 20.04/22.04, Debian 11, RHEL 9, Rocky 9
 
-- [**Installation via Scripts**](/docs/installation/providers/enterprise/script-installers/)
-
- 
-
+- [**Installation via Script**](/docs/installation/providers/enterprise/script-installers/)
 
 <a id="markdown-shared-sever" name="markdown-shared-sever"></a>
 ### Installation on a shared server <button class="button button2"><b>Not Recommended</b></button>
@@ -139,6 +137,12 @@ Faveo can also be installed on a shared server if Emails Incoming/Outgoing is th
 
 <b>Note: </b> In Faveo features like Report generation, Recurring Emails, Notifications etc relies on Redis Database. So if you choose shared hosting like Cpanel. These features will not be available.
 * [cPanel](/docs/installation/providers/community/cpanel)
+
+<a id="markdown-script-troubleshooting" name="markdown-script-troubleshooting"></a>
+### Troubleshooting via script
+Basic script to troubleshoot Faveo Helpsdesk
+
+- [**Troubleshooting via script**](/docs/installation/providers/enterprise/basic-troubleshooting-script)
 
 <a id="markdown-help" name="markdown-help"></a>
 ## Help

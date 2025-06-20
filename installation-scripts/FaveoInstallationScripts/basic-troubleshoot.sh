@@ -35,7 +35,7 @@ echo -e "$CYAN                                       |_|     |_|   |_| \___/ |__
 sleep 0.05
 echo -e "$CYAN                                                                                                                         $RESET";
 sleep 0.05
-echo -e "$CYAN                               _     _ _______ _       ______ ______  _______  ______ _     _                            $RESET";
+echo -e "$CYAN                              __     _ _______ _       ______ ______  _______  ______ _     _                            $RESET";
 sleep 0.05
 echo -e "$CYAN                             (_)   (_|_______|_)     (_____ (______)(_______)/ _____|_)   | |                            $RESET";
 sleep 0.05
@@ -129,7 +129,8 @@ get_service_status() {
         mysql mariadb
         redis redis-server
         supervisord supervisor
-        php8.2-fpm php-fpm
+	php
+	php8.2-fpm php-fpm
         cron crond
         meilisearch
         nginx

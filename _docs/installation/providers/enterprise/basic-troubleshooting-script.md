@@ -267,6 +267,7 @@ No files/folders owned by root found.
 - When it comes to <code><b>Port Availability Check</b></code>, it will prompt the user for custom ports, if any. Please enter the port number separated by a comma. The default ports in the script are <code><b>80, 443, 3306, 6379</b></code>.
 
 - Once entered, it will continue like below:
+
 ```
 Port Availability Check:
 Enter any additional ports to check (comma-separated, or press Enter to skip):

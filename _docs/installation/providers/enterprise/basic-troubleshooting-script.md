@@ -7,9 +7,8 @@ redirect_from:
 last_modified_at: 2025-06-20
 last_modified_by: Thirumoorthi Duraipandi
 toc: true
+title: Faveo Basic Troubleshooting via Scripts
 ---
-
-# Faveo Basic Troubleshooting via Scripts <!-- omit in toc -->
 
 <img alt="Troubleshoot" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ2rxwH6YebmlMEZtIJSwDUehm2GRIMcwJalQ&s" width="200"  />
 
@@ -19,53 +18,53 @@ toc: true
 - RHEL-based servers
 
 ## Introduction
-The script is designed to ensure that all essential services and configurations on the Faveo-installed server are functioning correctly. It helps validate system components, identify configuration or connectivity issues, and maintain a stable and healthy Faveo Helpdesk environment and it will log the output to a file named **faveo-check.log** in the same directory where the script is present. This file will be rotated every time the script is executed.
+The script is designed to ensure that all essential services and configurations on the Faveo-installed server are functioning correctly. It helps validate system components, identify configuration or connectivity issues, and maintain a stable and healthy Faveo Helpdesk environment and it will log the output to a file named <code><b>faveo-check.log</b></code> in the same directory where the script is present. This file will be rotated every time the script is executed.
 
 This script includes the following diagnostic checks:
 
-- SSL Check
-→ Verifies SSL certificate validity for the domain.
+- **SSL Check:**
+Verifies SSL certificate validity for the domain.
 
-- System Info
-→ Displays OS, uptime, memory usage, CPU, and disk statistics.
+- **System Info:** 
+Displays OS, uptime, memory usage, CPU, and disk statistics.
 
-- Service Version and Status
-→ Shows version and status of services like Apache, MySQL, PHP, PHP-FPM, Redis, etc.
+- **Service Version and Status:**
+Shows version and status of services like Apache, MySQL, PHP, PHP-FPM, Redis, etc.
 
-- Faveo Info
-→ Displays Faveo APP_URL, plan, and version.
+- **Faveo Info:** 
+Displays Faveo APP_URL, plan, and version.
 
-- Cron Jobs
-→ Lists all active cron jobs for www-data and root users.
+- **Cron Jobs:** 
+Lists all active cron jobs for www-data and root users.
 
-- Supervisor Jobs
-→ Checks the status of Supervisor Jobs.
+- **Supervisor Jobs:** 
+Checks the status of Supervisor Jobs.
 
-- Logged-in Users
-→ Displays currently logged-in (SSH) system users.
+- **Logged-in Users:** 
+Displays currently logged-in (SSH) system users.
 
-- Billing Connection
-→ Tests connection to the Faveo billing server.
+- **Billing Connection:**
+Tests connection to the Faveo billing server.
 
-- Root-Owned Files in Faveo Directory
-→ Lists files/folders owned by root that may cause permission issues.
+- **Root-Owned Files in Faveo Directory:** 
+Lists files/folders owned by root that may cause permission issues.
 
-- Check if Required Ports are Open
-→ Confirms if ports like 80, 443, 3306 and 6379 are listening.
+- **Check if Required Ports are Open:** 
+Confirms if ports like 80, 443, 3306 and 6379 are listening.
 
-- Firewall Check
-→ Checks status of firewall (e.g., UFW) and its rules.
+- **Firewall Check:** 
+Checks status of firewall (e.g., UFW) and its rules.
 
+---
 
 ## Prerequisites:
 
-- "**wget**" tool installed.
+- **wget**   tool installed.
 - **sudo** or **root** user privilege
 
 ## How to execute the script:
 
 - To download the script, **[Click here](/installation-scripts/FaveoInstallationScripts/basic-troubleshoot.sh)** or run the wget command below.
-
 ```sh
 wget http://raw.githubusercontent.com/faveosuite/faveo-server-images/refs/heads/master/installation-scripts/FaveoInstallationScripts/basic-troubleshoot.sh
 ```
@@ -80,26 +79,24 @@ sudo ./basic-troubleshoot.sh
 ```
 
 - Once the script is executed, it will prompt for the  faveo root directory, which is necessary for the script to work.
-- It will prompt like below
+- It will prompt like below:
 ```
 Enter Faveo root directory path (e.g., /var/www/faveo) /var/www/faveo is the default press enter to use the default value:
 ```
 
 - If your Faveo root directory is the default as below, just press Enter:
-
 ```
 /var/www/faveo
 ```
 - Otherwise, enter the correct path manually.
 
- - Example:
-
+Example:
 ```
 /var/www/html/faveo
 ```
 - Next, select any Option from the Menu. You will be prompted to select one from the following:
- - Example:
 
+Example:
 ```
 Select an option to run:
 1) Run all checks
@@ -118,14 +115,16 @@ Select an option to run:
 Enter your choice [0-12]:
 ```
 
-- **(1)** option is to check all information at once, select option **1** to see full diagnostic output in sequence.
+- Option **1** is to check all information at once, select option **1** to see full diagnostic output in sequence.
 - If you want to run a single specific check instead of all, select the relevant option by passing option number **2 to 12** from the menu when prompted.  [Click here for more details and steps to fix issues](###single-specific-check)
+
+---
 
 ### To Run all checks
 
-- If selected option is **(1) Run all checks** it will prompt and run as below:
+- If selected option is **(1) Run all checks**, it will prompt and run as below:
 
- - Example Output
+Example Output:
 ```
 root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
 
@@ -142,8 +141,8 @@ root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                              |  ___  |  ___) | |     |  ____/ |   | |  ___)  \____ \|  _   _)
                              | |   | | |_____| |_____| |    | |__/ /| |_____ _____) ) |  \ \
                              |_|   |_|_______)_______)_|    |_____/ |_______|______/|_|   \_)
-
-
+```
+```
 Enter Faveo root directory path (e.g., /var/www/faveo) /var/www/faveo is the default press enter to use the default value: <<< enter if root directory is different from default>>>
 Select an option to run:
 1) Run all checks
@@ -167,9 +166,10 @@ Faveo APP_URL from .env: faveo.helpdesk.com
 Enter domain for SSL check (leave empty to use APP_URL):
 ```
 
-- The script will automatically read the APP_URL from the .env file inside the faveo root directory, passed in the beginning of the script, you can use the **APP_URL** by pressing **enter** or can use a different domain without **https://**, for example **example.faveohelpdesk.com**.
+- The script will automatically read the <code><b>APP_URL</b></code> from the <code><b>.env</b></code> file inside the faveo root directory, passed in the beginning of the script, you can use the <code><b>APP_URL</b></code>  by pressing <code><b>Enter</b></code> or can use a different domain without <code><b>https://</b></code>, for example <code><b>example.faveohelpdesk.com</b></code>.
 
-- After entering, it will contiue with the script and will show information like **SSL validation**, **System Info**, **Service Status**, **Faveo Application Info**, **Cron Jobs (takes 5–10 sec)**, **Supervisor Jobs**, **Logged-in Users via SSH**, **Billing Connection Check**, **Root-Owned Files/Folders inside the Faveo directory**, **Port Availability Check (It will prompt for additional ports if needed enter custome ports separated by comma); if not, just press Enter. After entering, it will display Port Availability** and **Firewall Check** like below.
+
+- After entering, it will contiue with the script and will show information like *SSL validation, System Info, Service Status, Faveo Application Info, Cron Jobs* (takes 5–10 sec), *Supervisor Jobs, Logged-in Users via SSH, Billing Connection Check, Root-Owned Files/Folders inside the Faveo directory, Port Availability Check*. It will prompt for additional ports if needed enter custom ports separated by comma, if not, just press *Enter*. After entering, it will display *Port Availability* and *Firewall Check* like below.
 
 ```
 No domain entered. Using APP_URL domain: faveo.helpdesk.com
@@ -261,7 +261,11 @@ Billing connection is working.
 Root-Owned Files/Folders in Faveo Directory:
 No files/folders owned by root found.
 ```
-- When it comes to **Port Availability Check**, it will prompt the user for custom ports, if any. Please enter the port number separated by a comma. The default ports in the script are **80, 443, 3306, 6379**.
+
+---
+
+- When it comes to <code><b>Port Availability Check</b></code>, it will prompt the user for custom ports, if any. Please enter the port number separated by a comma. The default ports in the script are <code><b>80, 443, 3306, 6379</b></code>.
+
 - Once entered, it will continue like below:
 ```
 Port Availability Check:
@@ -288,13 +292,16 @@ Status: inactive
 Script by Faveo Helpdesk | support@faveohelpdesk.com
 Execution complete.
 ```
-- This script's output will be logged to **faveo-check.log** inside the same directory where the script is present.
+
+- This script's output will be logged to <code><b>faveo-check.log</b></code> inside the same directory where the script is present.
+
+---
 
 ### Single Specific Check
 
 - To run a single specific check instead of all, select the relevant option number from the menu when prompted.
 
-- You will be prompted to select one of the following, where you can select options from **2 to 12**, which will run the corresponding checks:
+- You will be prompted to select one of the following, where you can select options from <code><b>2 to 12</b></code>, which will run the corresponding checks:
 ```
 Select an option to run:
 1) Run all checks
@@ -313,11 +320,14 @@ Select an option to run:
 Enter your choice [0-12]:
 ```
 
+---
+
 #### SSL Validation Check:
-- Enter **2** to check SSL Validity
+- Enter <code><b>2</b></code> to check SSL Validity.
+
 - This is used to verify if the faveo server's SSL is valid inside the server.
 
- - Example Output
+Example Output:
 ```
 root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                                         _______ _______ _     _ _______ _______
@@ -333,8 +343,8 @@ root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                              |  ___  |  ___) | |     |  ____/ |   | |  ___)  \____ \|  _   _)
                              | |   | | |_____| |_____| |    | |__/ /| |_____ _____) ) |  \ \
                              |_|   |_|_______)_______)_|    |_____/ |_______|______/|_|   \_)
-
-
+```
+```
 Enter Faveo root directory path (e.g., /var/www/faveo) /var/www/faveo is the default press enter to use the default value: <<< enter if root directory is different from default>>>
 
 Select an option to run:
@@ -359,7 +369,9 @@ Date: Thursday 19 June 2025 01:03:37 PM IST
 Faveo APP_URL from .env: faveo.helpdesk.com
 Enter domain for SSL check (leave empty to use APP_URL):
 ```
-- The script will automatically read the APP_URL from the .env file inside faveo root directory passed in while the script is executed, you can use the **APP_URL** by pressing **enter** or can use a different domain without **https://** for example **example.faveohelpdesk.com** after this the output will continue like below.
+
+
+- The script will automatically read the <code><b>APP_URL</b></code> from the <code><b>.env</b></code> file inside faveo root directory passed in while the script is executed, you can use the <code><b>APP_URL</b></code> by pressing <code><b>Enter</b></code> or can use a different domain without <code><b>https://</b></code> for example <code><b>example.faveohelpdesk.com</b></code> after this the output will continue like below.
 ```
 No domain entered. Using APP_URL domain: faveo.helpdesk.com
 SSL Check for: faveo.helpdesk.com
@@ -369,12 +381,14 @@ Script by Faveo Helpdesk | support@faveohelpdesk.com
 Execution complete.
 ```
 
-- This script's output will be logged to **faveo-check.log** inside the same directory where the script is present.
+- This script's output will be logged to <code><b>faveo-check.log</b></code> inside the same directory where the script is present.
+
  - To fix, please click here and follow the steps [Click here](https://docs.faveohelpdesk.com/docs/installation/providers/enterprise/ssl-error/). If the issue persists, please reach (**support@faveohelpdesk.com***)
 
+---
 
 #### System Info Check:
-- Enter **3** to check System Info
+- Enter <code><b>3</b></code> to check System Info.
 
 - It displays information on System OS, uptime, memory, CPU, disk, and Server resource consumption.
 
@@ -395,8 +409,8 @@ root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                              |  ___  |  ___) | |     |  ____/ |   | |  ___)  \____ \|  _   _)
                              | |   | | |_____| |_____| |    | |__/ /| |_____ _____) ) |  \ \
                              |_|   |_|_______)_______)_|    |_____/ |_______|______/|_|   \_)
-
-
+```
+```
 Enter Faveo root directory path (e.g., /var/www/faveo) /var/www/faveo is the default press enter to use the default value: <<< enter if root directory is different from default>>>
 
 Select an option to run:
@@ -429,18 +443,21 @@ Disk: 170G used / 320G (57%)
 Script by Faveo Helpdesk | support@faveohelpdesk.com
 Execution complete.
 ```
-- This script's output will be logged to **faveo-check.log** inside the same directory where the script is present.
+
+- This script's output will be logged to <code><b>faveo-check.log</b></code> inside the same directory where the script is present.
+
  - If there is any issue, please reach (**support@faveohelpdesk.com***)
+
+---
 
 #### Service status and version check:
 - This check will check the status and uptime of services that are necessary for faveo to work.
 
-- Enter **4** to check Service Status and Service Version
+- Enter <code><b>4</b></code> to check Service Status and Service Version
 
 - Shows version and status of services like Apache, MySQL, PHP, PHP-FPM, Redis, etc.
 
- - Example Output
-
+Example Output:
 ```
 root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                                         _______ _______ _     _ _______ _______
@@ -456,8 +473,8 @@ root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                              |  ___  |  ___) | |     |  ____/ |   | |  ___)  \____ \|  _   _)
                              | |   | | |_____| |_____| |    | |__/ /| |_____ _____) ) |  \ \
                              |_|   |_|_______)_______)_|    |_____/ |_______|______/|_|   \_)
-
-
+```
+```
 Enter Faveo root directory path (e.g., /var/www/faveo) /var/www/faveo is the default press enter to use the default value: <<< enter if root directory is different from default>>>
 
 Select an option to run:
@@ -525,19 +542,23 @@ csf version:
 Script by Faveo Helpdesk | support@faveohelpdesk.com
 Execution complete.
 ```
-- This script's output will be logged to **faveo-check.log** inside the same directory where the script is present.
+
+- This script's output will be logged to <code><b>faveo-check.log</b></code> inside the same directory where the script is present.
+
  - To fix, we can try the following command. If the issue persists, please reach (**support@faveohelpdesk.com***)
 ```
 systemctl restart <<<service name here>>>
 ```
 
+---
+
 #### Faveo Info Check
 - This check is used to check Faveo-related information.
-- Enter **5** to check Faveo Info
+- Enter <code><b>5</b></code> to check Faveo Info
 
 Displays Faveo APP_URL, plan, and version
 
- - Example Output
+Example Output:
 ```
 root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                                         _______ _______ _     _ _______ _______
@@ -553,8 +574,8 @@ root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                              |  ___  |  ___) | |     |  ____/ |   | |  ___)  \____ \|  _   _)
                              | |   | | |_____| |_____| |    | |__/ /| |_____ _____) ) |  \ \
                              |_|   |_|_______)_______)_|    |_____/ |_______|______/|_|   \_)
-
-
+```
+```
 Enter Faveo root directory path (e.g., /var/www/faveo) /var/www/faveo is the default press enter to use the default value: <<< enter if root directory is different from default>>>
 
 Select an option to run:
@@ -583,15 +604,18 @@ Version: v1234..
 Script by Faveo Helpdesk | support@faveohelpdesk.com
 Execution complete.
 ```
-- This script output will be logged to **faveo-check.log** inside the same directory where the script is present.
+
+- This script output will be logged to <code><b>faveo-check.log</b></code> inside the same directory where the script is present.
+
+---
+
 
 #### Cron Jobs Check
 - This check is used to see cron-related data for faveo-related crons.
 
-- Enter **6** to check Cron Jobs with the last few run time logs (takes 5–10 sec)
+- Enter <code><b>6</b></code> to check Cron Jobs with the last few run time logs (takes 5–10 sec)
 
- - Example Output
-
+Example Output:
 ```
 root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                                         _______ _______ _     _ _______ _______
@@ -607,8 +631,8 @@ root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                              |  ___  |  ___) | |     |  ____/ |   | |  ___)  \____ \|  _   _)
                              | |   | | |_____| |_____| |    | |__/ /| |_____ _____) ) |  \ \
                              |_|   |_|_______)_______)_|    |_____/ |_______|______/|_|   \_)
-
-
+```
+```
 Enter Faveo root directory path (e.g., /var/www/faveo) /var/www/faveo is the default press enter to use the default value: <<< enter if root directory is different from default>>>
 
 Select an option to run:
@@ -649,18 +673,21 @@ None
 Script by Faveo Helpdesk | support@faveohelpdesk.com
 Execution complete.
 ```
-- This script's output will be logged to **faveo-check.log** inside the same directory where the script is present.
+
+- This script's output will be logged to <code><b>faveo-check.log</b></code> inside the same directory where the script is present.
+
  - To fix, try the steps below. If the issue persists, please reach (**support@faveohelpdesk.com***)
- - If the cron is not there, follow **https://docs.faveohelpdesk.com** and select you OS there and follow the cron jobs section in the installation steps.
+
+ - If the cron is not there, follow <a href="https://docs.faveohelpdesk.com" target="_blank" rel="noopener">**https://docs.faveohelpdesk.com**</a> and select you OS there and follow the cron jobs section in the installation steps.
+
+---
 
 #### Supervisor jobs Check
 - This check is used to see if all supervisor jobs are configured and running as expected for faveo
 
-- Enter **7** to check the Supervisor jobs running status
+- Enter <code><b>7</b></code> to check the Supervisor jobs running status
 
- - Example Output
-
-
+Example Output:
 ```
 root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                                         _______ _______ _     _ _______ _______
@@ -676,8 +703,8 @@ root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                              |  ___  |  ___) | |     |  ____/ |   | |  ___)  \____ \|  _   _)
                              | |   | | |_____| |_____| |    | |__/ /| |_____ _____) ) |  \ \
                              |_|   |_|_______)_______)_|    |_____/ |_______|______/|_|   \_)
-
-
+```
+```
 Enter Faveo root directory path (e.g., /var/www/faveo) /var/www/faveo is the default press enter to use the default value: <<< enter if root directory is different from default>>>
 
 Select an option to run:
@@ -706,19 +733,22 @@ faveo-Horizon                    RUNNING   pid 4060, uptime 4:28:25
 Script by Faveo Helpdesk | support@faveohelpdesk.com
 Execution complete.
 ```
-- This script's output will be logged to **faveo-check.log** inside the same directory where the script is present.
 
- - To fix, we can try the following command. If the issue persists, please reach (**support@faveohelpdesk.com***)
+- This script's output will be logged to <code><b>faveo-check.log</b></code> inside the same directory where the script is present.
+
+ - To fix, we can try the following command. If the issue persists, please reach (**support@faveohelpdesk.com***) or run the below command.
 ```
-supervisorctl restart allow
+supervisorctl restart all
 ```
+
+---
 
 #### Logged in Users check
 - This is used to check how many users are currently logged in to the server via SSH
 
-- Enter **8** to check SSH Logged-in Users
+- Enter <code><b>8</b></code> to check SSH Logged-in Users
 
- - Example Output
+Example Output:
 ```
 root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                                         _______ _______ _     _ _______ _______
@@ -734,8 +764,8 @@ root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                              |  ___  |  ___) | |     |  ____/ |   | |  ___)  \____ \|  _   _)
                              | |   | | |_____| |_____| |    | |__/ /| |_____ _____) ) |  \ \
                              |_|   |_|_______)_______)_|    |_____/ |_______|______/|_|   \_)
-
-
+```
+```
 Enter Faveo root directory path (e.g., /var/www/faveo) /var/www/faveo is the default press enter to use the default value: <<< enter if root directory is different from default>>>
 
 Select an option to run:
@@ -763,15 +793,16 @@ Logged-in Users:
 Script by Faveo Helpdesk | support@faveohelpdesk.com
 Execution complete.
 ```
-- This script's output will be logged to **faveo-check.log** inside the same directory where the script is present.
+- This script's output will be logged to <code><b>faveo-check.log</b></code> inside the same directory where the script is present.
+
+---
 
 #### Billing connection
 - This check will check the curl connection between the faveo server and billing.faveohelpdesk.com, faveo needs this to validate the license and faveo updates, etc..
 
-- Enter **9** to check Faveo Billing Connection
+- Enter <code><b>9</b></code> to check Faveo Billing Connection
 
- - Example Output
-
+Example Output:
 ```
 root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                                         _______ _______ _     _ _______ _______
@@ -787,8 +818,8 @@ root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                              |  ___  |  ___) | |     |  ____/ |   | |  ___)  \____ \|  _   _)
                              | |   | | |_____| |_____| |    | |__/ /| |_____ _____) ) |  \ \
                              |_|   |_|_______)_______)_|    |_____/ |_______|______/|_|   \_)
-
-
+```
+```
 Enter Faveo root directory path (e.g., /var/www/faveo) /var/www/faveo is the default press enter to use the default value: <<< enter if root directory is different from default>>>
 
 Select an option to run:
@@ -817,18 +848,21 @@ Billing connection is working.
 Script by Faveo Helpdesk | support@faveohelpdesk.com
 Execution complete.
 ```
-- This script's output will be logged to **faveo-check.log** inside the same directory where the script is present.
- - To fix, we can try following the steps. If the issue persists, please reach (**support@faveohelpdesk.com***)
- - Try whitelisting this domain in your firewall, **billing.faveohelpdesk.com**.
 
+- This script's output will be logged to <code><b>faveo-check.log</b></code> inside the same directory where the script is present.
+
+ - To fix, we can try following the steps. If the issue persists, please reach (**support@faveohelpdesk.com***)
+
+ - Try whitelisting this domain in your firewall, <code><b>billing.faveohelpdesk.com</b></code>.
+
+---
 
 #### Root-Owned Files check
 - This check will check if any files are owned by root users inside the faveo root directory.
 
-- Enter **10** to check Root-Owned Files in Faveo Directory
+- Enter <code><b>10</b></code> to check Root-Owned Files in Faveo Directory
 
- - Example Output
-
+Example Output:
 ```
 root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                                         _______ _______ _     _ _______ _______
@@ -844,8 +878,8 @@ root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                              |  ___  |  ___) | |     |  ____/ |   | |  ___)  \____ \|  _   _)
                              | |   | | |_____| |_____| |    | |__/ /| |_____ _____) ) |  \ \
                              |_|   |_|_______)_______)_|    |_____/ |_______|______/|_|   \_)
-
-
+```
+```
 Enter Faveo root directory path (e.g., /var/www/faveo) /var/www/faveo is the default press enter to use the default value: <<< enter if root directory is different from default>>>
 
 Select an option to run:
@@ -875,8 +909,9 @@ Script by Faveo Helpdesk | support@faveohelpdesk.com
 Execution complete.
 ```
 
- - Example Output  (Root-Owned Files in Faveo Directory (Issue))
+- This indicates that there are no root owned files found the faveoo root directory.
 
+Example Output  (Root-Owned Files in Faveo Directory (Issue))
 ```
 root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                                         _______ _______ _     _ _______ _______
@@ -892,8 +927,8 @@ root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                              |  ___  |  ___) | |     |  ____/ |   | |  ___)  \____ \|  _   _)
                              | |   | | |_____| |_____| |    | |__/ /| |_____ _____) ) |  \ \
                              |_|   |_|_______)_______)_|    |_____/ |_______|______/|_|   \_)
-
-
+```
+```
 Enter Faveo root directory path (e.g., /var/www/faveo) /var/www/faveo is the default press enter to use the default value: <<< enter if root directory is different from default>>>
 
 Select an option to run:
@@ -960,20 +995,23 @@ Execution complete.
 
 - This indicates that this list of files and directories is incorrectly owned by root.
 
-- These folders must be owned by the web server user (usually www-data) to allow the application to read and write logs, cache, and perform scheduled tasks etc..
+- These folders must be owned by the web server user *(usually www-data)* to allow the application to read and write logs, cache, and perform scheduled tasks etc..
 
- - To fix, we can try the following command. If the issue persists, please reach (**support@faveohelpdesk.com***)
+ - To fix, we can try the following command. If the issue persists, please reach (**support@faveohelpdesk.com***) or run the below command.
 
 ```
 chown -R www-data:www-data <<<Enter the faveo root directory here>>>
 ```
-- This script output will be logged to **faveo-check.log** inside the same directory where the script is present.
+
+- This script output will be logged to <code><b>faveo-check.log</b></code> inside the same directory where the script is present.
+
+---
 
 #### Required Ports are Open Check
 
 - This Check is to check whether the ports are open internally and the services are listening on the port.
 
-- Enter **11** to check if Required Ports are Open for Faveo
+- Enter <code><b>11</b></code> to check if Required Ports are Open for Faveo.
 
 - The script will automatically check commonly required Faveo ports: 80 (HTTP), 443 (HTTPS), 3306 (MySQL), and 6379 (Redis)
 
@@ -983,8 +1021,7 @@ chown -R www-data:www-data <<<Enter the faveo root directory here>>>
 Enter any additional ports to check (comma-separated, or press Enter to skip):
 ```
 
- - Example Output
-
+Example Output:
 ```
 root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                                         _______ _______ _     _ _______ _______
@@ -1000,8 +1037,8 @@ root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                              |  ___  |  ___) | |     |  ____/ |   | |  ___)  \____ \|  _   _)
                              | |   | | |_____| |_____| |    | |__/ /| |_____ _____) ) |  \ \
                              |_|   |_|_______)_______)_|    |_____/ |_______|______/|_|   \_)
-
-
+```
+```
 Enter Faveo root directory path (e.g., /var/www/faveo) /var/www/faveo is the default press enter to use the default value: <<< enter if root directory is different from default>>>
 
 Select an option to run:
@@ -1025,7 +1062,8 @@ Date: Thursday 19 June 2025 02:07:19 PM IST
 Port Availability Check:
 Enter any additional ports to check (comma-separated, or press Enter to skip):
 ```
-- When it comes to **Port Availability Check**, it will prompt the user for custom ports, if any. Please enter the port number separated by a comma. The default ports in the script are **80, 443, 3306, 6379**.
+
+- When it comes to <code><b>Port Availability Check</b></code>, it will prompt the user for custom ports, if any. Please enter the port number separated by a comma. The default ports in the script are <code><b>80, 443, 3306, 6379</b></code>.
 - Once entered, it will continue like below:
 ```
 Checking Port 80 (HTTP)
@@ -1043,16 +1081,20 @@ Port 3306 is open internally (listening).
 Script by Faveo Helpdesk | support@faveohelpdesk.com
 Execution complete.
 ```
-- This script's output will be logged to **faveo-check.log** inside the same directory where the script is present.
+
+- This script's output will be logged to <code><b>faveo-check.log</b></code> inside the same directory where the script is present.
+
  - To fix this issue, try opening the port in the firewall if any is enabled. If the issue persists, please reach (**support@faveohelpdesk.com***)
+
+---
 
 #### Firewall Check
 
 - This is used to check the firewall status from basic firewalls to the CSF firewall inside the server.3
 
-- Enter **12** to check Firewall
+- Enter <code><b>12</b></code> to check Firewall
 
- - Example Output
+Example Output:
 ```
 root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                                         _______ _______ _     _ _______ _______
@@ -1068,8 +1110,8 @@ root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                              |  ___  |  ___) | |     |  ____/ |   | |  ___)  \____ \|  _   _)
                              | |   | | |_____| |_____| |    | |__/ /| |_____ _____) ) |  \ \
                              |_|   |_|_______)_______)_|    |_____/ |_______|______/|_|   \_)
-
-
+```
+```
 Enter Faveo root directory path (e.g., /var/www/faveo) /var/www/faveo is the default press enter to use the default value: <<< enter if root directory is different from default>>>
 
 Select an option to run:
@@ -1115,8 +1157,12 @@ Status: active
 Script by Faveo Helpdesk | support@faveohelpdesk.com
 Execution complete.
 ```
-- This script's output will be logged to **faveo-check.log** inside the same directory where the script is present.
+
+- This script's output will be logged to <code><b>faveo-check.log</b></code> inside the same directory where the script is present.
+
  - To fix any issue, please reach (**support@faveohelpdesk.com***)
+
+---
 
 # Help
 - If any queries or help with the script please reach **support@faveohelpdesk.com**

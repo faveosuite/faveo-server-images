@@ -4,8 +4,8 @@ type: docs
 permalink: /docs/installation/providers/enterprise/basic-troubleshooting-script/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2025-06-19
-last_modified_by: Sivakumar
+last_modified_at: 2025-06-20
+last_modified_by: Thirumoorthi Duraipandi
 toc: true
 ---
 

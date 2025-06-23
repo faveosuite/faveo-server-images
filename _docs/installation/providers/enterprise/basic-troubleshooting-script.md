@@ -679,7 +679,7 @@ Execution complete.
 
  - To fix, try the steps below. If the issue persists, please reach (**support@faveohelpdesk.com***)
 
- - If the cron is not there, follow <a href="https://docs.faveohelpdesk.com" target="_blank" rel="noopener">**https://docs.faveohelpdesk.com**</a> and select you OS there and follow the cron jobs section in the installation steps.
+ - If the cron is not there, follow <a href="https://docs.faveohelpdesk.com" target="_blank" rel="noopener">**https://docs.faveohelpdesk.com**</a> and select your OS there and follow the cron jobs section in the installation steps.
 
 ---
 

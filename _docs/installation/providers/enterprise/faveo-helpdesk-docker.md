@@ -4,8 +4,8 @@ type: docs
 permalink: /docs/installation/providers/enterprise/faveo-helpdesk-docker/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2025-02-06
-last_modified_by: Mohammad_Asif
+last_modified_at: 2025-07-15
+last_modified_by: Sivakumar
 toc: true
 ---
 ---
@@ -21,11 +21,15 @@ All the Faveo Helpdesk editions are supported except the community edition.
 ## <b>Usage</b>
 ___
 
-To get started, make sure you have Docker and Docker-Compose installed on your system, and then clone the below Git-Hub repository with the below link.
+To get started, make sure you have Docker and Docker-Compose installed on your system, and then clone the below Git-Hub repository with the below command.
 
-[Git-Hub Repo Link](https://github.com/ladybirdweb/faveo-helpdesk-docker-v2.git)
-
+```
+git clone https://github.com/ladybirdweb/faveo-helpdesk-docker-v2.git
+```
 ---
+```
+cd faveo-helpdesk-docker-v2
+```
 Next, navigate in your terminal to the directory you cloned this, and give the executable permissions to bash scripts.
 
 #### For all Faveo Editions (except community edition).
@@ -136,17 +140,8 @@ Open the terminal and navigate to the faveo-docker directory here you will find 
 
 Finally, run the below command for changes to take effect.
 
-For LetsEncrypt SSL & Paid SSL
-
 ```sh
 docker compose down && docker compose up -d
-```
-
-Only For Self-Signed SSL
-
-```sh
-chmod +x composedownup.sh
-./composedownup.sh
 ```
 ---
 ---
@@ -155,10 +150,10 @@ chmod +x composedownup.sh
 Note: At this point, the helpdesk interface will not load in the browser. To finalize the installation, you need to remove specific entries from the database.
 </p>
 
-- Access your MariaDB container using the following command:
+- Access your MySQL container using the following command:
 
 ```
- docker exec -it YourDomain-mariadb /bin/bash
+ docker exec -it YourDomain-mysql /bin/bash
 ```
 Replace <code><b>YourDomain</b></code> by the actual domain name.
 

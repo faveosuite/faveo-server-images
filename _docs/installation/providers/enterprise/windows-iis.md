@@ -140,8 +140,8 @@ extension=pdo_mysql
 
 ### <strong>2.b. Enable cacert.pem File in PHP Configuration File</strong>
 
--   <a href="https://www.faveohelpdesk.com/user-manual/windows_installation/pem_file.zip)" target="_blank" rel="noopener">Click Here</a> to download <code><b>cacaert.pem</b></code> file. This is required to avoid the “cURL 60 error” which is one of the Probes that Faveo checks.
-- Extract the <code><b>cacert.pem</b></code> file and copy it to <code><b>C:\php8.2</b></code> path.
+-   <a href="https://curl.se/ca/cacert-2025-07-15.pem)" target="_blank" rel="noopener">Click Here</a> to download <code><b>cacaert.pem</b></code> file. This is required to avoid the “cURL 60 error” which is one of the Probes that Faveo checks.
+- Rename the file to <code><b>cacert.pem</b></code> and copy it to <code><b>C:\php8.2</b></code> path.
 - Edit the <code><b>php.ini</b></code> located in <code><b>C:\php8.2</b></code>, Uncomment <code><b>curl.cainfo</b></code> and add the location of cacert.pem to it as below:
 
 ```

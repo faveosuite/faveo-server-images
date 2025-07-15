@@ -4,7 +4,7 @@ type: docs
 permalink: /docs/installation/providers/enterprise/apache-windows/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2024-11-12
+last_modified_at: 2025-07-15
 last_modified_by: Mohammad_Asif
 toc: true
 title: Faveo Installation on Windows with Apache Web Server
@@ -402,8 +402,8 @@ http://127.0.0.1/info.php
  
 ### <b>c. Download & Enable cacert.pem File in PHP Configuration File</b>
 
--   <a href="https://www.faveohelpdesk.com/user-manual/windows_installation/pem_file.zip)" target="_blank" rel="noopener">Click Here</a> to download <code><b>cacert.pem</b></code> file. This is required to avoid the “cURL 60 error” which is one of the Probes that Faveo checks.
-- Extract the <code><b>cacert.pem</b></code> file and copy it to <code><b>C:\php</b></code> path.
+-   <a href="https://curl.se/ca/cacert-2025-07-15.pem" target="_blank" rel="noopener">Click Here</a> to download <code><b>cacert.pem</b></code> file. This is required to avoid the “cURL 60 error” which is one of the Probes that Faveo checks.
+- Rename the file to <code><b>cacert.pem</b></code> and copy it to <code><b>C:\php</b></code> path.
 - Edit the <code><b>C:\php\php.ini</b></code>, Uncomment <code><b>curl.cainfo</b></code> and add the location of cacert.pem to it as below:
 ```
 curl.cainfo = "C:\php\cacert.pem"

@@ -384,7 +384,7 @@ At this stage, Faveo has been installed, it is time to setup the backup for Fave
 
 Once the installation is complete, it is recommended to harden the webserver to enhance security. Follow our guide to apply best practices such as disabling unnecessary modules, enforcing security headers, and restricting access permissions.
 
-[Nginx Hardening](/docs/helpers/server-hardening/nginx-hardening/)
+[Nginx Hardening](/docs/helpers/server-hardening/nginx-hardening)
 
 <a id="12-final-step" name="12-final-step"></a>
 

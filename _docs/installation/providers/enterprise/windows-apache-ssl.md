@@ -4,7 +4,8 @@ type: docs
 permalink: /docs/installation/providers/enterprise/windows-apache-ssl/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2022-08-25
+last_modified_at: 2025-07-11
+last_modified_by: Mohammad_Asif
 toc: true
 title: Install Self-Signed SSL for Faveo on Windows
 ---
@@ -55,107 +56,76 @@ Open the command prompt with Administrator privilege and enter the below command
 ```
 choco install openssl 
 ```
-It will prompt and ask for 'yes' give 'yes' and wait till the installation gets done.
+It will prompt and ask for *yes* give *yes* and wait till the installation gets done.
 
 ## <strong>Steps</strong>
 
-- Generate a private key for the CA (Certificate Authority).
-- Generate a certificate signing request for the CA.
-- Generate a root certificate.
-- Create a private key for the certificate.
-- Create a certificate signing request.
-- Create a certificate and sign it with the CA private key.
-- Compiling the created certificate and key file as a .pfx file.
-- Installing the SSL certificate.
+- Create OpenSSL Configuration File
+- Generate Certificate and Private Key
+- Export to .pfx format for IIS
+- Install the Certificate
 
-### <strong>Generate a private key for the CA</strong>
+### <strong>Create OpenSSL Configuration File </strong>
+Create a directory named <code><b>SSL</b></code> say at *C:\SSL\* or on any directory.
 
-Create a directory named SSL under C directory like *C:\SSL*, the following commands will create the SSL files those files will be saved in the directory which we create.
-
-- Open Command Prompt from the SSL directory that we created,
-- Run the below command to create a Private key for the rootCA this command will save a file name faveoroot.key in the SSL folder.
+Create a file <code><b>openssl.cnf</b></code> inside the <code><b>SSL</b></code> directory created above and save the below content to the file.
 
 ```
-openssl ecparam -out faveoroot.key -name prime256v1 -genkey
+[req]
+default_bits = 2048
+prompt = no
+default_md = sha256
+distinguished_name = dn
+x509_extensions = v3_req
+
+[dn]
+C = IN
+ST = Karnataka
+L = Banglore
+O = Faveo
+OU = IT
+CN = faveo-helpdesk.local
+
+[v3_req]
+basicConstraints = CA:FALSE
+keyUsage = digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = faveo-helpdesk.local
 ```
+> **Note:** Please provide the below details according to your need:
 
-### <strong>Generate a certificate signing request for the CA</strong>
+<code><b>C = IN
+ST = Karnataka
+L = Banglore
+O = Faveo
+OU = IT
+CN = faveo-helpdesk.local
+DNS.1 = faveo-helpdesk.local</b></code>
 
-- From the command prompt run the below command which will create a CSR (certificate signing request) for the Root CA.
+### <strong>Generate Certificate and Private Key</strong>
 
-```
-openssl req -new -sha256 -key faveoroot.key -out faveoroot.csr
-```
-- The above command will ask for the below information if needed you can provide them or you can just hit enter and skip them but it is recommended to give the meaningful details.
-
-    - Country Name.
-    - State Name.
-    - Organization.
-    - Common name (Leave this as blank or provide the company domain not the faveo domain).
-    - Email address.
-
-- The above command will save a file in the name faveoroot.csr in the SSL directory.
-
-### <strong>Generate a root certificate</strong>
-
-- The below command will create the Root CA certificate which we will use to sign the SSL certificates.
-
-
-```
-openssl x509 -req -sha256 -days 3650 -in faveoroot.csr -signkey faveoroot.key -out faveorootCA.crt
-```
-
-- The above command will create a file and save it as faveorootCA.crt in the SSL directory.
-
-### <strong>Create a private key for the certificate</strong>
-
-- The below command will create a private key file for the server SSL certificate.
-
-```
-openssl ecparam -out private.key -name prime256v1 -genkey
-```
-
-- The above command will save a key file with the name private.key for the server SSL certificate.
-
-### <strong>Create a certificate signing request for the server SSL</strong>
-
-- The below command will create a Certificate Signing Request for the Server SSL.
+Open the command prompt from the SSL Directory and run the below command which will create the certificate and the private key.
 
 ```
-openssl req -new -sha256 -key private.key -out faveolocal.csr
+openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout private.key -out faveo.crt -config openssl.cnf -extensions v3_req
 ```
-
-- It will ask for the details below we should give the details as shown below.
-
-    - Country Name.
-    - State Name.
-    - Organization.
-    - Common name (Here please provide the Domain or the IP through which you need to access faveo).
-    - Email address.
-- The rest can be left blank and after this is completed it will create the CSR file and save it with the name faveolocal.csr in the SSL directory.
-
-### <strong>Create a certificate and sign it with the CA private key</strong>
-
-- The below command will create the server SSL certificate which is signed by the Root CA that we created above.
-
-```
-openssl x509 -req -in faveolocal.csr -CA  faveorootCA.crt -CAkey faveoroot.key -CAcreateserial -out faveolocal.crt -days 3650 -sha256 
-```
-- The above command will create a server SSL file and save it in the name faveolocal.crt, this certificate will be valid for 3650 days which is ten years.
 
 ### <strong>Compiling the created certificate and key file as .pfx file</strong>
 
-- As windows need the certificate file in .pfx format which will contain the both certificate and the key file and the CA file for the installation, so we need to convert the created files to .pfx format, this can be done with the below command.
+As windows need the certificate file in .pfx format which will contain the both certificate and the key file, so we need to convert the created files to .pfx format, this can be done with the below command.
 
 ```
-openssl pkcs12 -export -out cert.pfx -inkey private.key -in faveolocal.crt -certfile faveorootCA.crt
+openssl pkcs12 -export -inkey private.key -in faveo.crt -out faveo.pfx
 ```
 
-- The above command will create a .pfx file with the name cert.pfx in the SSL directory.
+The above command will create a .pfx file with the name *faveo.pfx* in the SSL directory.
 
 ### <strong>Installing the SSL certificate</strong>
 
-- The installation of the SSL certificate is simple in windows machines we need to double click on the cert.pfx file that we created from the above step which will open the certificate installation wizard.
+- The installation of the SSL certificate is simple in windows machines we need to double click on the *faveo.pfx* file that we created from the above step which will open the certificate installation wizard.
 
     ![windows](https://github.com/ladybirdweb/faveo-server-images/blob/master/_docs/installation/providers/enterprise/windows-images/certificateinstallation.png?raw=true)
 

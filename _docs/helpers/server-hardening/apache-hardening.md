@@ -322,6 +322,10 @@ systemctl restart apache2
 
 Header edit Set-Cookie ^(.*)$ "$1;HttpOnly;Secure": The Header edit Set-Cookie ^(.*)$ "$1; HttpOnly; Secure" directive ensures that cookies are marked as HttpOnly and Secure, protecting them from client-side scripts and ensuring they are only sent over HTTPS.
 
+<p class="notice--warning">
+Note: This has been handled on code level so we will not add it to the final conf file.
+</p>
+
 ---
 
   <a id="7Disable-ETag" name="7Disable-ETag"></a>
@@ -547,14 +551,14 @@ Here is the combined configuration for RHEL-based and Debian-based systems, summ
   
 Edit or create the site-specific configuration file:
 ```
-nano /etc/httpd/conf.d/website.conf
+nano /etc/httpd/conf.d/faveo-ssl.conf
 ```
 
 - For Debian-based Systems:
   
 Edit or create the site-specific configuration file:
 ```
-nano /etc/apache2/sites-available/website.conf
+nano /etc/apache2/sites-available/faveo-ssl.conf
 ```
 
 ### Add the Configuration (Virtual Host File)
@@ -573,7 +577,7 @@ nano /etc/apache2/sites-available/website.conf
   Header set XSS-Protection "1; mode=block"
   Header always set Referrer-Policy "strict-origin"
   Header always set Permissions-Policy "geolocation=(), midi=(), sync-xhr=(), microphone=(), camera=(), magnetometer=(), gyroscope=(), fullscreen=(self), payment=()"
-  Header edit Set-Cookie ^(.*)$ "$1;HttpOnly;Secure"
+#  Header edit Set-Cookie ^(.*)$ "$1;HttpOnly;Secure"
   <If "%{HTTPS} == 'on'">
     Header always set Strict-Transport-Security "max-age=31536000; includeSubdomains"
   </If>

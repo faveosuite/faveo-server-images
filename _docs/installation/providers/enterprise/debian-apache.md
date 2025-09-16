@@ -4,7 +4,7 @@ type: docs
 permalink: /docs/installation/providers/enterprise/debian-apache/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2024-11-12
+last_modified_at: 2024-09-16
 last_modified_by: Mohammad_Asif
 toc: true
 title: Installing Faveo Helpdesk on Debian With Apache Webserver
@@ -26,7 +26,8 @@ This document is meant for Faveo Freelancer, Paid and Enterprise Versions.
     - [<strong>7. SSL Installation</strong>](#7-ssl-installation)
     - [<strong>8. Install Faveo</strong>](#8-install-faveo)
     - [<strong>9. Faveo Backup</strong>](#9-faveo-backup)
-    - [<strong>10. Final step</strong>](#10-final-step)
+    - [<strong>10. Webserver Hardening</strong>](#10-webserver-hardening)
+    - [<strong>11. Final step</strong>](#11-final-step)
 
 
 <a id="installation-steps-" name="installation-steps-"></a>
@@ -389,8 +390,18 @@ Now you can install Faveo via [GUI](/docs/installation/installer/gui) Wizard or 
 
 At this stage, Faveo has been installed, it is time to setup the backup for Faveo File System and Database. [Follow this article](/docs/helper/backup) to setup Faveo backup.
 
-<a id="10-final-step" name="01-final-step"></a>
 
-### <strong>10. Final step</strong>
+<a id="10-webserver-hardening" name="1-webserver-hardening"></a>
+
+### <strong>10. Webserver Hardening</strong>
+
+Once the installation is complete, it is recommended to harden the webserver to enhance security. Follow our guide to apply best practices such as disabling unnecessary modules, enforcing security headers, and restricting access permissions.
+
+[Apache Hardening](/docs/helpers/server-hardening/apache-hardening/)
+
+
+<a id="11-final-step" name="11-final-step"></a>
+
+### <strong>11. Final step</strong>
 
 The final step is to have fun with your newly created instance, which should be up and running to `http://localhost` or the domain you have configured Faveo with.

@@ -4,7 +4,7 @@ type: docs
 permalink: /docs/installation/providers/enterprise/ubuntu-apache/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2024-11-12
+last_modified_at: 2024-09-16
 last_modified_by: Mohammad_Asif
 toc: true
 title: Installing Faveo Helpdesk on Ubuntu With Apache Webserver
@@ -13,7 +13,7 @@ title: Installing Faveo Helpdesk on Ubuntu With Apache Webserver
 
 <img alt="Ubuntu" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Logo-ubuntu_cof-orange-hex.svg/120px-Logo-ubuntu_cof-orange-hex.svg.png" width="120" height="120" />
 
-Faveo can run on [Ubuntu 20.04 (Focal Fosa), Ubuntu 22.04 (Jammy Jellyfish)](http://releases.ubuntu.com/22.04/).
+Faveo can run on [Ubuntu 20.04 (Focal Fosa), Ubuntu 22.04 (Jammy Jellyfish), Ubuntu 24.04 (Noble Numbat)](http://releases.ubuntu.com/22.04/).
 
 This document is meant for Faveo Freelancer, Paid and Enterprise Versions.
 
@@ -28,7 +28,8 @@ This document is meant for Faveo Freelancer, Paid and Enterprise Versions.
     - [<strong>8. SSL Installation</strong>](#8-ssl-installation)
     - [<strong>9. Install Faveo</strong>](#9-install-faveo)
     - [<strong>10. Faveo Backup</strong>](#10-faveo-backup)
-    - [<strong>11. Final step</strong>](#11-final-step)
+    - [<strong>11. Webserver Hardening</strong>](#11-webserver-hardening)
+    - [<strong>12. Final step</strong>](#12-final-step)
 
 > **NOTE** :
 > Ubuntu 22.04 is the recommended version, Ubuntu 20.04 does not support oAuth integration.
@@ -148,7 +149,7 @@ You can install either MySQL or MariaDB. We have given options for both MySQL an
 
 Install Mysql 8.0. Note that this only installs the package, but does not setup Mysql. This is done later in the instructions:
 
- <b> For Ubuntu 20.04, 22.04 </b>
+ <b> For Ubuntu 20.04, 22.04, 24.04 </b>
 
 ```sh 
 sudo apt update
@@ -187,6 +188,7 @@ sudo apt install mariadb-server mariadb-client -y
 sudo systemctl start mariadb
 sudo systemctl enable mariadb
 ```
+> NOTE: Ubuntu 24.04 doesn't officially support MariaDb 10.6, so only MySQL 8.0 can be installed for Ubuntu 22.04
 
 Secure your MySql installation by executing the below command. Set Password for mysql root user, remove anonymous users, disallow remote root login, remove the test databases and finally reload the privilege tables.
 ```sh
@@ -387,8 +389,17 @@ Now you can install Faveo via [GUI](/docs/installation/installer/gui) Wizard or 
 
 At this stage, Faveo has been installed, it is time to setup the backup for Faveo File System and Database. [Follow this article](/docs/helper/backup) to setup Faveo backup.
 
-<a id="11-final-step" name="11-final-step"></a>
+<a id="11-webserver-hardening" name="11-webserver-hardening"></a>
 
-### <strong>11. Final step</strong>
+### <strong>11. Webserver Hardening</strong>
+
+Once the installation is complete, it is recommended to harden the webserver to enhance security. Follow our guide to apply best practices such as disabling unnecessary modules, enforcing security headers, and restricting access permissions.
+
+[Apache Hardening](/docs/helpers/server-hardening/apache-hardening/)
+
+
+<a id="12-final-step" name="12-final-step"></a>
+
+### <strong>12. Final step</strong>
 
 The final step is to have fun with your newly created instance, which should be up and running to `http://localhost` or the domain you have configured Faveo with.

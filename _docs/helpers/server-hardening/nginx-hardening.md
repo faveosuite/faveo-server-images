@@ -259,6 +259,10 @@ sudo systemctl restart nginx
 
 The `add_header Set-Cookie "HttpOnly;Secure";` directive ensures that cookies are marked as HttpOnly and Secure.
 
+<p class="notice--warning">
+Note: This has been handled on code level so we will not add it to the final conf file.
+</p>
+
 
 <a id="7Disable-ETag" name="7Disable-ETag"></a>
 
@@ -567,7 +571,7 @@ http {
                       '$status $body_bytes_sent "$http_referer" '
                       '"$http_user_agent" "$http_x_forwarded_for"';
 #6. Enable HttpOnly and Secure Flags for Cookies
-    add_header Set-Cookie "HttpOnly;Secure";
+#    add_header Set-Cookie "HttpOnly;Secure";
 
     access_log  /var/log/nginx/access.log  main;
 

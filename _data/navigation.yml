@@ -101,6 +101,8 @@ docs:
         url: /docs/helpers/nats
       - title: Troubleshooting script
         url: /docs/installation/providers/enterprise/basic-troubleshooting-script
+      - title: DB SSL and Encryption Setup
+        url: /docs/installation/providers/enterprise/db-ssl-encryption
 #      - title: Install Agora Invoicing
  #       url: /docs/installation/providers/community/agora-home
 

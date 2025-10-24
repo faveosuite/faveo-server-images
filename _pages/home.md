@@ -64,6 +64,7 @@ Faveo can be installed on a variety of platforms. The choice of the platform is 
 - Install Node for Graphical reports [click here](/docs/helpers/node)
 - Install NATS Server for Agent Software [click here](/docs/helpers/nats)
 - Troubleshooting script [click here](/docs/installation/providers/enterprise/basic-troubleshooting-script)
+- DB SSL and Encryption Setup [click here](/docs/installation/providers/enterprise/db-ssl-encryption)
 
 
 <a id="markdown-requirements" name="requirements"></a>

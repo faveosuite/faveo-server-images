@@ -103,7 +103,7 @@ docs:
         url: /docs/installation/providers/enterprise/basic-troubleshooting-script
       - title: DB SSL and Encryption Setup
         url: /docs/installation/providers/enterprise/db-ssl-encryption
-      - title: MeshCentral Agent Software
+      - title: MeshCentral Setup
         url: /docs/helpers/meshcentral
 #      - title: Install Agora Invoicing
  #       url: /docs/installation/providers/community/agora-home

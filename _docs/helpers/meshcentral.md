@@ -428,16 +428,16 @@ You’ll need the Device Group ID to connect MeshCentral with Faveo RMM.
 a. Log in and Create Group
 
 - Open https://YOURDOMAIN.COM in your browser.
-<img src="https://raw.githubusercontent.com/faveosuite/faveo-server-images/refs/heads/master/_docs/helpers/images/agent-sw/mesh1.png" alt="" style=" width:550px ; height:120px ">
+<img src="https://raw.githubusercontent.com/faveosuite/faveo-server-images/refs/heads/master/_docs/helpers/images/agent-sw/mesh1.png" alt="" style=" width:400px ; height:250px  ">
 
 - Create a new user account.
-<img src="https://raw.githubusercontent.com/faveosuite/faveo-server-images/refs/heads/master/_docs/helpers/images/agent-sw/mesh2.png" alt="" style=" width:550px ; height:120px ">
+<img src="https://raw.githubusercontent.com/faveosuite/faveo-server-images/refs/heads/master/_docs/helpers/images/agent-sw/mesh2.png" alt="" style=" width:400px ; height:250px  ">
 
 - Add a New Device Group for Faveo.
-<img src="https://raw.githubusercontent.com/faveosuite/faveo-server-images/refs/heads/master/_docs/helpers/images/agent-sw/mesh3.png" alt="" style=" width:550px ; height:120px ">
+<img src="https://raw.githubusercontent.com/faveosuite/faveo-server-images/refs/heads/master/_docs/helpers/images/agent-sw/mesh3.png" alt="" style=" width:400px ; height:250px  ">
 
 - A new window will open where you can create the New Device Group
-<img src="https://raw.githubusercontent.com/faveosuite/faveo-server-images/refs/heads/master/_docs/helpers/images/agent-sw/mesh4.png" alt="" style=" width:550px ; height:200px ">
+<img src="https://raw.githubusercontent.com/faveosuite/faveo-server-images/refs/heads/master/_docs/helpers/images/agent-sw/mesh4.png" alt="" style=" width:400px ; height:270px  ">
 
 b. Get the Device Group ID
 
@@ -469,6 +469,6 @@ Fill up the below details for Agent Remote Access:
 
 At this stage it is assumed that Faveo Helpdesk Server has NATS Server and WebSockets configured. If it is not configured, please follow the below links to setup both:
 
-- [NATS Setup Documentation](/docs/installation/providers/enterprise/meilisearch)
+- [NATS Setup Documentation](/docs/helpers/nats)
 
-- [WebSockets Setup Documentation](/docs/helpers/nats)
+- [WebSockets Setup Documentation](/docs/installation/providers/enterprise/websockets)

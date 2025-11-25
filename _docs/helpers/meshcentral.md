@@ -4,7 +4,7 @@ type: docs
 permalink: /docs/helpers/meshcentral/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2025-11-24
+last_modified_at: 2025-11-25
 last_modified_by: Mohammad_Asif
 toc: true
 title: MeshCentral Setup for Agent Remote Access
@@ -21,6 +21,8 @@ title: MeshCentral Setup for Agent Remote Access
 - Ubuntu 22.04+ server with sudo or root access
 - A valid domain name (e.g. YOURDOMAIN.COM) pointing to your server
 - Ports 80 (HTTP) and 443 (HTTPS) open
+
+---
 
 > **Note:** Replace every instance of *YOURDOMAIN.COM* with your actual domain name throughout this guide.
 
@@ -402,7 +404,7 @@ prepareWebhookPayload($config, $payload);
 handleCurlRequest($payload, $config);
 ```
 
-Test it:
+Test the script:
 
 ```
 php publish.php
@@ -428,20 +430,22 @@ You’ll need the Device Group ID to connect MeshCentral with Faveo RMM.
 a. Log in and Create Group
 
 - Open https://YOURDOMAIN.COM in your browser.
+
 <img src="https://raw.githubusercontent.com/faveosuite/faveo-server-images/refs/heads/master/_docs/helpers/images/agent-sw/mesh1.png" alt="" style=" width:400px ; height:250px  ">
 
 - Create a new user account.
+
 <img src="https://raw.githubusercontent.com/faveosuite/faveo-server-images/refs/heads/master/_docs/helpers/images/agent-sw/mesh2.png" alt="" style=" width:400px ; height:250px  ">
 
 - Add a New Device Group for Faveo.
 <img src="https://raw.githubusercontent.com/faveosuite/faveo-server-images/refs/heads/master/_docs/helpers/images/agent-sw/mesh3.png" alt="" style=" width:400px ; height:250px  ">
 
 - A new window will open where you can create the New Device Group
+
 <img src="https://raw.githubusercontent.com/faveosuite/faveo-server-images/refs/heads/master/_docs/helpers/images/agent-sw/mesh4.png" alt="" style=" width:400px ; height:270px  ">
 
-b. Get the Device Group ID
+b. Run below commands to get the Device Group ID
 
-Run:
 ```
 cd /var/www/mesh
 node node_modules/meshcentral/meshctrl --loginuser=<username> --loginpass=<password> ListDeviceGroups
@@ -460,12 +464,14 @@ Copy the ID for later use in Faveo Configuration.
 
 ### Step 6: Configure Faveo Helpdesk to use MeshCentral
 
-Now open the Faveo Helpdesk URL in browser and navigate to Admin Panel > Agent Software > Remote Access.
+Now open the Faveo Helpdesk URL in browser and navigate to *Admin Panel > Agent Software > Remote Access*.
 
 Fill up the below details for Agent Remote Access:
-- **Host:** - *YOURDOMAIN.COM* (MeshCentral Domain)
-- **Device Group:** - Created in above Step (Example: 8DoUJM0LSHk04WXnqNqoMVzjpessvbbAZ$plvbEeGiWjub8qKLILWqQcwuFw0LPp)
+- **Host:** *YOURDOMAIN.COM* (MeshCentral Domain)
+- **Device Group:** Created in above Step (Example: 8DoUJM0LSHk04WXnqNqoMVzjpessvbbAZ$plvbEeGiWjub8qKLILWqQcwuFw0LPp)
 - **Token:** Will be auto filled once saved (Created by cron for publish.php)
+
+---
 
 At this stage it is assumed that Faveo Helpdesk Server has NATS Server and WebSockets configured. If it is not configured, please follow the below links to setup both:
 

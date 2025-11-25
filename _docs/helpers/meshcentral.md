@@ -438,6 +438,7 @@ a. Log in and Create Group
 <img src="https://raw.githubusercontent.com/faveosuite/faveo-server-images/refs/heads/master/_docs/helpers/images/agent-sw/mesh2.png" alt="" style=" width:400px ; height:250px  ">
 
 - Add a New Device Group for Faveo.
+
 <img src="https://raw.githubusercontent.com/faveosuite/faveo-server-images/refs/heads/master/_docs/helpers/images/agent-sw/mesh3.png" alt="" style=" width:400px ; height:250px  ">
 
 - A new window will open where you can create the New Device Group

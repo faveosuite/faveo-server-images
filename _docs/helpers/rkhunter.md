@@ -1,7 +1,7 @@
 ---
 layout: single
 type: docs
-permalink: /docs/helpers/aide/
+permalink: /docs/helpers/rkhunter/
 redirect_from:
   - /theme-setup/
 last_modified_at: 2025-01-14
@@ -224,10 +224,6 @@ Example (daily scan at 03:30 AM):
 | CC7.1   | Continuous host security monitoring         |
 | CC7.2   | Detection of unauthorized changes & malware |
 | CC7.3   | Centralized alerting and incident response  |
-
-
-
-
 
 ---
 

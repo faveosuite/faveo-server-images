@@ -154,7 +154,7 @@ Alerting Script
 HOSTNAME=$(hostname)
 DATE=$(date)
 LOGFILE="/var/log/rkhunter.log"
-WEBHOOK_URL="https://chat.googleapis.com/v1/spaces/AAQAOhC6RxM/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=0q6KDcTOMHRTuath4lxierEatAdtPriYOeNN1ubRL4s"
+WEBHOOK_URL="YOUR_GOOGLE_CHAT_WEBHOOK_URL"
 
 # Run scan quietly
 /usr/bin/rkhunter --check --cronjob --report-warnings-only

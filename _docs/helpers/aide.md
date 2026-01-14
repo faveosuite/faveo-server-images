@@ -186,7 +186,7 @@ CONF="/etc/aide/aide.conf"
 LOG="/var/log/aide/aide.log"
 TMP="/tmp/aide-alert.txt"
 
-WEBHOOK_URL="https://chat.googleapis.com/v1/spaces/AAQAaf1t24A/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=urwA2rSCTjdIArASMM0KDmdisIMrNphyQMmtcrH63aA"
+WEBHOOK_URL="YOUR_GOOGLE_CHAT_WEBHOOK_URL"
 
 mkdir -p /var/log/aide
 

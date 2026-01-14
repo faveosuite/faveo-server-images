@@ -161,12 +161,16 @@ Possible outcomes:
 
 ## 9. Google Chat Alerting
 ### 9.1 Why Google Chat Instead of Email?
+
+
 | Reason             | Benefit                |
-| ------------------ | ---------------------- |
+|--------------------|------------------------|
 | Large logs         | Avoid mail size limits |
 | Real-time alerts   | Faster response        |
 | Central visibility | Team awareness         |
 | SOC 2 friendly     | Summary + evidence     |
+
+
 
 
 ### 9.2 Alert Script
@@ -258,12 +262,16 @@ chmod 600 /var/lib/aide/aide.db
 Never update baseline without review.
 
 ## 12. Logs & Evidence
+
+
 | Item      | Location                       |
-| --------- | ------------------------------ |
+|-----------|--------------------------------|
 | AIDE Logs | `/var/log/aide/aide.log`       |
 | Database  | `/var/lib/aide/aide.db`        |
 | Script    | `/usr/local/bin/aide-check.sh` |
 | Alerts    | Google Chat Security Channel   |
+
+
 
 
 ## 13. Resource Usage
@@ -271,9 +279,6 @@ Never update baseline without review.
 | Tool | CPU        | RAM       | Notes        |
 | ---- | ---------- | --------- | ------------ |
 | AIDE | Burst only | 50–150 MB | During scans | 
-
-
-
 
 
 ---

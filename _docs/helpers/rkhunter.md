@@ -237,4 +237,4 @@ Example (daily scan at 03:30 AM):
       <div style="line-height: 1;"> <b>Mohammad Asif</b> </div>
 			<div style="line-height: 1;">Associate DevOps Engineer</div>
     </div>
-</div
+</div>

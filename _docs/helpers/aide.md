@@ -270,7 +270,7 @@ Never update baseline without review.
 
 | Tool | CPU        | RAM       | Notes        |
 | ---- | ---------- | --------- | ------------ |
-| AIDE | Burst only | 50–150 MB | During scans |
+| AIDE | Burst only | 50–150 MB | During scans | 
 
 
 

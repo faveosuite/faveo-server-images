@@ -6,7 +6,7 @@
 ##### (Usage: sudo ./basic_troubleshoot.sh) #########################
 ##### Created and maintained by Faveo Helpdesk ######################
 ##### For Any Queries reach (support.faveohelpdesk.com) #############
-##### version of the script: 1.0 ####################################
+##### version of the script: 2.0 ####################################
 ##### Author: thirumoorthi.duraipandi@faveohelpdesk.com #############
 
 
@@ -52,8 +52,8 @@ sleep 0.05
 echo -e "$CYAN                                                                                                                         $RESET";
 
 if readlink /proc/$$/exe | grep -q "dash"; then
-	echo "&red This installer needs to be run with 'bash', not 'sh'. $reset";
-	exit 1
+        echo "&red This installer needs to be run with 'bash', not 'sh'. $reset";
+        exit 1
 fi
 
 # Checking for the Super User.
@@ -62,7 +62,6 @@ if [[ $EUID -ne 0 ]]; then
    echo -e "$red This script must be run as root $reset";
    exit 1
 fi
-
 
 # Get script directory for log
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -111,61 +110,109 @@ validate_domain() {
 # System Info
 get_system_info() {
     echo -e "${YELLOW}System Info:${RESET}" | tee -a "$LOG_FILE"
-    echo "Distro: $(lsb_release -ds 2>/dev/null || grep PRETTY_NAME /etc/os-release | cut -d '"' -f2)" | tee -a "$LOG_FILE"
+
+    echo "Distro: $(lsb_release -ds 2>/dev/null || awk -F= '/^PRETTY_NAME/{print $2}' /etc/os-release | tr -d '"')" | tee -a "$LOG_FILE"
     echo "Kernel: $(uname -r)" | tee -a "$LOG_FILE"
     echo "Uptime: $(uptime -p)" | tee -a "$LOG_FILE"
     echo "Load Avg: $(cut -d ' ' -f1-3 /proc/loadavg)" | tee -a "$LOG_FILE"
     echo "vCPU Cores: $(nproc)" | tee -a "$LOG_FILE"
-    echo "Memory: $(free -htm | awk '/Total:/ {print $3" used / "$2}')" | tee -a "$LOG_FILE"
-    echo "Disk: $(df -h / | awk 'NR==2{print $3" used / "$2" ("$5")"}')" | tee -a "$LOG_FILE"
+    echo "Memory: $(free -h | awk '/^Mem:/ {print $3 " used / " $2 ", Available: " $7}')" | tee -a "$LOG_FILE"
+    echo -e "${CYAN}Disk Usage (All Mounted Partitions):${RESET}" | tee -a "$LOG_FILE"
+    df -h --output=source,size,used,avail,pcent,target | tee -a "$LOG_FILE"
+
     echo | tee -a "$LOG_FILE"
 }
 
 # Service Status
 get_service_status() {
-    # OS-specific service mappings
-    SERVICES=(
-        apache2 httpd
-        mysql mariadb
-        redis redis-server
-        supervisord supervisor
-	php
-	php8.2-fpm php-fpm
-        cron crond
-        meilisearch
-        nginx
-        node
-        npm
-        csf
-    )
+
+    # Detect OS silently
+    if [[ -f /etc/os-release ]]; then
+        . /etc/os-release
+        OS_ID=$ID
+    else
+        OS_ID=$(uname -s)
+    fi
+
+    # Services per OS
+    case "$OS_ID" in
+        ubuntu|debian)
+            SERVICES=(
+                apache2 mysql redis-server supervisor php8.2-fpm
+                cron nginx meilisearch node npm csf
+            )
+            ;;
+        rhel|centos|rocky|almalinux|fedora)
+            SERVICES=(
+                httpd mariadb redis supervisord php-fpm
+                crond nginx meilisearch node npm csf
+            )
+            ;;
+        *)
+            SERVICES=()
+            ;;
+    esac
+
+    # CLI-only tools (not systemd services)
+    CLI_TOOLS=(node npm csf)
 
     echo -e "${YELLOW}Service Status:${RESET}" | tee -a "$LOG_FILE"
-    for service_pair in "${SERVICES[@]}"; do
-        for svc in $service_pair; do
-            if systemctl list-units --type=service --all | grep -qw "$svc"; then
+
+    for svc in "${SERVICES[@]}"; do
+
+        # CLI tools handling
+        if [[ " ${CLI_TOOLS[*]} " =~ " $svc " ]]; then
+            if command -v "$svc" >/dev/null 2>&1; then
+                echo -e "$svc: ${GREEN}installed${RESET}" | tee -a "$LOG_FILE"
+            else
+                echo -e "$svc: ${RED}not installed${RESET}" | tee -a "$LOG_FILE"
+                echo | tee -a "$LOG_FILE"
+                continue
+            fi
+        else
+            # systemd services handling
+            if systemctl list-unit-files | grep -qw "$svc"; then
                 status=$(systemctl is-active "$svc")
-                uptime_info=$(systemctl show "$svc" -p ActiveEnterTimestamp 2>/dev/null | cut -d= -f2)
-                if [ "$status" == "active" ]; then
-                    echo -e "$svc: ${GREEN}$status${RESET} (Since: $uptime_info)" | tee -a "$LOG_FILE"
+                uptime=$(systemctl show "$svc" -p ActiveEnterTimestamp --value 2>/dev/null)
+
+                if [[ "$status" == "active" ]]; then
+                    echo -e "$svc: ${GREEN}$status${RESET} (Since: $uptime)" | tee -a "$LOG_FILE"
                 else
                     echo -e "$svc: ${RED}$status${RESET}" | tee -a "$LOG_FILE"
                 fi
-                break
+            else
+                echo -e "$svc: ${RED}not installed${RESET}" | tee -a "$LOG_FILE"
+                echo | tee -a "$LOG_FILE"
+                continue
             fi
-        done
+        fi
 
-        # Version check
+        # Version check (only if installed)
+        ver="Not available"
+
         case "$svc" in
-            node) ver=$(node -v 2>/dev/null);;
-            npm) ver=$(npm -v 2>/dev/null);;
-            csf) ver=$(csf -v 2>/dev/null | head -n1);;
-            php8.2-fpm|php-fpm) ver=$(php-fpm -v 2>/dev/null | head -n1);;
-            redis|redis-server) ver=$(redis-server --version 2>/dev/null | head -n1);;
-            mysql|mariadb) ver=$(mysql --version 2>/dev/null);;
-            nginx) ver=$(nginx -v 2>&1);;
-            apache2|httpd) ver=$($svc -v 2>/dev/null | grep "Server version" || apache2 -v 2>/dev/null | grep "Server version");;
-            meilisearch) ver=$(meilisearch --version 2>/dev/null);;
-            *) ver="Not found or not applicable";;
+            node) ver=$(node -v 2>/dev/null) ;;
+            npm) ver=$(npm -v 2>/dev/null) ;;
+            csf) ver=$(csf -v 2>/dev/null | head -n1) ;;
+            php-fpm|php*-fpm)
+                command -v php >/dev/null && ver=$(php -v | head -n1)
+                ;;
+            redis|redis-server)
+                command -v redis-server >/dev/null && ver=$(redis-server --version | head -n1)
+                ;;
+            mysql|mariadb)
+                command -v mysql >/dev/null && ver=$(mysql --version)
+                ;;
+            nginx)
+                command -v nginx >/dev/null && ver=$(nginx -v 2>&1)
+                ;;
+            apache2|httpd)
+                command -v apache2 >/dev/null && ver=$(apache2 -v | grep "Server version")
+                command -v httpd >/dev/null && ver=$(httpd -v | grep "Server version")
+                ;;
+            meilisearch)
+                command -v meilisearch >/dev/null && ver=$(meilisearch --version)
+                ;;
         esac
 
         echo -e "$svc version: $ver" | tee -a "$LOG_FILE"
@@ -192,33 +239,41 @@ check_cron_jobs() {
 
     for user in www-data root; do
         echo -e "${CYAN}Cron jobs for user: $user${RESET}" | tee -a "$LOG_FILE"
-        CRONS=$(crontab -u "$user" -l 2>/dev/null | grep -v '^#')
+
+        CRONS=$(crontab -u "$user" -l 2>/dev/null | grep -vE '^\s*(#|$)')
 
         if [[ -z "$CRONS" ]]; then
             echo "None" | tee -a "$LOG_FILE"
-        else
-            echo "$CRONS" | tee -a "$LOG_FILE"
-
-            ARTISAN_CRONS=$(echo "$CRONS" | grep -Ei "artisan")
-            if [[ -n "$ARTISAN_CRONS" ]]; then
-                echo -e "${GREEN}artisan commands found:${RESET}" | tee -a "$LOG_FILE"
-                echo "$ARTISAN_CRONS" | tee -a "$LOG_FILE"
-
-                echo -e "${CYAN}Estimating last run time from system logs:${RESET}" | tee -a "$LOG_FILE"
-
-                if command -v journalctl &>/dev/null; then
-                    journalctl --no-pager | grep -iE "$user.*artisan" | tail -n 6 | tee -a "$LOG_FILE"
-                elif [[ -f /var/log/syslog ]]; then
-                    grep -iE "$user.*artisan" /var/log/syslog | tail -n 6 | tee -a "$LOG_FILE"
-                elif [[ -f /var/log/cron ]]; then
-                    grep -iE "$user.*artisan" /var/log/cron | tail -n 6 | tee -a "$LOG_FILE"
-                else
-                    echo "No available logs to estimate cron run times." | tee -a "$LOG_FILE"
-                fi
-            else
-                echo -e "No artisan commands found." | tee -a "$LOG_FILE"
-            fi
+            echo | tee -a "$LOG_FILE"
+            continue
         fi
+
+        echo "$CRONS" | tee -a "$LOG_FILE"
+
+        ARTISAN_CRONS=$(echo "$CRONS" | grep -Ei '\bartisan\b')
+        if [[ -z "$ARTISAN_CRONS" ]]; then
+            echo -e "${GREEN}No artisan cron jobs found.${RESET}" | tee -a "$LOG_FILE"
+            echo | tee -a "$LOG_FILE"
+            continue
+        fi
+
+        echo -e "${GREEN}artisan commands found:${RESET}" | tee -a "$LOG_FILE"
+        echo "$ARTISAN_CRONS" | tee -a "$LOG_FILE"
+
+        echo -e "${CYAN}Last 6 artisan cron executions:${RESET}" | tee -a "$LOG_FILE"
+
+        if [[ -f /var/log/syslog ]]; then
+            grep -iE "CRON.*\($user\).*artisan" /var/log/syslog \
+                | tail -n 6 \
+                | tee -a "$LOG_FILE"
+        elif [[ -f /var/log/cron ]]; then
+            grep -iE "CRON.*\($user\).*artisan" /var/log/cron \
+                | tail -n 6 \
+                | tee -a "$LOG_FILE"
+        else
+            echo "Cron log file not found. Cannot determine last run times." | tee -a "$LOG_FILE"
+        fi
+
         echo | tee -a "$LOG_FILE"
     done
 }
@@ -230,10 +285,43 @@ check_supervisor_jobs() {
     echo | tee -a "$LOG_FILE"
 }
 
-# Logged-in Users
+# Logged-in Users (SSH only, human users, idle & session duration)
 check_logged_users() {
-    echo -e "${YELLOW}Logged-in Users:${RESET}" | tee -a "$LOG_FILE"
-    who | wc -l | tee -a "$LOG_FILE"
+    echo -e "${YELLOW}Logged-in Users (SSH Sessions):${RESET}" | tee -a "$LOG_FILE"
+
+    # Get SSH sessions only, exclude system users
+    SESSIONS=$(who | grep -E '\([0-9a-fA-F:.]+\)')
+
+    if [[ -z "$SESSIONS" ]]; then
+        echo -e "${GREEN}No active SSH user sessions${RESET}" | tee -a "$LOG_FILE"
+        echo | tee -a "$LOG_FILE"
+        return
+    fi
+
+    echo -e "${CYAN}User\tTTY\tLogin Time\tIdle\tSession\tFrom${RESET}" | tee -a "$LOG_FILE"
+
+    echo "$SESSIONS" | while read -r user tty date time from; do
+        # Idle time (from w)
+        IDLE=$(w -h | awk -v t="$tty" '$2==t {print $5}')
+
+        # Login timestamp → epoch
+        LOGIN_EPOCH=$(date -d "$date $time" +%s 2>/dev/null)
+        NOW_EPOCH=$(date +%s)
+
+        # Session duration
+        if [[ -n "$LOGIN_EPOCH" ]]; then
+            DURATION_SEC=$((NOW_EPOCH - LOGIN_EPOCH))
+            SESSION_TIME=$(printf '%02dh:%02dm' $((DURATION_SEC/3600)) $(((DURATION_SEC%3600)/60)))
+        else
+            SESSION_TIME="N/A"
+        fi
+
+        printf "%-8s %-6s %-16s %-6s %-8s %s\n" \
+            "$user" "$tty" "$date $time" "${IDLE:-0}" "$SESSION_TIME" "$from" \
+            | tee -a "$LOG_FILE"
+    done
+
+    echo -e "${GREEN}Total Active SSH Users: $(echo "$SESSIONS" | wc -l)${RESET}" | tee -a "$LOG_FILE"
     echo | tee -a "$LOG_FILE"
 }
 
@@ -293,6 +381,20 @@ check_ports() {
         [443]="HTTPS"
         [3306]="MySQL"
         [6379]="Redis"
+        [7700]="Meilisearch"
+        [9000]="PHP-FPM"
+        [25]="SMTP-NONE"
+        [465]="SMTP-SSL"
+        [587]="SMTP-STARTTLS"
+        [143]="IMAP-Plain/STARTTLS"
+        [993]="IMAP-SSL"
+        [110]="POP-Plain/STARTTLS"
+        [995]="POP-SSL"
+        [6001]="Websocket Proxy"
+        [9235]="Nats"
+        [389]="LDAP"
+        [636]="LDAPS"
+
     )
 
     # Prompt user for additional/custom ports
@@ -369,6 +471,333 @@ firewall_check() {
     echo | tee -a "$LOG_FILE"
 }
 
+# Disk I/O Read and Write check
+check_disk_io() {
+
+    DEFAULT_DIR="/var/lib/mysql"
+    IO_COUNT=20
+    SLA_LATENCY_MS=10
+
+    echo -e "${YELLOW}Disk IO Check (ioping):${RESET}" | tee -a "$LOG_FILE"
+
+    # ---- Ask user for directory ----
+    read -rp "Enter directory to test [default: $DEFAULT_DIR]: " TARGET_DIR
+    TARGET_DIR=${TARGET_DIR:-$DEFAULT_DIR}
+
+    if [[ ! -d "$TARGET_DIR" ]]; then
+        echo -e "${RED}Directory $TARGET_DIR does not exist${RESET}" | tee -a "$LOG_FILE"
+        echo | tee -a "$LOG_FILE"
+        return 1
+    fi
+
+    # Install ioping if missing
+    if ! command -v ioping >/dev/null 2>&1; then
+        echo "ioping not found, installing..." | tee -a "$LOG_FILE"
+
+        . /etc/os-release 2>/dev/null
+
+        if [[ "$ID" =~ (ubuntu|debian) ]]; then
+            apt-get update -qq && apt-get install -y ioping >/dev/null 2>&1
+        elif [[ "$ID" =~ (rhel|centos|rocky|almalinux|fedora) ]]; then
+            yum install -y ioping >/dev/null 2>&1
+        else
+            echo -e "${RED}Unsupported OS for ioping install${RESET}" | tee -a "$LOG_FILE"
+            return 1
+        fi
+    fi
+
+    # READ TEST
+    echo -e "${CYAN}Read latency test:${RESET}" | tee -a "$LOG_FILE"
+
+    READ_OUT=$(ioping -c "$IO_COUNT" "$TARGET_DIR" 2>/dev/null | sed -n '/ioping statistics/,$p')
+    echo "$READ_OUT" | tee -a "$LOG_FILE"
+
+    READ_AVG=$(echo "$READ_OUT" | awk -F'[=/ ]+' '/min\/avg\/max/ {print $4}' | sed 's/ms//')
+
+    # WRITE TEST
+    echo -e "${CYAN}Write latency test:${RESET}" | tee -a "$LOG_FILE"
+
+    WRITE_OUT=$(ioping -RW -c "$IO_COUNT" "$TARGET_DIR" 2>/dev/null | sed -n '/ioping statistics/,$p')
+    echo "$WRITE_OUT" | tee -a "$LOG_FILE"
+
+    WRITE_AVG=$(echo "$WRITE_OUT" | awk -F'[=/ ]+' '/min\/avg\/max/ {print $4}' | sed 's/ms//')
+
+    # SLA CHECK
+    FAIL=0
+
+    if (( $(echo "$READ_AVG > $SLA_LATENCY_MS" | bc -l) )); then
+        echo -e "${RED}READ latency FAILED SLA (${READ_AVG} ms > ${SLA_LATENCY_MS} ms)${RESET}" | tee -a "$LOG_FILE"
+        FAIL=1
+    fi
+
+    if (( $(echo "$WRITE_AVG > $SLA_LATENCY_MS" | bc -l) )); then
+        echo -e "${RED}WRITE latency FAILED SLA (${WRITE_AVG} ms > ${SLA_LATENCY_MS} ms)${RESET}" | tee -a "$LOG_FILE"
+        FAIL=1
+    fi
+
+    if [[ "$FAIL" -eq 0 ]]; then
+        echo -e "${GREEN}Disk latency within SLA for production workload${RESET}" | tee -a "$LOG_FILE"
+    fi
+
+    echo | tee -a "$LOG_FILE"
+}
+
+# Top concuming processes check
+check_top_processes() {
+    echo -e "${YELLOW}Top CPU / Memory Processes (Production SLA-aware):${RESET}" | tee -a "$LOG_FILE"
+
+    CPU_WARN=70
+    CPU_FAIL=90
+    MEM_WARN=70
+    MEM_FAIL=90
+
+    echo -e "${CYAN}Top 10 processes by CPU usage:${RESET}" | tee -a "$LOG_FILE"
+
+    ps -eo pid,%cpu,%mem,cmd --sort=-%cpu --no-headers | head -n 10 | \
+    awk -v cw=$CPU_WARN -v cf=$CPU_FAIL '
+    {
+        cpu=$2; mem=$3;
+        status="OK"; color="\033[0;32m";
+
+        if (cpu > cf) { status="CRITICAL"; color="\033[0;31m" }
+        else if (cpu > cw) { status="WARNING"; color="\033[0;33m" }
+
+        printf "%s%s | CPU: %.1f%% | MEM: %.1f%% | %s\033[0m\n",
+               color, status, cpu, mem, substr($0, index($0,$4))
+    }' | tee -a "$LOG_FILE"
+
+    echo -e "${CYAN}Top 10 processes by Memory usage:${RESET}" | tee -a "$LOG_FILE"
+
+    ps -eo pid,%cpu,%mem,cmd --sort=-%mem --no-headers | head -n 10 | \
+    awk -v mw=$MEM_WARN -v mf=$MEM_FAIL '
+    {
+        cpu=$2; mem=$3;
+        status="OK"; color="\033[0;32m";
+
+        if (mem > mf) { status="CRITICAL"; color="\033[0;31m" }
+        else if (mem > mw) { status="WARNING"; color="\033[0;33m" }
+
+        printf "%s%s | CPU: %.1f%% | MEM: %.1f%% | %s\033[0m\n",
+               color, status, cpu, mem, substr($0, index($0,$4))
+    }' | tee -a "$LOG_FILE"
+
+    echo | tee -a "$LOG_FILE"
+}
+
+# Network Latency check
+check_network() {
+    echo -e "${YELLOW}Network Connectivity Test:${RESET}" | tee -a "$LOG_FILE"
+
+    # Hosts to test
+    HOSTS=(
+        "8.8.8.8"
+        "google.com"
+        "billing.faveohelpdesk.com"
+        "license.faveohelpdesk.com"
+    )
+
+    SLA_OK=50      # ms
+    SLA_WARN=100  # ms
+
+    for host in "${HOSTS[@]}"; do
+        echo -n "Pinging $host ... " | tee -a "$LOG_FILE"
+
+        # Run ping
+        PING_OUTPUT=$(ping -c2 -W2 "$host" 2>/dev/null)
+        if [[ $? -ne 0 ]]; then
+            echo -e "${RED}UNREACHABLE${RESET}" | tee -a "$LOG_FILE"
+            continue
+        fi
+
+        # Extract avg latency
+        AVG_LATENCY=$(echo "$PING_OUTPUT" | awk -F '/' '/rtt/ {print $5}')
+
+        if (( $(echo "$AVG_LATENCY <= $SLA_OK" | bc -l) )); then
+            echo -e "${GREEN}OK (avg: ${AVG_LATENCY} ms)${RESET}" | tee -a "$LOG_FILE"
+
+        elif (( $(echo "$AVG_LATENCY <= $SLA_WARN" | bc -l) )); then
+            echo -e "${YELLOW}WARNING (avg: ${AVG_LATENCY} ms)${RESET}" | tee -a "$LOG_FILE"
+
+        else
+            echo -e "${RED}SLOW (avg: ${AVG_LATENCY} ms | SLA breached)${RESET}" | tee -a "$LOG_FILE"
+        fi
+    done
+
+    echo | tee -a "$LOG_FILE"
+}
+
+# Faveo File size check
+check_faveo_storage() {
+    echo -e "${YELLOW}Faveo Storage Usage (No MySQL login required):${RESET}" | tee -a "$LOG_FILE"
+
+    # Faveo root directory
+    FAVEO_ROOT=${FAVEO_ROOT:-/var/www/faveo}
+
+    if [[ -d "$FAVEO_ROOT" ]]; then
+        DIR_SIZE=$(du -sh "$FAVEO_ROOT" 2>/dev/null | awk '{print $1}')
+        echo -e "Faveo Directory Size: ${DIR_SIZE}" | tee -a "$LOG_FILE"
+    else
+        echo -e "${RED}Faveo directory not found at $FAVEO_ROOT${RESET}" | tee -a "$LOG_FILE"
+    fi
+
+    # MySQL database folder size
+    read -p "Enter MySQL datadir (default: /var/lib/mysql): " MYSQL_DIR
+    MYSQL_DIR=${MYSQL_DIR:-/var/lib/mysql}
+
+    # Fetch DB name
+    DB_NAME=$(grep -E '^DB_DATABASE=' "$FAVEO_ROOT/.env" 2>/dev/null \
+        | head -n1 \
+        | cut -d '=' -f2- \
+        | tr -d '"' \
+        | tr -d "'")
+    echo -e "${YELLOW}Faveo Database Name:${RESET} $DB_NAME" | tee -a "$LOG_FILE"
+
+    DB_PATH="$MYSQL_DIR/$DB_NAME"
+
+    if [[ -d "$DB_PATH" ]]; then
+        DB_SIZE=$(du -sh "$DB_PATH" 2>/dev/null | awk '{print $1}')
+        echo -e "Database '$DB_NAME' folder size: $DB_SIZE" | tee -a "$LOG_FILE"
+    else
+        echo -e "${RED}Database folder '$DB_PATH' not found${RESET}" | tee -a "$LOG_FILE"
+    fi
+
+    echo | tee -a "$LOG_FILE"
+}
+
+# PHP Config Check
+check_php_config() {
+    echo -e "${YELLOW}PHP Configuration Check:${RESET}" | tee -a "$LOG_FILE"
+
+    # Detect OS silently
+    if [[ -f /etc/os-release ]]; then
+        . /etc/os-release
+        OS_ID=$ID
+    else
+        OS_ID=$(uname -s)
+    fi
+
+    PHP_FILES=()
+
+    case "$OS_ID" in
+        ubuntu|debian)
+            PHP_FILES=(
+                /etc/php/8.2/fpm/php.ini
+                /etc/php/8.2/apache2/php.ini
+                /etc/php/8.2/cli/php.ini
+            )
+            ;;
+        rhel|centos|rocky|almalinux|fedora)
+            PHP_FILES=(
+                /etc/php.ini
+            )
+            ;;
+        *)
+            echo "Unsupported OS for PHP config check" | tee -a "$LOG_FILE"
+            return
+            ;;
+    esac
+
+    REQUIRED_KEYS=(
+        file_uploads
+        allow_url_fopen
+        short_open_tag
+        memory_limit
+        cgi.fix_pathinfo
+        upload_max_filesize
+        post_max_size
+        max_execution_time
+    )
+
+    for php_file in "${PHP_FILES[@]}"; do
+        if [[ ! -f "$php_file" ]]; then
+            echo -e "${RED}$php_file not found${RESET}" | tee -a "$LOG_FILE"
+            continue
+        fi
+
+        echo -e "${CYAN}File: $php_file${RESET}" | tee -a "$LOG_FILE"
+
+        for key in "${REQUIRED_KEYS[@]}"; do
+            value=$(grep -Ei "^[[:space:]]*$key[[:space:]]*=" "$php_file" \
+                    | grep -v '^;' \
+                    | tail -n 1 \
+                    | awk -F= '{print $2}' \
+                    | xargs)
+
+            if [[ -z "$value" ]]; then
+                echo -e "  $key = ${RED}Not set${RESET}" | tee -a "$LOG_FILE"
+            else
+                echo -e "  $key = ${GREEN}$value${RESET}" | tee -a "$LOG_FILE"
+            fi
+        done
+
+        echo | tee -a "$LOG_FILE"
+    done
+}
+
+# Timeout Check
+check_request_timeouts() {
+    echo -e "${YELLOW}Request Timeout Check:${RESET}" | tee -a "$LOG_FILE"
+
+    # Detect OS silently
+    . /etc/os-release 2>/dev/null
+    OS_ID=$ID
+
+    # PHP-FPM TIMEOUTS
+    echo -e "${CYAN}PHP-FPM:${RESET}" | tee -a "$LOG_FILE"
+
+    PHP_FPM_CONF=()
+
+    case "$OS_ID" in
+        ubuntu|debian)
+            PHP_FPM_CONF=(/etc/php/8.2/fpm/php.ini /etc/php/8.2/fpm/pool.d/*.conf)
+            ;;
+        rhel|centos|rocky|almalinux|fedora)
+            PHP_FPM_CONF=(/etc/php.ini /etc/php-fpm.d/*.conf)
+            ;;
+    esac
+
+    for key in request_terminate_timeout max_execution_time; do
+        val=$(grep -RhsEi "^[[:space:]]*$key[[:space:]]*=" "${PHP_FPM_CONF[@]}" \
+              | grep -v '^;' \
+              | tail -n 1 \
+              | awk -F= '{print $2}' \
+              | xargs)
+
+        [[ -z "$val" ]] && val="Not set"
+        echo "  $key = $val" | tee -a "$LOG_FILE"
+    done
+
+    echo | tee -a "$LOG_FILE"
+
+    # NGINX TIMEOUTS
+    if command -v nginx &>/dev/null; then
+        echo -e "${CYAN}Nginx:${RESET}" | tee -a "$LOG_FILE"
+
+        nginx -T 2>/dev/null | awk '
+            /fastcgi_read_timeout/ {
+                print "  fastcgi_read_timeout = " $NF
+            }
+        ' | tail -n 1 | tee -a "$LOG_FILE"
+
+        [[ $? -ne 0 ]] && echo "  fastcgi_read_timeout = Not set (default 60s)" | tee -a "$LOG_FILE"
+
+        echo | tee -a "$LOG_FILE"
+    fi
+
+    # APACHE TIMEOUTS
+    if command -v apache2 &>/dev/null || command -v httpd &>/dev/null; then
+        echo -e "${CYAN}Apache:${RESET}" | tee -a "$LOG_FILE"
+
+        APACHE_CONF=$(apachectl -t -D DUMP_INCLUDES 2>/dev/null | awk '{print $1}')
+
+        grep -RhsEi "^(Timeout|ProxyTimeout|FcgidIOTimeout)" $APACHE_CONF \
+            | grep -v '^#' \
+            | awk '{print "  "$1" = "$2}' \
+            | tee -a "$LOG_FILE"
+
+        echo | tee -a "$LOG_FILE"
+    fi
+}
 
 # Footer
 print_footer() {
@@ -405,6 +834,18 @@ print_menu() {
     sleep 0.05
     echo "12) Firewall check"
     sleep 0.05
+    echo "13) Check Disk I/O"
+    sleep 0.05
+    echo "14) Top MEM and CPU Consumptions"
+    sleep 0.05
+    echo "15) Network Latency"
+    sleep 0.05
+    echo "16) Check Faveo Size"
+    sleep 0.05
+    echo "17) PHP Config Values"
+    sleep 0.05
+    echo "18) Check Timeout Settings"
+    sleep 0.05
     echo "0) Exit"
     sleep 0.05
 }
@@ -412,7 +853,7 @@ print_menu() {
 # Run based on selection
 while true; do
     print_menu
-    read -rp "Enter your choice [0-12]: " CHOICE
+    read -rp "Enter your choice [0-18]: " CHOICE
     case "$CHOICE" in
         1)
             print_header
@@ -428,6 +869,12 @@ while true; do
             check_root_ownership
             check_ports
             firewall_check
+            check_disk_io
+            check_top_processes
+            check_network
+            check_faveo_storage
+            check_php_config
+            check_request_timeouts
             print_footer
             break
             ;;
@@ -442,7 +889,14 @@ while true; do
         10) print_header; check_root_ownership; print_footer; break ;;
         11) print_header; check_ports; print_footer; break ;;
         12) print_header; firewall_check; print_footer; break ;;
+        13) print_header; check_disk_io; print_footer; break ;;
+        14) print_header; check_top_processes; print_footer; break ;;
+        15) print_header; check_network; print_footer; break ;;
+        16) print_header; check_faveo_storage; print_footer; break ;;
+        17) print_header; check_php_config; print_footer; break ;;
+        18) print_header; check_request_timeouts; print_footer; break ;;
         0) echo -e "${CYAN}Exiting...${RESET}"; exit 0 ;;
         *) echo -e "${RED}Invalid option. Please try again.${RESET}" ;;
     esac
 done
+

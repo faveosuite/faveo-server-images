@@ -328,6 +328,8 @@ check_logged_users() {
 # SSL Check
 check_ssl_validity() {
     echo -e "${YELLOW}SSL Check for: $DOMAIN${RESET}" | tee -a "$LOG_FILE"
+
+    # PHP SSL validity check
     RESULT=$(php -r '
     $url = "https://'${DOMAIN}'/cron-test.php";
     $ctx = stream_context_create(["ssl" => ["capture_peer_cert" => true]]);
@@ -344,7 +346,67 @@ check_ssl_validity() {
         echo -e "${GREEN}SSL is Valid${RESET}" | tee -a "$LOG_FILE"
     else
         echo -e "${RED}SSL is Not Valid${RESET}" | tee -a "$LOG_FILE"
+        echo | tee -a "$LOG_FILE"
+        return
     fi
+
+    # Ensure openssl is installed
+    if ! command -v openssl &>/dev/null; then
+        echo -e "${CYAN}openssl not found, installing...${RESET}" | tee -a "$LOG_FILE"
+        if [[ -f /etc/debian_version ]]; then
+            apt-get update -qq && apt-get install -y openssl >/dev/null 2>&1
+        elif [[ -f /etc/redhat-release ]]; then
+            yum install -y openssl >/dev/null 2>&1
+        else
+            echo -e "${RED}Unsupported OS – cannot install openssl${RESET}" | tee -a "$LOG_FILE"
+            return
+        fi
+    fi
+
+    # Sanitize DOMAIN for OpenSSL
+    SSL_HOST=$(echo "$DOMAIN" | sed -E 's@^https?://@@; s@/.*@@')
+
+    # Fetch certificate
+    CERT_RAW=$(echo | openssl s_client \
+        -servername "$SSL_HOST" \
+        -connect "$SSL_HOST:443" 2>/dev/null)
+
+    CERT_INFO=$(echo "$CERT_RAW" | openssl x509 -noout \
+        -issuer -subject -startdate -enddate 2>/dev/null)
+
+    if [[ -z "$CERT_INFO" ]]; then
+        echo -e "${RED}Failed to retrieve certificate details${RESET}" | tee -a "$LOG_FILE"
+        echo | tee -a "$LOG_FILE"
+        return
+    fi
+
+    ISSUER=$(echo "$CERT_INFO" | grep issuer= | sed 's/issuer=//')
+    SUBJECT=$(echo "$CERT_INFO" | grep subject= | sed 's/subject=//')
+    START_DATE=$(echo "$CERT_INFO" | grep notBefore= | cut -d= -f2)
+    END_DATE=$(echo "$CERT_INFO" | grep notAfter= | cut -d= -f2)
+
+    EXPIRY_TS=$(date -d "$END_DATE" +%s)
+    NOW_TS=$(date +%s)
+    DAYS_LEFT=$(( (EXPIRY_TS - NOW_TS) / 86400 ))
+
+    echo -e "${CYAN}Certificate Details:${RESET}" | tee -a "$LOG_FILE"
+    echo "Domain          : $SSL_HOST" | tee -a "$LOG_FILE"
+    echo "Subject         : $SUBJECT" | tee -a "$LOG_FILE"
+    echo "Issuer (CA)     : $ISSUER" | tee -a "$LOG_FILE"
+    echo "Valid From      : $START_DATE" | tee -a "$LOG_FILE"
+    echo "Valid Until     : $END_DATE" | tee -a "$LOG_FILE"
+
+    # ---- Production SLA for SSL expiry ----
+    if (( DAYS_LEFT < 0 )); then
+        echo -e "${RED}Certificate Status : EXPIRED${RESET}" | tee -a "$LOG_FILE"
+    elif (( DAYS_LEFT <= 15 )); then
+        echo -e "${RED}Certificate Status : EXPIRING SOON ($DAYS_LEFT days)${RESET}" | tee -a "$LOG_FILE"
+    elif (( DAYS_LEFT <= 30 )); then
+        echo -e "${YELLOW}Certificate Status : WARNING ($DAYS_LEFT days)${RESET}" | tee -a "$LOG_FILE"
+    else
+        echo -e "${GREEN}Certificate Status : OK ($DAYS_LEFT days)${RESET}" | tee -a "$LOG_FILE"
+    fi
+
     echo | tee -a "$LOG_FILE"
 }
 
@@ -394,7 +456,6 @@ check_ports() {
         [9235]="Nats"
         [389]="LDAP"
         [636]="LDAPS"
-
     )
 
     # Prompt user for additional/custom ports

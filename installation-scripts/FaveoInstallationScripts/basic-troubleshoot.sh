@@ -63,6 +63,75 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
+# Root check
+if [[ $EUID -ne 0 ]]; then
+    echo -e "${RED}This script must be run as root${RESET}"
+    exit 1
+fi
+
+# OS & Version check
+if [[ -f /etc/os-release ]]; then
+    . /etc/os-release
+else
+    echo -e "${RED}Unable to detect OS${RESET}"
+    exit 1
+fi
+
+SUPPORTED=true
+SUGGESTION=""
+
+case "$ID" in
+    ubuntu)
+        # Ubuntu LTS >= 20.04
+        UB_VER=$(echo "$VERSION_ID" | cut -d. -f1)
+        if (( UB_VER < 20 )); then
+            SUPPORTED=false
+            SUGGESTION="Use Ubuntu 20.04 LTS or newer"
+        fi
+        ;;
+    debian)
+        # Debian LTS >= 11
+        if (( VERSION_ID < 11 )); then
+            SUPPORTED=false
+            SUGGESTION="Use Debian 11 or 12 (LTS)"
+        fi
+        ;;
+    rhel)
+        # RHEL LTS >= 8
+        RHEL_VER=$(echo "$VERSION_ID" | cut -d. -f1)
+        if (( RHEL_VER < 8 )); then
+            SUPPORTED=false
+            SUGGESTION="Use RHEL 8 or 9 (LTS)"
+        fi
+        ;;
+    rocky)
+        ROCKY_VER=$(echo "$VERSION_ID" | cut -d. -f1)
+        if (( ROCKY_VER < 8 )); then
+            SUPPORTED=false
+            SUGGESTION="Use Rocky Linux 8 or 9 (LTS)"
+        fi
+        ;;
+    almalinux)
+        ALMA_VER=$(echo "$VERSION_ID" | cut -d. -f1)
+        if (( ALMA_VER < 8 )); then
+            SUPPORTED=false
+            SUGGESTION="Use AlmaLinux 8 or 9 (LTS)"
+        fi
+        ;;
+    *)
+        SUPPORTED=false
+        SUGGESTION="Supported OS: Ubuntu ≥20.04 LTS, Debian 11/12, RHEL/Rocky/Alma 8 or 9"
+        ;;
+esac
+
+if [[ "$SUPPORTED" != true ]]; then
+    echo -e "${RED}Unsupported OS detected:${RESET} $PRETTY_NAME"
+    echo -e "${YELLOW}Recommendation:${RESET} $SUGGESTION"
+    exit 1
+fi
+
+echo -e "${GREEN}OS check passed:${RESET} $PRETTY_NAME"
+
 # Get script directory for log
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LOG_FILE="$SCRIPT_DIR/faveo-check.log"

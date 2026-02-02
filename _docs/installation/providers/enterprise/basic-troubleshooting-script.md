@@ -804,7 +804,7 @@ Execution complete.
 
 #### Cron Jobs Check:
 
-- Enter <code><b>6</b></code> to check Cron Jobs with the last few run time logs (takes 5–10 sec)
+- Enter <code><b>6</b></code> to check Cron Jobs with the last few run time logs (takes 5-10 sec)
 
 - This check is used to see cron-related data for faveo-related crons.
 
@@ -1104,8 +1104,8 @@ root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                                         _____   _______ _     _ _____   _     _
                                        |  ___) |  ___  | |   | |  ___) | |   | |
                                        | |     | |   | |\ \ / /| |_____| |___| |
-                                       |_|     |_|   |_| \___/ |_______)\_____/
 
+                                       |_|     |_|   |_| \___/ |_______)\_____/
                               _     _ _______ _       ______ ______  _______  ______ _     _
                              (_)   (_|_______|_)     (_____ (______)(_______)/ _____|_)   | |
                               _______ _____   _       _____) )     _ _____  ( (____  _____| |
@@ -1244,7 +1244,7 @@ Execution complete.
 
 - These folders must be owned by the web server user *(usually www-data)* to allow the application to read and write logs, cache, and perform scheduled tasks etc..
 
- - To fix, we can try the following command. If the issue persists, please reach (**support@faveohelpdesk.com***) or run the below command.
+ - To fix, we can try the following command. If the issue persists, please reach (**support@faveohelpdesk.com**) or run the below command.
 
 ```
 chown -R www-data:www-data <<<Enter the faveo root directory here>>>
@@ -1319,7 +1319,7 @@ Enter any additional ports to check (comma-separated, or press Enter to skip):
 
 - When it comes to <code><b>Port Availability Check</b></code>, it will prompt the user for custom ports, if any. Please enter the port number separated by a comma. The default ports in the script are <code><b>80, 443, 3306, 6379</b></code>.
 
-> <code><b>Note:</code></b> Not all the ports are required for faveo, in this check it will print all the ports that are available for faveo to use like EMAIL releated ports etc.. check for the ports that releate to the issue.
+> <code><b>Note:</b></code> Not all the ports are required for faveo, in this check it will print all the ports that are available for faveo to use like EMAIL releated ports etc.. check for the ports that releate to the issue.
 
 - Once entered, it will continue like below:
 
@@ -1472,7 +1472,7 @@ Execution complete.
 
 #### Check Disk I/O:
 
-- Enter <code><b>13</code></b> to check the disk I/O speed.
+- Enter <code><b>13</b></code> to check the disk I/O speed.
 
 - This is used to find whether the stoage disk in the server is production compatible with the I/O check.
 
@@ -1548,9 +1548,9 @@ Execution complete.
 
 #### Top MEM and CPU Consumptions:
 
-- Enter <code><b>14</code></b> to check the top 10 memory and cpu consuming processes.
+- Enter <code><b>14</b></code> to check the top 10 memory and cpu consuming processes.
 
-- This option will share the top 10 memory and cpu consuming process running in the server.
+- This option will share the TOP 10 Memory and CPU consuming process running in the server.
 
 Example Output:
 
@@ -1632,9 +1632,9 @@ Execution complete.
 
 #### Network Latency:
 
-- Enter <code><b>15</code></b>  to check the network latency.
+- Enter <code><b>15</b></code>  to check the network latency.
 
-- This option will check the network latency speed in the server it will check wit google.com and faveo billing and license domains.
+- This option will check the network latency speed in the server it will check with google.com and faveo billing and license domains.
 
 Example Output:
 
@@ -1698,7 +1698,7 @@ Execution complete.
 
 #### Check Faveo Size:
 
-- Enter <code><b>16</code></b> to check the faveo size.
+- Enter <code><b>16</b></code> to check the faveo size.
 
 - This check is used to check the faveo size, It will check both faveo filesystem size and database size in the server.
 
@@ -1764,7 +1764,7 @@ Execution complete.
 
 #### PHP Config Values:
 
-- Enter <code><b>17</code></b> for PHP Config Values check.
+- Enter <code><b>17</b></code> for PHP Config Values check.
 
 - This check will show the configured php values that are required for faveo inside the server.
 
@@ -1853,7 +1853,7 @@ Execution complete.
 
 #### Check Timeout Settings
 
-- Enter <code><b>18</code></b> for timeout settings check.
+- Enter <code><b>18</b></code> for timeout settings check.
 
 - This check will show the timeout settings configured in the webserver level inside the server.
 

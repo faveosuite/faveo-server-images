@@ -505,6 +505,16 @@ check_root_ownership() {
 
 check_ports() {
     echo -e "${YELLOW}Port Availability Check:${RESET}" | tee -a "$LOG_FILE"
+    echo -e "${YELLOW}Ports details releated related issues.
+Example:
+ • Email problems → check SMTP/IMAP/POP ports
+ • Web access issues → check HTTP/HTTPS ports
+ • Database connectivity issues → check MySQL ports
+ • LDAP connectivity issues → check LDAP/LDAPS ports
+ • Websocket proxy issues → check Websocket proxy port
+ • NATS issues → check NATS port
+${RESET}" | tee -a "$LOG_FILE"
+
 
     # Default ports with labels
     declare -A DEFAULT_PORTS=(
@@ -758,7 +768,7 @@ check_network() {
 
 # Faveo File size check
 check_faveo_storage() {
-    echo -e "${YELLOW}Faveo Storage Usage (No MySQL login required):${RESET}" | tee -a "$LOG_FILE"
+    echo -e "${YELLOW}Faveo Storage Usage:${RESET}" | tee -a "$LOG_FILE"
 
     # Faveo root directory
     FAVEO_ROOT=${FAVEO_ROOT:-/var/www/faveo}

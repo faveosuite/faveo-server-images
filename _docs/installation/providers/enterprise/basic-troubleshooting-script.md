@@ -4,7 +4,7 @@ type: docs
 permalink: /docs/installation/providers/enterprise/basic-troubleshooting-script/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2025-06-20
+last_modified_at: 2026-02-02
 last_modified_by: Thirumoorthi Duraipandi
 toc: true
 title: Faveo Basic Troubleshooting via Scripts
@@ -29,19 +29,19 @@ Verifies SSL certificate validity for the domain.
 Displays OS, uptime, memory usage, CPU, and disk statistics.
 
 - **Service Version and Status:**
-Shows version and status of services like Apache, MySQL, PHP, PHP-FPM, Redis, etc.
+Shows version and status of services like Apache, Nginx, MySQL, PHP, PHP-FPM, Redis, etc.
 
 - **Faveo Info:** 
 Displays Faveo APP_URL, plan, and version.
 
 - **Cron Jobs:** 
-Lists all active cron jobs for www-data and root users.
+Lists all active cron jobs for www-data and root users along with last 6 faveo cron ran with timestamp.
 
 - **Supervisor Jobs:** 
 Checks the status of Supervisor Jobs.
 
 - **Logged-in Users:** 
-Displays currently logged-in (SSH) system users.
+Displays currently logged-in (SSH) system users with timestamp and IP.
 
 - **Billing Connection:**
 Tests connection to the Faveo billing server.
@@ -50,10 +50,28 @@ Tests connection to the Faveo billing server.
 Lists files/folders owned by root that may cause permission issues.
 
 - **Check if Required Ports are Open:** 
-Confirms if ports like 80, 443, 3306 and 6379 are listening.
+Confirms if ports like 80, 443, 3306 etc.. needed for faveo are open and listening.
 
 - **Firewall Check:** 
 Checks status of firewall (e.g., UFW) and its rules.
+
+- **Check Disk I/O:**
+Checks the read and write I/O speed of the storage disk of the faveo server.
+
+- **Top MEM and CPU Consumptions:**
+Lists top 10 memory and cpu consuming processes.
+
+- **Network Latency:**
+Checks Internet connection speed with google and faveo domains.
+
+- **Check Faveo Size:**
+Checks Faveo root folder and database size.
+
+- **PHP Config Values:**
+Lists configured php values inside php.ini files.
+
+- **Check Timeout Settings**
+Lists timeout settigns configured in webserver and php.
 
 ---
 
@@ -77,6 +95,7 @@ chmod +x basic-troubleshoot.sh
 ```
 sudo ./basic-troubleshoot.sh
 ```
+- This script will work only on faveo supported OS distro's otherwise the script will automatically exit.
 
 - Once the script is executed, it will prompt for the  faveo root directory, which is necessary for the script to work.
 - It will prompt like below:
@@ -111,8 +130,14 @@ Select an option to run:
 10) Root-Owned Files in Faveo Directory
 11) Check if Required Ports are Open
 12) Firewall check
+13) Check Disk I/O
+14) Top MEM and CPU Consumptions
+15) Network Latency
+16) Check Faveo Size
+17) PHP Config Values
+18) Check Timeout Settings
 0) Exit
-Enter your choice [0-12]:
+Enter your choice [0-18]:
 ```
 
 - Option **1** is to check all information at once, select option **1** to see full diagnostic output in sequence.
@@ -120,11 +145,12 @@ Enter your choice [0-12]:
 
 ---
 
-### To Run all checks
+### To Run all checks:
 
 - If selected option is **(1) Run all checks**, it will prompt and run as below:
 
 Example Output:
+
 ```
 root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
 
@@ -157,8 +183,14 @@ Select an option to run:
 10) Root-Owned Files in Faveo Directory
 11) Check if Required Ports are Open
 12) Firewall check
+13) Check Disk I/O
+14) Top MEM and CPU Consumptions
+15) Network Latency
+16) Check Faveo Size
+17) PHP Config Values
+18) Check Timeout Settings
 0) Exit
-Enter your choice [0-12]: 1
+Enter your choice [0-18]: 1
 Welcome to Faveo
 Date: Thursday 19 June 2025 11:18:54 AM IST
 --------------------------------------------------
@@ -169,64 +201,68 @@ Enter domain for SSL check (leave empty to use APP_URL):
 - The script will automatically read the <code><b>APP_URL</b></code> from the <code><b>.env</b></code> file inside the faveo root directory, passed in the beginning of the script, you can use the <code><b>APP_URL</b></code>  by pressing <code><b>Enter</b></code> or can use a different domain without <code><b>https://</b></code>, for example <code><b>example.faveohelpdesk.com</b></code>.
 
 
-- After entering, it will contiue with the script and will show information like *SSL validation, System Info, Service Status, Faveo Application Info, Cron Jobs* (takes 5–10 sec), *Supervisor Jobs, Logged-in Users via SSH, Billing Connection Check, Root-Owned Files/Folders inside the Faveo directory, Port Availability Check*. It will prompt for additional ports if needed enter custom ports separated by comma, if not, just press *Enter*. After entering, it will display *Port Availability* and *Firewall Check* like below.
+- After entering, it will contiue with the script and will show information like *SSL validation, System Info, Service Status, Faveo Application Info, Cron Jobs* , *Supervisor Jobs, Logged-in Users via SSH, Billing Connection Check, Root-Owned Files/Folders inside the Faveo directory, Port Availability Check*. It will prompt for additional ports if needed enter custom ports separated by comma, if not, just press *Enter*. After entering, it will display *Port Availability* and *Firewall Check* *Check Disk I/O* *Top MEM and CPU Consumptions* *Network Latency* *Check Faveo Size* *PHP Config Values* *Check Timeout Settings* like below.
 
 ```
 No domain entered. Using APP_URL domain: faveo.helpdesk.com
 SSL Check for: faveo.helpdesk.com
 SSL is Valid
+Certificate Details:
+Domain          : faveo.faveo.com
+Subject         : CN = faveo.faveo.com
+Issuer (CA)     : C = US, O = Let's Encrypt, CN = E8
+Valid From      : Jan 11 02:17:11 2026 GMT
+Valid Until     : Apr 11 02:17:10 2026 GMT
+Certificate Status : OK (71 days)
 
 System Info:
-Distro: Ubuntu 22.04.5 LTS
-Kernel: 6.8.0-60-generic
-Uptime: up 1 hour, 54 minutes
-Load Avg: 1.22 0.92 0.97
-vCPU Cores: 8
-Memory: 8.0Gi used / 15Gi
-Disk: 170G used / 320G (57%)
+Distro: Ubuntu 24.04.3 LTS
+Kernel: 6.8.0-87-generic
+Uptime: up 5 weeks, 1 day, 3 hours, 20 minutes
+Load Avg: 0.17 0.24 0.31
+vCPU Cores: 16
+Memory: 3.6Gi used / 15Gi, Available: 12Gi
+Disk Usage (All Mounted Partitions):
+Filesystem                         Size  Used Avail Use% Mounted on
+tmpfs                              1.6G  1.3M  1.6G   1% /run
+/dev/mapper/ubuntu--vg-ubuntu--lv  194G  173G   12G  94% /
+tmpfs                              7.9G     0  7.9G   0% /dev/shm
+tmpfs                              5.0M     0  5.0M   0% /run/lock
+/dev/sda2                          2.0G  197M  1.6G  11% /boot
+tmpfs                              1.6G   16K  1.6G   1% /run/user/1000
+overlay                            194G  173G   12G  94% /var/lib/docker/overlay2/915be71b861e379bb04a7c98ac94d560d64044016c7ac7d25edfb5224f049542/merged
 
 Service Status:
-apache2: active (Since: Thu 2025-06-19 09:24:44 IST)
-apache2 version: Server version: Apache/2.4.63 (Ubuntu)
+apache2: active (Since: Wed 2026-01-28 06:37:19 IST)
+apache2 version: Server version: Apache/2.4.66 (Ubuntu)
 
-httpd version: Server version: Apache/2.4.63 (Ubuntu)
+mysql: active (Since: Wed 2026-01-28 06:38:42 IST)
+mysql version: mysql  Ver 8.0.44-0ubuntu0.24.04.2 for Linux on x86_64 ((Ubuntu))
 
-mysql: active (Since: Thu 2025-06-19 09:24:50 IST)
-mysql version: mysql  Ver 8.0.42 for Linux on x86_64 (MySQL Community Server - GPL)
+redis-server: active (Since: Wed 2026-01-28 06:37:47 IST)
+redis-server version: Redis server v=7.0.15 sha=00000000:0 malloc=jemalloc-5.3.0 bits=64 build=62c7a5d52c72f4cd
 
-mariadb version: mysql  Ver 8.0.42 for Linux on x86_64 (MySQL Community Server - GPL)
+supervisor: active (Since: Wed 2026-01-28 06:37:46 IST)
+supervisor version: Not available
 
-redis: active (Since: Thu 2025-06-19 09:24:43 IST)
-redis version: Redis server v=6.0.16 sha=00000000:0 malloc=jemalloc-5.2.1 bits=64 build=a3fdef44459b3ad6
+php8.2-fpm: active (Since: Wed 2026-01-28 06:37:20 IST)
+php8.2-fpm version: PHP 8.2.30 (cli) (built: Dec 18 2025 23:37:12) (NTS)
 
-redis-server: active (Since: Thu 2025-06-19 09:24:43 IST)
-redis-server version: Redis server v=6.0.16 sha=00000000:0 malloc=jemalloc-5.2.1 bits=64 build=a3fdef44459b3ad6
+cron: active (Since: Sat 2026-01-24 06:08:06 IST)
+cron version: Not available
 
-supervisord version: Not found or not applicable
+nginx: not installed
 
-supervisor: active (Since: Thu 2025-06-19 09:24:43 IST)
-supervisor version: Not found or not applicable
+meilisearch: active (Since: Wed 2025-12-24 11:47:06 IST)
+meilisearch version: meilisearch 1.13.3
 
-php8.2-fpm: active (Since: Thu 2025-06-19 09:24:43 IST)
-php8.2-fpm version:
+node: installed
+node version: v20.20.0
 
-php version: 8.2.24
+npm: installed
+npm version: 10.8.2
 
-cron: active (Since: Thu 2025-06-19 09:24:43 IST)
-cron version: Not found or not applicable
-
-crond version: Not found or not applicable
-
-meilisearch: active (Since: Thu 2025-06-19 09:24:43 IST)
-meilisearch version: meilisearch 1.14.0
-
-nginx version: basic-troubleshoot.sh: line 162: nginx: command not found
-
-node version: v22.16.0
-
-npm version: 10.9.2
-
-csf version:
+csf: not installed
 
 Faveo Application Info:
 URL: https://faveo.helpdesk.com
@@ -239,21 +275,24 @@ Cron jobs for user: www-data
 artisan commands found:
 * * * * * /usr/bin/php /var/www/faveo/artisan schedule:run 2>&1
 Estimating last run time from system logs:
-Jun 19 11:14:01 Faveo CRON[80731]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
-Jun 19 11:15:01 Faveo CRON[81560]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
-Jun 19 11:16:01 Faveo CRON[82303]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
-Jun 19 11:17:01 Faveo CRON[83040]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
-Jun 19 11:18:01 Faveo CRON[83801]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
-Jun 19 11:19:01 Faveo CRON[84840]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
+2026-01-29T15:06:01.256874+05:30 Faveo CRON[80731]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
+2026-01-29T15:06:01.256874+05:30 Faveo CRON[81560]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
+2026-01-29T15:06:01.256874+05:30 Faveo CRON[82303]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
+2026-01-29T15:06:01.256874+05:30 Faveo CRON[83040]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
+2026-01-29T15:06:01.256874+05:30 Faveo CRON[83801]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
+2026-01-29T15:06:01.256874+05:30 Faveo CRON[84840]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
 
 Cron jobs for user: root
-None
+No artisan cron jobs found
 
 Supervisor Jobs:
 faveo-Horizon                    RUNNING   pid 4060, uptime 1:54:24
 
-Logged-in Users:
-2
+Logged-in Users (SSH Sessions):
+User    TTY     Login Time      Idle    Session From
+faveo   pts/0  2026-01-29 14:27 0      00h:39m  (10.50.2.10)
+faveo   pts/1  2026-01-29 15:05 0      00h:01m  (10.55.6.80)
+Total Active SSH Users: 2
 
 Billing Connection Check:
 Billing connection is working.
@@ -264,7 +303,7 @@ No files/folders owned by root found.
 
 ---
 
-- When it comes to <code><b>Port Availability Check</b></code>, it will prompt the user for custom ports, if any. Please enter the port number separated by a comma. The default ports in the script are <code><b>80, 443, 3306, 6379</b></code>.
+- When it comes to <code><b>Port Availability Check</b></code>, it will prompt the user for custom ports, if any. Please enter the port number separated by a comma. The default ports in the script are <code><b>80, 443, 3306, 6379, 7700, 9000, 25, 465, 587, 143, 993, 110, 995, 6001, 9235, 389, 636</b></code>.
 
 - Once entered, it will continue like below:
 
@@ -283,12 +322,108 @@ Port 443 is open internally (listening).
 
 Checking Port 3306 (MySQL)
 Port 3306 is open internally (listening).
+etc..
 
 Firewall Check:
 UFW is installed.
 Status: inactive
+```
+---
+
+- When it comes to <code><b>Disk IO check</code></b> it will ask for Enter directory to test the default directory <code><b>/var/lib/mysql</code></b> used in the script is enough for this test if needed enter your preffered directory.
+
+```
+Disk IO Check (ioping):
+Read latency test:
+--- /var/lib/mysql (ext4 /dev/dm-0 193.8 GiB) ioping statistics ---
+19 requests completed in 6.40 ms, 76 KiB read, 2.97 k iops, 11.6 MiB/s
+generated 20 requests in 19.0 s, 80 KiB, 1 iops, 4.21 KiB/s
+min/avg/max/mdev = 244.1 us / 336.7 us / 432.6 us / 48.6 us
+Write latency test:
+--- /var/lib/mysql (ext4 /dev/dm-0 193.8 GiB) ioping statistics ---
+19 requests completed in 2.99 ms, 76 KiB written, 6.34 k iops, 24.8 MiB/s
+generated 20 requests in 3.32 ms, 80 KiB, 6.03 k iops, 23.6 MiB/s
+min/avg/max/mdev = 131.8 us / 157.6 us / 185.3 us / 13.0 us
+Disk latency within SLA for production workload
+
+Top CPU / Memory Processes (Production SLA-aware):
+Top 10 processes by CPU usage:
+CRITICAL | CPU: 105.0% | MEM: 0.3% | /usr/bin/php8.2 artisan attachmentSpecific:encryption
+CRITICAL | CPU: 100.0% | MEM: 0.0% | ps -eo pid,%cpu,%mem,cmd --sort=-%cpu --no-headers
+OK | CPU: 6.2% | MEM: 0.5% | /usr/bin/php -q /var/www/html/saifmaster/artisan schedule:run
+OK | CPU: 4.0% | MEM: 6.5% | /usr/sbin/mysqld
+OK | CPU: 1.2% | MEM: 0.2% | /usr/bin/python3 /usr/bin/mta-sts-daemon --config /etc/mta-sts-daemon.yml
+OK | CPU: 0.7% | MEM: 0.0% | /usr/sbin/zabbix_agentd: collector [idle 1 sec]
+OK | CPU: 0.7% | MEM: 0.0% | redis-server *:6379
+OK | CPU: 0.5% | MEM: 0.9% | php-fpm: pool www
+OK | CPU: 0.5% | MEM: 0.0% | /usr/bin/docker-proxy -proto tcp -host-ip 127.0.0.1 -host-port 6900 -container-ip 172.17.0.2 -container-port 6379 -use-listen-fd
+OK | CPU: 0.4% | MEM: 3.3% | /bin/warp-svc
+Top 10 processes by Memory usage:
+OK | CPU: 4.0% | MEM: 6.5% | /usr/sbin/mysqld
+OK | CPU: 0.4% | MEM: 3.3% | /bin/warp-svc
+OK | CPU: 0.2% | MEM: 1.1% | php-fpm: pool www
+OK | CPU: 0.2% | MEM: 1.1% | php-fpm: pool www
+OK | CPU: 0.2% | MEM: 1.1% | php-fpm: pool www
+OK | CPU: 0.2% | MEM: 1.1% | php-fpm: pool www
+OK | CPU: 0.2% | MEM: 1.1% | php-fpm: pool www
+OK | CPU: 0.2% | MEM: 1.1% | php-fpm: pool www
+OK | CPU: 0.2% | MEM: 1.1% | php-fpm: pool www
+OK | CPU: 0.1% | MEM: 1.1% | php-fpm: pool www
+
+Network Connectivity Test:
+Pinging 8.8.8.8 ... OK (avg: 6.303 ms)
+Pinging google.com ... OK (avg: 6.149 ms)
+Pinging billing.faveohelpdesk.com ... SLOW (avg: 156.857 ms | SLA breached)
+Pinging license.faveohelpdesk.com ... SLOW (avg: 156.862 ms | SLA breached)
+
+Faveo Storage Usage (No MySQL login required):
+Faveo Directory Size: 3.0G
+```
+- In this stage it will ask for MySQL data directory on all statndard installation the directory will be /var/lib/mysql so you can press enter if the MySQL data directory is different please enter the directory.
+```
+Enter MySQL datadir (default: /var/lib/mysql): 
+Faveo Database Name: saiffaveo
+Database 'saiffaveo' folder size: 249M
 
 
+PHP Configuration Check:
+File: /etc/php/8.2/fpm/php.ini
+  file_uploads = On
+  allow_url_fopen = On
+  short_open_tag = On
+  memory_limit = 1024M
+  cgi.fix_pathinfo = 0
+  upload_max_filesize = 100M
+  post_max_size = 100M
+  max_execution_time = 360
+
+File: /etc/php/8.2/apache2/php.ini
+  file_uploads = On
+  allow_url_fopen = On
+  short_open_tag = On
+  memory_limit = 1024M
+  cgi.fix_pathinfo = 0
+  upload_max_filesize = 100M
+  post_max_size = 100M
+  max_execution_time = 360
+
+File: /etc/php/8.2/cli/php.ini
+  file_uploads = On
+  allow_url_fopen = On
+  short_open_tag = On
+  memory_limit = 1024M
+  cgi.fix_pathinfo = 0
+  upload_max_filesize = 100M
+  post_max_size = 100M
+  max_execution_time = 360
+
+Request Timeout Check:
+PHP-FPM:
+  request_terminate_timeout = Not set
+  max_execution_time = 360
+
+Apache:
+  
 --------------------------------------------------
 Script by Faveo Helpdesk | support@faveohelpdesk.com
 Execution complete.
@@ -298,9 +433,9 @@ Execution complete.
 
 ---
 
-### Single Specific Check
+### Single Specific Check:
 
-- To run a single specific check instead of all, select the relevant option number from the menu when prompted.
+- To run a single specific check instead of all, select the relevant option number from the menu when prompted while running the script.
 
 - You will be prompted to select one of the following, where you can select options from <code><b>2 to 12</b></code>, which will run the corresponding checks:
 ```
@@ -317,18 +452,26 @@ Select an option to run:
 10) Root-Owned Files in Faveo Directory
 11) Check if Required Ports are Open
 12) Firewall check
+13) Check Disk I/O
+14) Top MEM and CPU Consumptions
+15) Network Latency
+16) Check Faveo Size
+17) PHP Config Values
+18) Check Timeout Settings
 0) Exit
-Enter your choice [0-12]:
+Enter your choice [0-18]:
 ```
 
 ---
 
 #### SSL Validation Check:
+
 - Enter <code><b>2</b></code> to check SSL Validity.
 
 - This is used to verify if the faveo server's SSL is valid inside the server.
 
 Example Output:
+
 ```
 root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                                         _______ _______ _     _ _______ _______
@@ -361,8 +504,14 @@ Select an option to run:
 10) Root-Owned Files in Faveo Directory
 11) Check if Required Ports are Open
 12) Firewall check
+13) Check Disk I/O
+14) Top MEM and CPU Consumptions
+15) Network Latency
+16) Check Faveo Size
+17) PHP Config Values
+18) Check Timeout Settings
 0) Exit
-Enter your choice [0-12]: 2
+Enter your choice [0-18]: 2
 
 Welcome to Faveo
 Date: Thursday 19 June 2025 01:03:37 PM IST
@@ -377,6 +526,14 @@ Enter domain for SSL check (leave empty to use APP_URL):
 No domain entered. Using APP_URL domain: faveo.helpdesk.com
 SSL Check for: faveo.helpdesk.com
 SSL is Valid
+Certificate Details:
+Domain          : faveo.helpdesk.com
+Subject         : CN = faveo.helpdesk.com
+Issuer (CA)     : C = US, O = Let's Encrypt, CN = E8
+Valid From      : Jan 11 02:17:11 2026 GMT
+Valid Until     : Apr 11 02:17:10 2026 GMT
+Certificate Status : OK (71 days)
+
 --------------------------------------------------
 Script by Faveo Helpdesk | support@faveohelpdesk.com
 Execution complete.
@@ -389,6 +546,7 @@ Execution complete.
 ---
 
 #### System Info Check:
+
 - Enter <code><b>3</b></code> to check System Info.
 
 - It displays information on System OS, uptime, memory, CPU, disk, and Server resource consumption.
@@ -427,22 +585,39 @@ Select an option to run:
 10) Root-Owned Files in Faveo Directory
 11) Check if Required Ports are Open
 12) Firewall check
+13) Check Disk I/O
+14) Top MEM and CPU Consumptions
+15) Network Latency
+16) Check Faveo Size
+17) PHP Config Values
+18) Check Timeout Settings
 0) Exit
-Enter your choice [0-12]: 3
+Enter your choice [0-18]: 3
 Welcome to Faveo
 Date: Thursday 19 June 2025 1:00:54 PM IST
 --------------------------------------------------
 System Info:
-Distro: Ubuntu 22.04.5 LTS
-Kernel: 6.8.0-60-generic
-Uptime: up 3 hours, 45 minutes
-Load Avg: 0.92 0.72 0.86
-vCPU Cores: 8
-Memory: 9.2Gi used / 15Gi
-Disk: 170G used / 320G (57%)
+Distro: Ubuntu 24.04.3 LTS
+Kernel: 6.8.0-87-generic
+Uptime: up 5 weeks, 1 day, 6 hours, 16 minutes
+Load Avg: 0.38 0.49 0.55
+vCPU Cores: 16
+Memory: 3.6Gi used / 15Gi, Available: 11Gi
+Disk Usage (All Mounted Partitions):
+Filesystem                         Size  Used Avail Use% Mounted on
+tmpfs                              1.6G  1.3M  1.6G   1% /run
+/dev/mapper/ubuntu--vg-ubuntu--lv  194G  173G   12G  94% /
+tmpfs                              7.9G     0  7.9G   0% /dev/shm
+tmpfs                              5.0M     0  5.0M   0% /run/lock
+/dev/sda2                          2.0G  197M  1.6G  11% /boot
+tmpfs                              1.6G   16K  1.6G   1% /run/user/1000
+overlay                            194G  173G   12G  94% /var/lib/docker/overlay2/915be71b861e379bb04a7c98ac94d560d64044016c7ac7d25edfb5224f049542/merged
+
+
 --------------------------------------------------
 Script by Faveo Helpdesk | support@faveohelpdesk.com
 Execution complete.
+
 ```
 
 - This script's output will be logged to <code><b>faveo-check.log</b></code> inside the same directory where the script is present.
@@ -452,13 +627,15 @@ Execution complete.
 ---
 
 #### Service status and version check:
-- This check will check the status and uptime of services that are necessary for faveo to work.
 
-- Enter <code><b>4</b></code> to check Service Status and Service Version
+- Enter <code><b>4</b></code> to check Service Status and Version.
+
+- This check will check the status and uptime of services that are necessary for faveo to work.
 
 - Shows version and status of services like Apache, MySQL, PHP, PHP-FPM, Redis, etc.
 
 Example Output:
+
 ```
 root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                                         _______ _______ _     _ _______ _______
@@ -491,53 +668,49 @@ Select an option to run:
 10) Root-Owned Files in Faveo Directory
 11) Check if Required Ports are Open
 12) Firewall check
+13) Check Disk I/O
+14) Top MEM and CPU Consumptions
+15) Network Latency
+16) Check Faveo Size
+17) PHP Config Values
+18) Check Timeout Settings
 0) Exit
-Enter your choice [0-12]: 4
+Enter your choice [0-18]: 4
 Welcome to Faveo
 Date: Thursday 19 June 2025 1:10:54 PM IST
 --------------------------------------------------
 Service Status:
-apache2: active (Since: Thu 2025-06-19 09:24:44 IST)
-apache2 version: Server version: Apache/2.4.63 (Ubuntu)
+apache2: active (Since: Wed 2026-01-28 06:37:19 IST)
+apache2 version: Server version: Apache/2.4.66 (Ubuntu)
 
-httpd version: Server version: Apache/2.4.63 (Ubuntu)
+mysql: active (Since: Wed 2026-01-28 06:38:42 IST)
+mysql version: mysql  Ver 8.0.44-0ubuntu0.24.04.2 for Linux on x86_64 ((Ubuntu))
 
-mysql: active (Since: Thu 2025-06-19 09:24:50 IST)
-mysql version: mysql  Ver 8.0.42 for Linux on x86_64 (MySQL Community Server - GPL)
+redis-server: active (Since: Wed 2026-01-28 06:37:47 IST)
+redis-server version: Redis server v=7.0.15 sha=00000000:0 malloc=jemalloc-5.3.0 bits=64 build=62c7a5d52c72f4cd
 
-mariadb version: mysql  Ver 8.0.42 for Linux on x86_64 (MySQL Community Server - GPL)
+supervisor: active (Since: Wed 2026-01-28 06:37:46 IST)
+supervisor version: Not available
 
-redis: active (Since: Thu 2025-06-19 09:24:43 IST)
-redis version: Redis server v=6.0.16 sha=00000000:0 malloc=jemalloc-5.2.1 bits=64 build=a3fdef44459b3ad6
+php8.2-fpm: active (Since: Wed 2026-01-28 06:37:20 IST)
+php8.2-fpm version: PHP 8.2.30 (cli) (built: Dec 18 2025 23:37:12) (NTS)
 
-redis-server: active (Since: Thu 2025-06-19 09:24:43 IST)
-redis-server version: Redis server v=6.0.16 sha=00000000:0 malloc=jemalloc-5.2.1 bits=64 build=a3fdef44459b3ad6
+cron: active (Since: Sat 2026-01-24 06:08:06 IST)
+cron version: Not available
 
-supervisord version: Not found or not applicable
+nginx: not installed
 
-supervisor: active (Since: Thu 2025-06-19 09:24:43 IST)
-supervisor version: Not found or not applicable
+meilisearch: active (Since: Wed 2025-12-24 11:47:06 IST)
+meilisearch version: meilisearch 1.13.3
 
-php8.2-fpm: active (Since: Thu 2025-06-19 09:24:43 IST)
-php8.2-fpm version:
+node: installed
+node version: v20.20.0
 
-php-fpm version:
+npm: installed
+npm version: 10.8.2
 
-cron: active (Since: Thu 2025-06-19 09:24:43 IST)
-cron version: Not found or not applicable
+csf: not installed
 
-crond version: Not found or not applicable
-
-meilisearch: active (Since: Thu 2025-06-19 09:24:43 IST)
-meilisearch version: meilisearch 1.14.0
-
-nginx version: basic-troubleshoot.sh: line 162: nginx: command not found
-
-node version: v22.16.0
-
-npm version: 10.9.2
-
-csf version:
 
 --------------------------------------------------
 Script by Faveo Helpdesk | support@faveohelpdesk.com
@@ -553,13 +726,14 @@ systemctl restart <<<service name here>>>
 
 ---
 
-#### Faveo Info Check
-- This check is used to check Faveo-related information.
+#### Faveo Info Check:
+
 - Enter <code><b>5</b></code> to check Faveo Info
 
-Displays Faveo APP_URL, plan, and version
+- This check is used to check Faveo product related information.
 
 Example Output:
+
 ```
 root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                                         _______ _______ _     _ _______ _______
@@ -592,8 +766,14 @@ Select an option to run:
 10) Root-Owned Files in Faveo Directory
 11) Check if Required Ports are Open
 12) Firewall check
+13) Check Disk I/O
+14) Top MEM and CPU Consumptions
+15) Network Latency
+16) Check Faveo Size
+17) PHP Config Values
+18) Check Timeout Settings
 0) Exit
-Enter your choice [0-12]: 5
+Enter your choice [0-18]: 5
 Welcome to Faveo
 Date: Thursday 19 June 2025 1:15:04 PM IST
 --------------------------------------------------
@@ -611,12 +791,14 @@ Execution complete.
 ---
 
 
-#### Cron Jobs Check
-- This check is used to see cron-related data for faveo-related crons.
+#### Cron Jobs Check:
 
 - Enter <code><b>6</b></code> to check Cron Jobs with the last few run time logs (takes 5–10 sec)
 
+- This check is used to see cron-related data for faveo-related crons.
+
 Example Output:
+
 ```
 root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                                         _______ _______ _     _ _______ _______
@@ -649,8 +831,14 @@ Select an option to run:
 10) Root-Owned Files in Faveo Directory
 11) Check if Required Ports are Open
 12) Firewall check
+13) Check Disk I/O
+14) Top MEM and CPU Consumptions
+15) Network Latency
+16) Check Faveo Size
+17) PHP Config Values
+18) Check Timeout Settings
 0) Exit
-Enter your choice [0-12]: 6
+Enter your choice [0-18]: 6
 Welcome to Faveo
 Date: Thursday 19 June 2025 1:14:30 PM IST
 --------------------------------------------------
@@ -660,12 +848,12 @@ Cron jobs for user: www-data
 artisan commands found:
 * * * * * /usr/bin/php /var/www/faveo/artisan schedule:run 2>&1
 Estimating last run time from system logs:
-Jun 19 13:44:02 Faveo CRON[179717]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
-Jun 19 13:45:01 Faveo CRON[180511]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
-Jun 19 13:46:01 Faveo CRON[181271]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
-Jun 19 13:47:01 Faveo CRON[181997]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
-Jun 19 13:48:01 Faveo CRON[182718]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
-Jun 19 13:49:01 Faveo CRON[183467]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
+2026-01-29T18:04:01.450271+05:30 Faveo CRON[179717]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
+2026-01-29T18:04:01.450271+05:30 Faveo CRON[180511]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
+2026-01-29T18:04:01.450271+05:30 Faveo CRON[181271]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
+2026-01-29T18:04:01.450271+05:30 Faveo CRON[181997]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
+2026-01-29T18:04:01.450271+05:30 Faveo CRON[182718]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
+2026-01-29T18:04:01.450271+05:30 Faveo CRON[183467]: (www-data) CMD (/usr/bin/php /var/www/faveo/artisan schedule:run 2>&1)
 
 Cron jobs for user: root
 None
@@ -683,12 +871,14 @@ Execution complete.
 
 ---
 
-#### Supervisor jobs Check
-- This check is used to see if all supervisor jobs are configured and running as expected for faveo
+#### Supervisor jobs Check:
 
 - Enter <code><b>7</b></code> to check the Supervisor jobs running status
 
+- This check is used to see if all supervisor jobs are configured and running as expected for faveo
+
 Example Output:
+
 ```
 root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                                         _______ _______ _     _ _______ _______
@@ -721,8 +911,14 @@ Select an option to run:
 10) Root-Owned Files in Faveo Directory
 11) Check if Required Ports are Open
 12) Firewall check
+13) Check Disk I/O
+14) Top MEM and CPU Consumptions
+15) Network Latency
+16) Check Faveo Size
+17) PHP Config Values
+18) Check Timeout Settings
 0) Exit
-Enter your choice [0-12]: 7
+Enter your choice [0-18]: 7
 Welcome to Faveo
 Date: Thursday 19 June 2025 1:20:04 PM IST
 --------------------------------------------------
@@ -744,12 +940,14 @@ supervisorctl restart all
 
 ---
 
-#### Logged in Users check
-- This is used to check how many users are currently logged in to the server via SSH
+#### Logged in Users check:
 
 - Enter <code><b>8</b></code> to check SSH Logged-in Users
 
+- This is used to check how many users are currently logged in to the server via SSH
+
 Example Output:
+
 ```
 root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                                         _______ _______ _     _ _______ _______
@@ -782,13 +980,27 @@ Select an option to run:
 10) Root-Owned Files in Faveo Directory
 11) Check if Required Ports are Open
 12) Firewall check
+13) Check Disk I/O
+14) Top MEM and CPU Consumptions
+15) Network Latency
+16) Check Faveo Size
+17) PHP Config Values
+18) Check Timeout Settings
 0) Exit
-Enter your choice [0-12]: 8
+Enter your choice [0-18]: 8
 Welcome to Faveo
 Date: Thursday 19 June 2025 1:22:04 PM IST
 --------------------------------------------------
-Logged-in Users:
-2
+Logged-in Users (SSH Sessions):
+User    TTY     Login Time      Idle    Session From
+test   pts/0  2026-01-29 14:27 0      03h:38m  (10.20.30.40)
+test   pts/1  2026-01-29 18:05 0      00h:00m  (10.20.30.41)
+test   pts/3  2026-01-29 16:15 0      01h:50m  (10.20.30.42)
+test   pts/5  2026-01-29 16:15 0      01h:50m  (10.20.30.43)
+test   pts/6  2026-01-29 16:32 0      01h:33m  (10.20.30.44)
+test   pts/7  2026-01-29 16:32 0      01h:33m  (10.20.30.45)
+Total Active SSH Users: 6
+
 
 --------------------------------------------------
 Script by Faveo Helpdesk | support@faveohelpdesk.com
@@ -798,12 +1010,14 @@ Execution complete.
 
 ---
 
-#### Billing connection
-- This check will check the curl connection between the faveo server and billing.faveohelpdesk.com, faveo needs this to validate the license and faveo updates, etc..
+#### Billing connection:
 
 - Enter <code><b>9</b></code> to check Faveo Billing Connection
 
+- This check will check the curl connection between the faveo server and billing.faveohelpdesk.com, faveo needs this to validate the license and faveo updates, etc..
+
 Example Output:
+
 ```
 root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                                         _______ _______ _     _ _______ _______
@@ -836,8 +1050,14 @@ Select an option to run:
 10) Root-Owned Files in Faveo Directory
 11) Check if Required Ports are Open
 12) Firewall check
+13) Check Disk I/O
+14) Top MEM and CPU Consumptions
+15) Network Latency
+16) Check Faveo Size
+17) PHP Config Values
+18) Check Timeout Settings
 0) Exit
-Enter your choice [0-12]: 9
+Enter your choice [0-18]: 9
 Welcome to Faveo
 Date: Thursday 19 June 2025 1:25:08 PM IST
 --------------------------------------------------
@@ -858,12 +1078,14 @@ Execution complete.
 
 ---
 
-#### Root-Owned Files check
-- This check will check if any files are owned by root users inside the faveo root directory.
+#### Root-Owned Files check:
 
 - Enter <code><b>10</b></code> to check Root-Owned Files in Faveo Directory
 
+- This check will check if any files are owned by root users inside the faveo root directory.
+
 Example Output:
+
 ```
 root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                                         _______ _______ _     _ _______ _______
@@ -896,8 +1118,14 @@ Select an option to run:
 10) Root-Owned Files in Faveo Directory
 11) Check if Required Ports are Open
 12) Firewall check
+13) Check Disk I/O
+14) Top MEM and CPU Consumptions
+15) Network Latency
+16) Check Faveo Size
+17) PHP Config Values
+18) Check Timeout Settings
 0) Exit
-Enter your choice [0-12]: 10
+Enter your choice [0-18]: 10
 Welcome to Faveo
 Date: Thursday 19 June 2025 1:30:04 PM IST
 --------------------------------------------------
@@ -913,6 +1141,7 @@ Execution complete.
 - This indicates that there are no root owned files found the faveoo root directory.
 
 Example Output  (Root-Owned Files in Faveo Directory (Issue))
+
 ```
 root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                                         _______ _______ _     _ _______ _______
@@ -945,8 +1174,14 @@ Select an option to run:
 10) Root-Owned Files in Faveo Directory
 11) Check if Required Ports are Open
 12) Firewall check
+13) Check Disk I/O
+14) Top MEM and CPU Consumptions
+15) Network Latency
+16) Check Faveo Size
+17) PHP Config Values
+18) Check Timeout Settings
 0) Exit
-Enter your choice [0-12]: 10
+Enter your choice [0-18]: 10
 Welcome to Faveo
 Date: Thursday 19 June 2025 1:31:02 PM IST
 --------------------------------------------------
@@ -1008,11 +1243,11 @@ chown -R www-data:www-data <<<Enter the faveo root directory here>>>
 
 ---
 
-#### Required Ports are Open Check
-
-- This Check is to check whether the ports are open internally and the services are listening on the port.
+#### Required Ports are Open Check:
 
 - Enter <code><b>11</b></code> to check if Required Ports are Open for Faveo.
+
+- This Check is to check whether the ports are open internally and the services are listening on the port.
 
 - The script will automatically check commonly required Faveo ports: 80 (HTTP), 443 (HTTPS), 3306 (MySQL), and 6379 (Redis)
 
@@ -1023,6 +1258,7 @@ Enter any additional ports to check (comma-separated, or press Enter to skip):
 ```
 
 Example Output:
+
 ```
 root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                                         _______ _______ _     _ _______ _______
@@ -1055,8 +1291,14 @@ Select an option to run:
 10) Root-Owned Files in Faveo Directory
 11) Check if Required Ports are Open
 12) Firewall check
+13) Check Disk I/O
+14) Top MEM and CPU Consumptions
+15) Network Latency
+16) Check Faveo Size
+17) PHP Config Values
+18) Check Timeout Settings
 0) Exit
-Enter your choice [0-12]: 11
+Enter your choice [0-18]: 11
 Welcome to Siva-LWS
 Date: Thursday 19 June 2025 02:07:19 PM IST
 --------------------------------------------------
@@ -1065,20 +1307,64 @@ Enter any additional ports to check (comma-separated, or press Enter to skip):
 ```
 
 - When it comes to <code><b>Port Availability Check</b></code>, it will prompt the user for custom ports, if any. Please enter the port number separated by a comma. The default ports in the script are <code><b>80, 443, 3306, 6379</b></code>.
+
+> <code><b>Note:</code></b> Not all the ports are required for faveo, in this check it will print all the ports that are available for faveo to use like EMAIL releated ports etc.. check for the ports that releate to the issue.
+
 - Once entered, it will continue like below:
 
 ```
 Checking Port 80 (HTTP)
 Port 80 is open internally (listening).
 
+Checking Port 110 (POP-Plain/STARTTLS)
+Port 110 is NOT open internally.
+
 Checking Port 6379 (Redis)
 Port 6379 is open internally (listening).
+
+Checking Port 6001 (Websocket Proxy)
+Port 6001 is NOT open internally.
+
+Checking Port 143 (IMAP-Plain/STARTTLS)
+Port 143 is NOT open internally.
+
+Checking Port 7700 (Meilisearch)
+Port 7700 is open internally (listening).
+
+Checking Port 9235 (Nats)
+Port 9235 is NOT open internally.
+
+Checking Port 25 (SMTP-NONE)
+Port 25 is open internally (listening).
+
+Checking Port 9000 (PHP-FPM)
+Port 9000 is NOT open internally.
+
+Checking Port 636 (LDAPS)
+Port 636 is NOT open internally.
+
+Checking Port 465 (SMTP-SSL)
+Port 465 is NOT open internally.
+
+Checking Port 587 (SMTP-STARTTLS)
+Port 587 is NOT open internally.
+
+Checking Port 389 (LDAP)
+Port 389 is NOT open internally.
 
 Checking Port 443 (HTTPS)
 Port 443 is open internally (listening).
 
+Checking Port 993 (IMAP-SSL)
+Port 993 is NOT open internally.
+
+Checking Port 995 (POP-SSL)
+Port 995 is NOT open internally.
+
 Checking Port 3306 (MySQL)
 Port 3306 is open internally (listening).
+
+
 --------------------------------------------------
 Script by Faveo Helpdesk | support@faveohelpdesk.com
 Execution complete.
@@ -1090,13 +1376,14 @@ Execution complete.
 
 ---
 
-#### Firewall Check
-
-- This is used to check the firewall status from basic firewalls to the CSF firewall inside the server.3
+#### Firewall Check:
 
 - Enter <code><b>12</b></code> to check Firewall
 
+- This is used to check the firewall status from basic firewalls to the CSF firewall inside the server.3
+
 Example Output:
+
 ```
 root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
                                         _______ _______ _     _ _______ _______
@@ -1129,8 +1416,14 @@ Select an option to run:
 10) Root-Owned Files in Faveo Directory
 11) Check if Required Ports are Open
 12) Firewall check
+13) Check Disk I/O
+14) Top MEM and CPU Consumptions
+15) Network Latency
+16) Check Faveo Size
+17) PHP Config Values
+18) Check Timeout Settings
 0) Exit
-Enter your choice [0-12]: 12
+Enter your choice [0-18]: 12
 Welcome to Faveo
 Date: Thursday 19 June 2025 02:36:24 PM IST
 --------------------------------------------------
@@ -1163,6 +1456,452 @@ Execution complete.
 - This script's output will be logged to <code><b>faveo-check.log</b></code> inside the same directory where the script is present.
 
  - To fix any issue, please reach (**support@faveohelpdesk.com***)
+
+---
+
+#### Check Disk I/O:
+
+- Enter <code><b>13</code></b> to check the disk I/O speed.
+
+- This is used to find whether the stoage disk in the server is production compatible with the I/O check.
+
+- In this check we use /var/lib/mysql this is the database data directory, you can enter the direcorty that you want to check or if it is diferent.
+
+Example Output:
+
+```
+root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
+                                        _______ _______ _     _ _______ _______
+                                       (_______|_______|_)   (_|_______|_______)
+                                        _____   _______ _     _ _____   _     _
+                                       |  ___) |  ___  | |   | |  ___) | |   | |
+                                       | |     | |   | |\ \ / /| |_____| |___| |
+                                       |_|     |_|   |_| \___/ |_______)\_____/
+
+                              _     _ _______ _       ______ ______  _______  ______ _     _
+                             (_)   (_|_______|_)     (_____ (______)(_______)/ _____|_)   | |
+                              _______ _____   _       _____) )     _ _____  ( (____  _____| |
+                             |  ___  |  ___) | |     |  ____/ |   | |  ___)  \____ \|  _   _)
+                             | |   | | |_____| |_____| |    | |__/ /| |_____ _____) ) |  \ \
+                             |_|   |_|_______)_______)_|    |_____/ |_______|______/|_|   \_)
+```
+```
+Enter Faveo root directory path (e.g., /var/www/faveo) /var/www/faveo is the default press enter to use the default value: <<< enter if root directory is different from default>>>
+
+Select an option to run:
+1) Run all checks
+2) SSL Check
+3) System Info
+4) Service Status
+5) Faveo Info
+6) Cron Jobs
+7) Supervisor Jobs
+8) Logged-in Users
+9) Billing Connection
+10) Root-Owned Files in Faveo Directory
+11) Check if Required Ports are Open
+12) Firewall check
+13) Check Disk I/O
+14) Top MEM and CPU Consumptions
+15) Network Latency
+16) Check Faveo Size
+17) PHP Config Values
+18) Check Timeout Settings
+0) Exit
+Enter your choice [0-18]: 13
+Welcome to Faveo
+Date: Thursday 19 June 2025 02:36:24 PM IST
+--------------------------------------------------
+
+Disk IO Check (ioping):
+Enter directory to test [default: /var/lib/mysql]: 
+Read latency test:
+--- /var/lib/mysql (ext4 /dev/dm-0 193.8 GiB) ioping statistics ---
+19 requests completed in 5.27 ms, 76 KiB read, 3.61 k iops, 14.1 MiB/s
+generated 20 requests in 19.0 s, 80 KiB, 1 iops, 4.21 KiB/s
+min/avg/max/mdev = 98.9 us / 277.2 us / 379.1 us / 70.5 us
+Write latency test:
+--- /var/lib/mysql (ext4 /dev/dm-0 193.8 GiB) ioping statistics ---
+19 requests completed in 3.18 ms, 76 KiB written, 5.97 k iops, 23.3 MiB/s
+generated 20 requests in 3.58 ms, 80 KiB, 5.58 k iops, 21.8 MiB/s
+min/avg/max/mdev = 126.4 us / 167.4 us / 256.7 us / 27.2 us
+Disk latency within SLA for production workload
+
+
+--------------------------------------------------
+Script by Faveo Helpdesk | support@faveohelpdesk.com
+Execution complete.
+```
+
+---
+
+#### Top MEM and CPU Consumptions:
+
+- Enter <code><b>14</code></b> to check the top 10 memory and cpu consuming processes.
+
+- This option will share the top 10 memory and cpu consuming process running in the server.
+
+Example Output:
+
+```
+root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
+                                        _______ _______ _     _ _______ _______
+                                       (_______|_______|_)   (_|_______|_______)
+                                        _____   _______ _     _ _____   _     _
+                                       |  ___) |  ___  | |   | |  ___) | |   | |
+                                       | |     | |   | |\ \ / /| |_____| |___| |
+                                       |_|     |_|   |_| \___/ |_______)\_____/
+
+                              _     _ _______ _       ______ ______  _______  ______ _     _
+                             (_)   (_|_______|_)     (_____ (______)(_______)/ _____|_)   | |
+                              _______ _____   _       _____) )     _ _____  ( (____  _____| |
+                             |  ___  |  ___) | |     |  ____/ |   | |  ___)  \____ \|  _   _)
+                             | |   | | |_____| |_____| |    | |__/ /| |_____ _____) ) |  \ \
+                             |_|   |_|_______)_______)_|    |_____/ |_______|______/|_|   \_)
+```
+```
+Enter Faveo root directory path (e.g., /var/www/faveo) /var/www/faveo is the default press enter to use the default value: <<< enter if root directory is different from default>>>
+
+Select an option to run:
+1) Run all checks
+2) SSL Check
+3) System Info
+4) Service Status
+5) Faveo Info
+6) Cron Jobs
+7) Supervisor Jobs
+8) Logged-in Users
+9) Billing Connection
+10) Root-Owned Files in Faveo Directory
+11) Check if Required Ports are Open
+12) Firewall check
+13) Check Disk I/O
+14) Top MEM and CPU Consumptions
+15) Network Latency
+16) Check Faveo Size
+17) PHP Config Values
+18) Check Timeout Settings
+0) Exit
+Enter your choice [0-18]: 14
+Welcome to Faveo
+Date: Thursday 19 June 2025 02:36:24 PM IST
+--------------------------------------------------
+
+Top CPU / Memory Processes (Production SLA-aware):
+Top 10 processes by CPU usage:
+OK | CPU: 57.7% | MEM: 5.8% | /usr/bin/php8.2 artisan ldap:sync
+OK | CPU: 50.0% | MEM: 0.0% | ps -eo pid,%cpu,%mem,cmd --sort=-%cpu --no-headers
+OK | CPU: 4.6% | MEM: 5.6% | /usr/sbin/mysqld
+OK | CPU: 1.2% | MEM: 0.1% | /usr/bin/python3 /usr/bin/mta-sts-daemon --config /etc/mta-sts-daemon.yml
+OK | CPU: 0.7% | MEM: 0.0% | /usr/sbin/zabbix_agentd: collector [idle 1 sec]
+OK | CPU: 0.6% | MEM: 0.0% | redis-server *:6379
+OK | CPU: 0.5% | MEM: 0.5% | /usr/bin/php -q /var/www/html/manikz/artisan schedule:run
+OK | CPU: 0.4% | MEM: 3.1% | /bin/warp-svc
+OK | CPU: 0.4% | MEM: 0.0% | /usr/bin/docker-proxy -proto tcp -host-ip 127.0.0.1 -host-port 6900 -container-ip 172.17.0.2 -container-port 6379 -use-listen-fd
+OK | CPU: 0.3% | MEM: 0.0% | /usr/lib/systemd/systemd --system --deserialize=88
+Top 10 processes by Memory usage:
+OK | CPU: 57.6% | MEM: 5.8% | /usr/bin/php8.2 artisan ldap:sync
+OK | CPU: 4.6% | MEM: 5.6% | /usr/sbin/mysqld
+OK | CPU: 0.4% | MEM: 3.1% | /bin/warp-svc
+OK | CPU: 0.1% | MEM: 1.1% | php-fpm: pool www
+OK | CPU: 0.1% | MEM: 1.1% | php-fpm: pool www
+OK | CPU: 0.1% | MEM: 1.1% | php-fpm: pool www
+OK | CPU: 0.1% | MEM: 1.1% | php-fpm: pool www
+OK | CPU: 0.1% | MEM: 1.1% | php-fpm: pool www
+OK | CPU: 0.1% | MEM: 1.1% | php-fpm: pool www
+OK | CPU: 0.1% | MEM: 1.1% | php-fpm: pool www
+
+
+--------------------------------------------------
+Script by Faveo Helpdesk | support@faveohelpdesk.com
+Execution complete.
+```
+
+---
+
+#### Network Latency:
+
+- Enter <code><b>15</code></b>  to check the network latency.
+
+- This option will check the network latency speed in the server it will check wit google.com and faveo billing and license domains.
+
+Example Output:
+
+```
+root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
+                                        _______ _______ _     _ _______ _______
+                                       (_______|_______|_)   (_|_______|_______)
+                                        _____   _______ _     _ _____   _     _
+                                       |  ___) |  ___  | |   | |  ___) | |   | |
+                                       | |     | |   | |\ \ / /| |_____| |___| |
+                                       |_|     |_|   |_| \___/ |_______)\_____/
+
+                              _     _ _______ _       ______ ______  _______  ______ _     _
+                             (_)   (_|_______|_)     (_____ (______)(_______)/ _____|_)   | |
+                              _______ _____   _       _____) )     _ _____  ( (____  _____| |
+                             |  ___  |  ___) | |     |  ____/ |   | |  ___)  \____ \|  _   _)
+                             | |   | | |_____| |_____| |    | |__/ /| |_____ _____) ) |  \ \
+                             |_|   |_|_______)_______)_|    |_____/ |_______|______/|_|   \_)
+```
+```
+Enter Faveo root directory path (e.g., /var/www/faveo) /var/www/faveo is the default press enter to use the default value: <<< enter if root directory is different from default>>>
+
+Select an option to run:
+1) Run all checks
+2) SSL Check
+3) System Info
+4) Service Status
+5) Faveo Info
+6) Cron Jobs
+7) Supervisor Jobs
+8) Logged-in Users
+9) Billing Connection
+10) Root-Owned Files in Faveo Directory
+11) Check if Required Ports are Open
+12) Firewall check
+13) Check Disk I/O
+14) Top MEM and CPU Consumptions
+15) Network Latency
+16) Check Faveo Size
+17) PHP Config Values
+18) Check Timeout Settings
+0) Exit
+Enter your choice [0-18]: 15
+Welcome to Faveo
+Date: Thursday 19 June 2025 02:36:24 PM IST
+--------------------------------------------------
+
+Network Connectivity Test:
+Pinging 8.8.8.8 ... OK (avg: 6.380 ms)
+Pinging google.com ... OK (avg: 6.271 ms)
+Pinging billing.faveohelpdesk.com ... SLOW (avg: 157.093 ms | SLA breached)
+Pinging license.faveohelpdesk.com ... SLOW (avg: 156.836 ms | SLA breached)
+
+
+--------------------------------------------------
+Script by Faveo Helpdesk | support@faveohelpdesk.com
+Execution complete.
+```
+
+---
+
+#### Check Faveo Size:
+
+- Enter <code><b>16</code></b> to check the faveo size.
+
+- This check is used to check the faveo size, It will check both faveo filesystem size and database size in the server.
+
+- Also for this check you should have entered the faveo root directory path correctly in the begining of the script.
+
+Example Output:
+
+```
+root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
+                                        _______ _______ _     _ _______ _______
+                                       (_______|_______|_)   (_|_______|_______)
+                                        _____   _______ _     _ _____   _     _
+                                       |  ___) |  ___  | |   | |  ___) | |   | |
+                                       | |     | |   | |\ \ / /| |_____| |___| |
+                                       |_|     |_|   |_| \___/ |_______)\_____/
+
+                              _     _ _______ _       ______ ______  _______  ______ _     _
+                             (_)   (_|_______|_)     (_____ (______)(_______)/ _____|_)   | |
+                              _______ _____   _       _____) )     _ _____  ( (____  _____| |
+                             |  ___  |  ___) | |     |  ____/ |   | |  ___)  \____ \|  _   _)
+                             | |   | | |_____| |_____| |    | |__/ /| |_____ _____) ) |  \ \
+                             |_|   |_|_______)_______)_|    |_____/ |_______|______/|_|   \_)
+```
+```
+Enter Faveo root directory path (e.g., /var/www/faveo) /var/www/faveo is the default press enter to use the default value: <<< enter if root directory is different from default>>>
+
+Select an option to run:
+1) Run all checks
+2) SSL Check
+3) System Info
+4) Service Status
+5) Faveo Info
+6) Cron Jobs
+7) Supervisor Jobs
+8) Logged-in Users
+9) Billing Connection
+10) Root-Owned Files in Faveo Directory
+11) Check if Required Ports are Open
+12) Firewall check
+13) Check Disk I/O
+14) Top MEM and CPU Consumptions
+15) Network Latency
+16) Check Faveo Size
+17) PHP Config Values
+18) Check Timeout Settings
+0) Exit
+Enter your choice [0-18]: 16
+Date: Thursday 19 June 2025 02:36:24 PM IST
+--------------------------------------------------
+Faveo Storage Usage:
+Faveo Directory Size: 3.0G
+Enter MySQL datadir (default: /var/lib/mysql): 
+Faveo Database Name: faveo
+Database 'faveo' folder size: 249M
+
+
+--------------------------------------------------
+Script by Faveo Helpdesk | support@faveohelpdesk.com
+Execution complete.
+```
+
+---
+
+#### PHP Config Values:
+
+- Enter <code><b>17</code></b> for PHP Config Values check.
+
+- This check will show the configured php values that are required for faveo inside the server.
+
+Example Output:
+
+```
+root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
+                                        _______ _______ _     _ _______ _______
+                                       (_______|_______|_)   (_|_______|_______)
+                                        _____   _______ _     _ _____   _     _
+                                       |  ___) |  ___  | |   | |  ___) | |   | |
+                                       | |     | |   | |\ \ / /| |_____| |___| |
+                                       |_|     |_|   |_| \___/ |_______)\_____/
+
+                              _     _ _______ _       ______ ______  _______  ______ _     _
+                             (_)   (_|_______|_)     (_____ (______)(_______)/ _____|_)   | |
+                              _______ _____   _       _____) )     _ _____  ( (____  _____| |
+                             |  ___  |  ___) | |     |  ____/ |   | |  ___)  \____ \|  _   _)
+                             | |   | | |_____| |_____| |    | |__/ /| |_____ _____) ) |  \ \
+                             |_|   |_|_______)_______)_|    |_____/ |_______|______/|_|   \_)
+```
+```
+Enter Faveo root directory path (e.g., /var/www/faveo) /var/www/faveo is the default press enter to use the default value: <<< enter if root directory is different from default>>>
+
+Select an option to run:
+1) Run all checks
+2) SSL Check
+3) System Info
+4) Service Status
+5) Faveo Info
+6) Cron Jobs
+7) Supervisor Jobs
+8) Logged-in Users
+9) Billing Connection
+10) Root-Owned Files in Faveo Directory
+11) Check if Required Ports are Open
+12) Firewall check
+13) Check Disk I/O
+14) Top MEM and CPU Consumptions
+15) Network Latency
+16) Check Faveo Size
+17) PHP Config Values
+18) Check Timeout Settings
+0) Exit
+Enter your choice [0-18]: 17
+Date: Thursday 19 June 2025 02:36:24 PM IST
+--------------------------------------------------
+PHP Configuration Check:
+File: /etc/php/8.2/fpm/php.ini
+  file_uploads = On
+  allow_url_fopen = On
+  short_open_tag = On
+  memory_limit = 1024M
+  cgi.fix_pathinfo = 0
+  upload_max_filesize = 100M
+  post_max_size = 100M
+  max_execution_time = 360
+
+File: /etc/php/8.2/apache2/php.ini
+  file_uploads = On
+  allow_url_fopen = On
+  short_open_tag = On
+  memory_limit = 1024M
+  cgi.fix_pathinfo = 0
+  upload_max_filesize = 100M
+  post_max_size = 100M
+  max_execution_time = 360
+
+File: /etc/php/8.2/cli/php.ini
+  file_uploads = On
+  allow_url_fopen = On
+  short_open_tag = On
+  memory_limit = 1024M
+  cgi.fix_pathinfo = 0
+  upload_max_filesize = 100M
+  post_max_size = 100M
+  max_execution_time = 360
+
+
+--------------------------------------------------
+Script by Faveo Helpdesk | support@faveohelpdesk.com
+Execution complete.
+```
+
+---
+
+#### Check Timeout Settings
+
+- Enter <code><b>18</code></b> for timeout settings check.
+
+- This check will show the timeout settings configured in the webserver level inside the server.
+
+Example Output:
+
+```
+root@Faveo:/home/faveo/script# ./basic-troubleshoot.sh
+                                        _______ _______ _     _ _______ _______
+                                       (_______|_______|_)   (_|_______|_______)
+                                        _____   _______ _     _ _____   _     _
+                                       |  ___) |  ___  | |   | |  ___) | |   | |
+                                       | |     | |   | |\ \ / /| |_____| |___| |
+                                       |_|     |_|   |_| \___/ |_______)\_____/
+
+                              _     _ _______ _       ______ ______  _______  ______ _     _
+                             (_)   (_|_______|_)     (_____ (______)(_______)/ _____|_)   | |
+                              _______ _____   _       _____) )     _ _____  ( (____  _____| |
+                             |  ___  |  ___) | |     |  ____/ |   | |  ___)  \____ \|  _   _)
+                             | |   | | |_____| |_____| |    | |__/ /| |_____ _____) ) |  \ \
+                             |_|   |_|_______)_______)_|    |_____/ |_______|______/|_|   \_)
+```
+```
+Enter Faveo root directory path (e.g., /var/www/faveo) /var/www/faveo is the default press enter to use the default value: <<< enter if root directory is different from default>>>
+
+Select an option to run:
+1) Run all checks
+2) SSL Check
+3) System Info
+4) Service Status
+5) Faveo Info
+6) Cron Jobs
+7) Supervisor Jobs
+8) Logged-in Users
+9) Billing Connection
+10) Root-Owned Files in Faveo Directory
+11) Check if Required Ports are Open
+12) Firewall check
+13) Check Disk I/O
+14) Top MEM and CPU Consumptions
+15) Network Latency
+16) Check Faveo Size
+17) PHP Config Values
+18) Check Timeout Settings
+0) Exit
+Enter your choice [0-18]: 18
+Date: Thursday 19 June 2025 02:36:24 PM IST
+--------------------------------------------------
+Request Timeout Check:
+PHP-FPM:
+  request_terminate_timeout = Not set
+  max_execution_time = 360
+
+Apache:
+
+
+--------------------------------------------------
+Script by Faveo Helpdesk | support@faveohelpdesk.com
+Execution complete.
+```
 
 ---
 

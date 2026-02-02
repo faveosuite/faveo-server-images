@@ -141,7 +141,7 @@ Enter your choice [0-18]:
 ```
 
 - Option **1** is to check all information at once, select option **1** to see full diagnostic output in sequence.
-- If you want to run a single specific check instead of all, select the relevant option by passing option number **2 to 18** from the menu when prompted.  [Click here for more details and steps to fix issues](###single-specific-check)
+- If you want to run a single specific check instead of all, select the relevant option by passing option number **2 to 18** from the menu when prompted.  [Click here for more details and steps to fix issues](#single-specific-check)
 
 ---
 
@@ -440,12 +440,13 @@ Execution complete.
 - This script's output will be logged to <code><b>faveo-check.log</b></code> inside the same directory where the script is present.
 
 ---
-
+<a id="single-specific-check"></a>
 ### Single Specific Check:
+
 
 - To run a single specific check instead of all, select the relevant option number from the menu when prompted while running the script.
 
-- You will be prompted to select one of the following, where you can select options from <code><b>2 to 12</b></code>, which will run the corresponding checks:
+- You will be prompted to select one of the following, where you can select options from <code><b>2 to 18</b></code>, which will run the corresponding checks:
 ```
 Select an option to run:
 1) Run all checks
@@ -530,6 +531,8 @@ Enter domain for SSL check (leave empty to use APP_URL):
 
 
 - The script will automatically read the <code><b>APP_URL</b></code> from the <code><b>.env</b></code> file inside faveo root directory passed in while the script is executed, you can use the <code><b>APP_URL</b></code> by pressing <code><b>Enter</b></code> or can use a different domain without <code><b>https://</b></code> for example <code><b>example.faveohelpdesk.com</b></code> after this the output will continue like below.
+
+
 ```
 No domain entered. Using APP_URL domain: faveo.helpdesk.com
 SSL Check for: faveo.helpdesk.com

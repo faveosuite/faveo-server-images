@@ -5,7 +5,7 @@ permalink: /docs/installation/providers/enterprise/basic-troubleshooting-script/
 redirect_from:
   - /theme-setup/
 last_modified_at: 2026-02-02
-last_modified_by: Thirumoorthi Duraipandi
+last_modified_by: Mohammad Asif
 toc: true
 title: Faveo Basic Troubleshooting via Scripts
 ---
@@ -59,7 +59,7 @@ Checks status of firewall (e.g., UFW) and its rules.
 Checks the read and write I/O speed of the storage disk of the faveo server.
 
 - **Top MEM and CPU Consumptions:**
-Lists top 10 memory and cpu consuming processes.
+Lists top 10 memory and CPU consuming processes.
 
 - **Network Latency:**
 Checks Internet connection speed with google and faveo domains.
@@ -82,7 +82,7 @@ Lists timeout settigns configured in webserver and php.
 
 ## How to execute the script:
 
-- To download the script, **[Click here](/installation-scripts/FaveoInstallationScripts/basic-troubleshoot.sh)** or run the wget command below.
+- To download the script, **[Click here](/installation-scripts/FaveoInstallationScripts/basic-troubleshoot.sh)** or run the *wget* command below.
 ```sh
 wget http://raw.githubusercontent.com/faveosuite/faveo-server-images/refs/heads/master/installation-scripts/FaveoInstallationScripts/basic-troubleshoot.sh
 ```
@@ -141,7 +141,7 @@ Enter your choice [0-18]:
 ```
 
 - Option **1** is to check all information at once, select option **1** to see full diagnostic output in sequence.
-- If you want to run a single specific check instead of all, select the relevant option by passing option number **2 to 12** from the menu when prompted.  [Click here for more details and steps to fix issues](###single-specific-check)
+- If you want to run a single specific check instead of all, select the relevant option by passing option number **2 to 18** from the menu when prompted.  [Click here for more details and steps to fix issues](###single-specific-check)
 
 ---
 
@@ -201,7 +201,13 @@ Enter domain for SSL check (leave empty to use APP_URL):
 - The script will automatically read the <code><b>APP_URL</b></code> from the <code><b>.env</b></code> file inside the faveo root directory, passed in the beginning of the script, you can use the <code><b>APP_URL</b></code>  by pressing <code><b>Enter</b></code> or can use a different domain without <code><b>https://</b></code>, for example <code><b>example.faveohelpdesk.com</b></code>.
 
 
-- After entering, it will contiue with the script and will show information like *SSL validation, System Info, Service Status, Faveo Application Info, Cron Jobs* , *Supervisor Jobs, Logged-in Users via SSH, Billing Connection Check, Root-Owned Files/Folders inside the Faveo directory, Port Availability Check*. It will prompt for additional ports if needed enter custom ports separated by comma, if not, just press *Enter*. After entering, it will display *Port Availability* and *Firewall Check* *Check Disk I/O* *Top MEM and CPU Consumptions* *Network Latency* *Check Faveo Size* *PHP Config Values* *Check Timeout Settings* like below.
+- After entering, it will contiue with the script and will show information like below: 
+
+*SSL validation, System Info, Service Status, Faveo Application Info, Cron Jobs* , *Supervisor Jobs, Logged-in Users via SSH, Billing Connection Check, Root-Owned Files/Folders inside the Faveo directory, Port Availability Check*. 
+
+- It will prompt for additional ports if needed enter custom ports separated by comma, if not, just press *Enter*. After entering, it will display:
+
+ *Port Availability* and *Firewall Check* *Check Disk I/O* *Top MEM and CPU Consumptions* *Network Latency* *Check Faveo Size* *PHP Config Values* *Check Timeout Settings* like below.
 
 ```
 No domain entered. Using APP_URL domain: faveo.helpdesk.com
@@ -330,7 +336,7 @@ Status: inactive
 ```
 ---
 
-- When it comes to <code><b>Disk IO check</code></b> it will ask for Enter directory to test the default directory <code><b>/var/lib/mysql</code></b> used in the script is enough for this test if needed enter your preffered directory.
+- When it comes to <code><b>Disk IO check</b></code> it will ask for Enter directory to test the default directory <code><b>/var/lib/mysql</b></code> used in the script is enough for this test if needed enter your preffered directory.
 
 ```
 Disk IO Check (ioping):
@@ -379,7 +385,9 @@ Pinging license.faveohelpdesk.com ... SLOW (avg: 156.862 ms | SLA breached)
 Faveo Storage Usage (No MySQL login required):
 Faveo Directory Size: 3.0G
 ```
+
 - In this stage it will ask for MySQL data directory on all statndard installation the directory will be /var/lib/mysql so you can press enter if the MySQL data directory is different please enter the directory.
+
 ```
 Enter MySQL datadir (default: /var/lib/mysql): 
 Faveo Database Name: saiffaveo

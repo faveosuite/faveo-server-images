@@ -63,6 +63,8 @@ docs:
     children:
       - title: Upgrade PHP Version
         url: /docs/helpers/choose-php/
+      - title: Troubleshooting Script
+        url: /docs/installation/providers/enterprise/basic-troubleshooting-script
 #      - title: Upgrade PHP to 8.1
 #        url: /docs/installation/providers/enterprise/php-upgrade/
 #      - title: Upgrade PHP to 8.2
@@ -99,8 +101,6 @@ docs:
         url: /docs/helpers/node      
       - title: Install NATS Server
         url: /docs/helpers/nats
-      - title: Troubleshooting script
-        url: /docs/installation/providers/enterprise/basic-troubleshooting-script
       - title: DB SSL and Encryption Setup
         url: /docs/installation/providers/enterprise/db-ssl-encryption
       - title: MeshCentral Setup

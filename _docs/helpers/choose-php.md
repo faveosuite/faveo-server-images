@@ -4,7 +4,7 @@ type: docs
 permalink: /docs/helpers/choose-php/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2023-01-24
+last_modified_at: 2023-02-04
 last_modified_by: Mohammad_Asif
 toc: true
 title: Upgrade PHP Version for Faveo
@@ -31,6 +31,7 @@ Before you proceed with the PHP upgrade, please ensure that:
 
 Follow the links below to access detailed instructions for each PHP version upgrade:
 
+- [Upgrade PHP to v8.4](/docs/installation/providers/enterprise/php84-upgrade)
 - [Upgrade PHP to v8.2](/docs/installation/providers/enterprise/php82-upgrade)
 - [Upgrade PHP to v8.1](/docs/installation/providers/enterprise/php-upgrade)
 

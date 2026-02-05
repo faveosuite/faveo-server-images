@@ -13,7 +13,7 @@ title: Faveo Basic Troubleshooting via Scripts
 <img alt="Troubleshoot" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ2rxwH6YebmlMEZtIJSwDUehm2GRIMcwJalQ&s" width="200"  />
 
 
-## Troubleshooting Faveo Helpdesk via Bash Script for:
+#### Troubleshooting Faveo Helpdesk via Bash Script for:
 - Debian-based servers
 - RHEL-based servers
 
@@ -22,56 +22,26 @@ The script is designed to ensure that all essential services and configurations 
 
 This script includes the following diagnostic checks:
 
-- **SSL Check:**
-Verifies SSL certificate validity for the domain.
+| Check | What this does |
+|------|---------------|
+| SSL Check | Verifies SSL certificate validity for the domain. |
+| System Info | Displays OS, uptime, memory usage, CPU, and disk statistics. |
+| Service Version and Status | Shows version and status of services like Apache, Nginx, MySQL, PHP, PHP-FPM, Redis, etc. |
+| Faveo Info | Displays Faveo `APP_URL`, plan, and version. |
+| Cron Jobs | Lists all active cron jobs for `www-data` and `root` users along with the last 6 Faveo cron runs with timestamps. |
+| Supervisor Jobs | Checks the status of Supervisor jobs. |
+| Logged-in Users | Displays currently logged-in (SSH) system users with timestamp and IP address. |
+| Billing Connection | Tests connectivity to the Faveo billing server. |
+| Root-Owned Files in Faveo Directory | Lists files and folders owned by `root` inside the Faveo directory that may cause permission issues. |
+| Check if Required Ports are Open | Confirms whether required ports (e.g., 80, 443, 3306, etc.) for Faveo are open and listening. |
+| Firewall Check | Checks the status of the firewall (e.g., UFW) and its active rules. |
+| Check Disk I/O | Checks the read and write I/O speed of the storage disk on the Faveo server. |
+| Top MEM and CPU Consumptions | Lists the top 10 processes consuming the most memory and CPU. |
+| Network Latency | Checks network latency and connectivity to Google and Faveo domains. |
+| Check Faveo Size | Calculates the size of the Faveo root directory and the database. |
+| PHP Config Values | Lists configured PHP values from `php.ini` files. |
+| Check Timeout Settings | Lists timeout settings configured in the web server and PHP. |
 
-- **System Info:** 
-Displays OS, uptime, memory usage, CPU, and disk statistics.
-
-- **Service Version and Status:**
-Shows version and status of services like Apache, Nginx, MySQL, PHP, PHP-FPM, Redis, etc.
-
-- **Faveo Info:** 
-Displays Faveo APP_URL, plan, and version.
-
-- **Cron Jobs:** 
-Lists all active cron jobs for www-data and root users along with last 6 faveo cron ran with timestamp.
-
-- **Supervisor Jobs:** 
-Checks the status of Supervisor Jobs.
-
-- **Logged-in Users:** 
-Displays currently logged-in (SSH) system users with timestamp and IP.
-
-- **Billing Connection:**
-Tests connection to the Faveo billing server.
-
-- **Root-Owned Files in Faveo Directory:** 
-Lists files/folders owned by root that may cause permission issues.
-
-- **Check if Required Ports are Open:** 
-Confirms if ports like 80, 443, 3306 etc.. needed for faveo are open and listening.
-
-- **Firewall Check:** 
-Checks status of firewall (e.g., UFW) and its rules.
-
-- **Check Disk I/O:**
-Checks the read and write I/O speed of the storage disk of the faveo server.
-
-- **Top MEM and CPU Consumptions:**
-Lists top 10 memory and CPU consuming processes.
-
-- **Network Latency:**
-Checks Internet connection speed with google and faveo domains.
-
-- **Check Faveo Size:**
-Checks Faveo root folder and database size.
-
-- **PHP Config Values:**
-Lists configured php values inside php.ini files.
-
-- **Check Timeout Settings**
-Lists timeout settigns configured in webserver and php.
 
 ---
 

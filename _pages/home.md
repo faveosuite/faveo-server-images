@@ -47,8 +47,9 @@ Faveo can be installed on a variety of platforms. The choice of the platform is 
 
 
 ## How To's <button class="button NEW"><b>NEW</b></button>
-- Upgrade to PHP 8.1 [click here](/docs/installation/providers/enterprise/php-upgrade/)
+- Upgrade to PHP 8.4 [click here](/docs/installation/providers/enterprise/php84-upgrade/)
 - Upgrade to PHP 8.2 [click here](/docs/installation/providers/enterprise/php82-upgrade/)
+- Upgrade to PHP 8.1 [click here](/docs/installation/providers/enterprise/php-upgrade/)
 - Migrate or Clone Faveo Helpdesk [click here](/docs/installation/providers/enterprise/generic-migration/)
 - Install Wkhtmltopdf [click here](/docs/installation/providers/enterprise/wkhtmltopdf/)
 - Faveo Backup Script [click here](/docs/installation/providers/enterprise/backup-script/)
@@ -77,6 +78,8 @@ The minimum Hardware requirements for faveo to work:
 -   **CPU:** 4vCPU
 -   **RAM:**  8GiB
 -   **Storage:** 40GiB
+
+<img src="https://raw.githubusercontent.com/ladybirdweb/faveo-server-images/master/_docs/installation/providers/enterprise/GUI-images/serverspec.png" alt="" style=" width:400px ; height:230px ">
 
 The above is the minimum requirements for Faveo Helpdesk, and will vary accordingly with the frequency of tickets and workflows.
 

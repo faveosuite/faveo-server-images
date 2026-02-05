@@ -243,7 +243,7 @@ cp ioncube/ioncube_loader_lin_8.4.so /usr/lib64/php/modules
 Update the PHP configuration file
 
 ```
-sed -i 's:ioncube_loader_lin_8.4.so:ioncube_loader_lin_8.4.so:g' /etc/php.ini
+sed -i 's:ioncube_loader_lin_8.2.so:ioncube_loader_lin_8.4.so:g' /etc/php.ini
 sed -i "s/max_execution_time = .*/max_execution_time = 300/" /etc/php.ini
 ```
 

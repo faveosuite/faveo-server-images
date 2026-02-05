@@ -79,7 +79,7 @@ The minimum Hardware requirements for faveo to work:
 -   **RAM:**  8GiB
 -   **Storage:** 40GiB
 
-<img src="https://raw.githubusercontent.com/ladybirdweb/faveo-server-images/master/_docs/installation/providers/enterprise/GUI-images/serverspec.png" alt="" style=" width:400px ; height:230px ">
+<img src="https://raw.githubusercontent.com/ladybirdweb/faveo-server-images/master/_docs/installation/providers/enterprise/GUI-images/serverspec.png" alt="" style=" width:400px ; height:250px ">
 
 The above is the minimum requirements for Faveo Helpdesk, and will vary accordingly with the frequency of tickets and workflows.
 

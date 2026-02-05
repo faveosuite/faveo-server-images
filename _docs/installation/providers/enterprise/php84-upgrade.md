@@ -7,12 +7,12 @@ redirect_from:
 last_modified_at: 2026-02-05
 last_modified_by: Mohammad_Asif
 toc: true
-title: Upgrade From PHP 8.2.x to PHP 8.2.x for Faveo
+title: Upgrade From PHP 8.2.x to PHP 8.4.x for Faveo
 ---
 
 #  <!-- omit in toc -->
 
-<img alt="PHP" src="https://www.php.net/images/php8/logo_php8_4.svg" width="200" />
+<img alt="PHP" src="https://media.daily.dev/image/upload/s--necFnRUa--/f_auto/v1716104784/posts/ou00RvLB7" width="200" />
 
 ---
 
@@ -85,7 +85,7 @@ apt install -y php8.4 libapache2-mod-php8.4 php8.4-mysql \
 ```
 Press Y and ENTER if prompted.
 
-### Install and configure Ioncube 8.2 extension
+### Install and configure Ioncube 8.4 extension
 
 Download the latest IonCube Loader.
 
@@ -243,7 +243,7 @@ cp ioncube/ioncube_loader_lin_8.4.so /usr/lib64/php/modules
 Update the PHP configuration file
 
 ```
-sed -i 's:ioncube_loader_lin_8.2.so:ioncube_loader_lin_8.4.so:g' /etc/php.ini
+sed -i 's:ioncube_loader_lin_8.4.so:ioncube_loader_lin_8.4.so:g' /etc/php.ini
 sed -i "s/max_execution_time = .*/max_execution_time = 300/" /etc/php.ini
 ```
 

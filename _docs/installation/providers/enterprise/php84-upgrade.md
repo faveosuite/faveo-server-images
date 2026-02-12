@@ -227,6 +227,12 @@ Now run the below command to update to PHP 8.4
 sudo yum update -y
 ```
 
+Now install the below php extensions which were not installed earlier in php 8.2
+
+```
+yum -y install php-process php-posix
+```
+
 ### Install and configure IonCube 8.4 extension
 
 ```
@@ -437,24 +443,6 @@ To This
 <img alt="" src="https://raw.githubusercontent.com/ladybirdweb/faveo-server-images/master/_docs/installation/providers/enterprise/GUI-images/php84-f.png"/>
 
 
----
----
----
 
-
-<div style="display: flex; align-items: center;">
-    <a href="https://www.linkedin.com/in/mohammadasifdevops">
-        <img src="https://1.gravatar.com/avatar/c0d70118d1dcf472a3b428453e49e1723127a1d83d8aeb4fb9d7b53a15860d13?size=128" alt="Author Image" style="border-radius: 50%; width: 50px; height: 50px; margin-right: 10px;">
-    </a>
-    <div style="text-align: left;">
-        <div style="line-height: 1;">Authored by:</div>
-      <div style="line-height: 1;"> <b>Mohammad Asif</b> </div>
-			<div style="line-height: 1;">Associate DevOps Engineer</div>
-    </div>
-</div>
-
----
----
----
 
 

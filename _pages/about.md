@@ -8,8 +8,6 @@ last_modified_by: Mohammad_Asif
 toc: true
 ---
 
-# About Faveo Helpdesk Documentation Portal
-
 Welcome to the official documentation portal of Faveo Helpdesk.
 
 The Faveo Helpdesk Documentation Portal serves as the authoritative technical reference for system administrators, DevOps engineers, infrastructure teams, and implementation partners responsible for deploying and maintaining Faveo Helpdesk environments.
@@ -122,9 +120,9 @@ These topics are covered in our:
 📘 Knowledgebase
 
 For application configuration and usage-related guides, please visit:
-https://support.faveohelpdesk.com/knowledgebase
+<a href="https://support.faveohelpdesk.com/knowledgebase" target="_blank" rel="noopener">https://support.faveohelpdesk.com/knowledgebase</a>  
 
 🎧 Support Portal
 
 For technical assistance, issue reporting, and support requests, please visit:
-https://support.faveohelpdesk.com/
+<a href="https://support.faveohelpdesk.com/" target="_blank" rel="noopener">https://support.faveohelpdesk.com/</a>  

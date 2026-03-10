@@ -4,29 +4,33 @@ type: docs
 permalink: /docs/installation/providers/enterprise/redis-windows/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2024-11-12
+last_modified_at: 2026-02-26
 last_modified_by: Mohammad_Asif
 toc: true
-title: Installing Redis on Windows Server
+title: Install and configure Redis for Faveo on Windows Server
 ---
 
 
 <img alt="Windows" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Windows_logo_and_wordmark_-_2021.svg/250px-Windows_logo_and_wordmark_-_2021.svg.png" width="200"  />   
 
 
-<img alt="Windows" src="https://upload.wikimedia.org/wikipedia/en/6/6b/Redis_Logo.svg" width="200"  /> 
+<img alt="Redis" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Logo-redis_%28old%29.svg/3840px-Logo-redis_%28old%29.svg.png" width="200"  /> 
 
-[<strong>Install Redis & Configure it with WinSW</strong>](#Install-Redis-&-Configure-it-with-WinSW)
+This guide explains how to configure Redis specifically for running Faveo Helpdesk Enterprise on Windows servers.
+
+ Redis is used by Faveo to improve ticket queue processing, background jobs, and overall application performance.
+
+ > This documentation is intended only for administrators setting up Faveo Helpdesk and does not cover general Redis installation outside of the Faveo environment.
 
 
-<b>1. Install PHP 8.2 Redis Extension </b>
+<b>1. Install PHP 8.4 Redis Extension </b>
 
-<a href="https://pecl.php.net/package/redis/6.1.0/windows" target="_blank" rel="noopener">Click Here</a> to download PHP 8.2 NTS x64 zip file.
+<a href="https://pecl.php.net/package/redis/6.1.0/windows" target="_blank" rel="noopener">Click Here</a> to download PHP 8.4 NTS x64 zip file.
 
-<img src="https://raw.githubusercontent.com/ladybirdweb/faveo-server-images/master/_docs/installation/providers/enterprise/windows-images/PHPredis.png" style=" width:400px ; height:250px ">
+<img src="https://raw.githubusercontent.com/ladybirdweb/faveo-server-images/master/_docs/installation/providers/enterprise/GUI-images/php84-c.png" style=" width:400px ; height:250px ">
 
-- Unzip the php-redis zip file, a folder will be created, go inside the folder, copy the *php_redis.dll* file and paste it in *C:\php8.2\ext.* *(C:\php\ext incase of Apache WebServer).* 
-- Now enable php redis extension in *php.ini* configuration located in *C:\php8.2.*  *(C:\php incase of Apache WebServer).*
+- Unzip the php-redis zip file, a folder will be created, go inside the folder, copy the *php_redis.dll* file and paste it in *C:\php8.4\ext.* *(C:\php\ext incase of Apache WebServer).* 
+- Now enable php redis extension in *php.ini* configuration located in *C:\php8.4.*  *(C:\php incase of Apache WebServer).*
 
 ```
 extension=php_redis.dll

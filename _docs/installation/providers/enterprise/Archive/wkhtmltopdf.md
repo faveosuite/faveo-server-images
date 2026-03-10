@@ -4,21 +4,26 @@ type: docs
 permalink: /docs/installation/providers/enterprise/wkhtmltopdf/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2023-01-31
+last_modified_at: 2026-02-26
 toc: true
-title: How to install wkhtmltopdf plugin on different servers 
+title: How to Configure WKHTMLTOPDF for PDF Generation in Faveo Helpdesk 
 ---
-<img alt="Wkhtmltopdf" src="https://ourcodeworld.com/public-media/articles/articleocw-590c895c5d17d.png" width="200"  />
+<img alt="Wkhtmltopdf" src="https://wkhtmltopdf.org/images/logo.png" width="200"  />
 
 # <strong>Introduction :</strong>
-This document will guide you to install wkhtmltopdf on your server.
+This guide explains how to install and configure WKHTMLTOPDF specifically for generating PDFs within Faveo Helpdesk Enterprise.
 
-Wkhtmltopdf is an open source simple and much effective command-line shell utility that enables user to convert any given HTML (Web Page) to PDF document or an image (jpg, png, etc).
+WKHTMLTOPDF is used by Faveo to create ticket exports, invoices, and other PDF documents inside the application.
+
+> This documentation is intended only for administrators installing or maintaining Faveo Helpdesk and does not cover general standalone usage of WKHTMLTOPDF.
+
+
+WKHTMLTOPDF is an open source simple and much effective command-line shell utility that enables user to convert any given HTML (Web Page) to PDF document or an image (jpg, png, etc).
 
 It uses WebKit rendering layout engine to convert HTML pages to PDF document without losing the quality of the pages. Its is really very useful and trustworthy solution for creating and storing snapshots of web pages in real-time.
 
 #  <!-- omit in toc -->
-- [<strong>Steps to install wkhtmltopdf :</strong>](#steps-to-install-wkhtmltopdf)
+- [<strong>Steps to install wkhtmltopdf for Faveo Helpdesk:</strong>](#steps-to-install-wkhtmltopdf-for-faveo-helpdesk)
     - [<strong> 1. Linux Distros</strong>](#-1-linux-distros)
     - [<strong> 2. Windows Servers</strong>](#-2-windows-servers)
     
@@ -28,7 +33,7 @@ It uses WebKit rendering layout engine to convert HTML pages to PDF document wit
 
 ### <strong> 1. Linux Distros</strong>
 
-  Follow the below steps to install wkhtmltopdf on your server.
+  Follow the below steps to install wkhtmltopdf on your Faveo server.
 
 **For Alma Linux 9, Rocky9 and RHEL9**
 
@@ -75,7 +80,7 @@ apt --fix-broken install -y
 
 ### <strong> 2. Windows Servers</strong>
 
-Follow the below procedure to install wkhtmltopdf plugin on windows server with IIS or Apache webserver.
+Follow the below procedure to install wkhtmltopdf plugin for Faveo Helpdesk on windows server with IIS or Apache webserver.
 
 
 -   <a href="https://wkhtmltopdf.org/downloads.html" target="_blank" rel="noopener">Click Here</a> to download 64-bit wkhtmltopdf-0.12.6-1.exe installer file.

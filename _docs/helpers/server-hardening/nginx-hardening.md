@@ -4,7 +4,7 @@ type: docs
 permalink: /docs/helpers/server-hardening/nginx-hardening
 redirect_from:
   - /theme-setup/
-last_modified_at: 2024-09-12
+last_modified_at: 2026-03-17
 last_modified_by: Mohammad_Asif
 toc: true
 title: "Nginx Hardening for Security Implications"
@@ -87,7 +87,7 @@ sudo nano /etc/nginx/sites-available/faveo.conf
 
 Find the `http` block and add the following line:
 ```
-if ($request_method !~ ^(GET|POST|HEAD)$ ) {
+if ($request_method !~ ^(GET|POST|HEAD|PUT|PATCH|DELETE|OPTIONS)$ ) {
     return 444;
 }
 ```
@@ -472,7 +472,7 @@ server {
 #1. Hide NGINX Version
         server_tokens off;
 #2. Disable Unnecessary HTTP Methods
-if ($request_method !~ ^(GET|POST|HEAD)$ ) {
+if ($request_method !~ ^(GET|POST|HEAD|PUT|PATCH|DELETE|OPTIONS)$ ) {
     return 444;
 }
 

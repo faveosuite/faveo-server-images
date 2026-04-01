@@ -23,7 +23,7 @@ title: Faveo Installation on Windows with Wamp Server
   - [<strong> 3. Setting up the Database </strong>](#3)
   - [<strong> 4. Install Ioncube Loader </strong>](#4)
   - [<strong> 5. Install wkhtmltopdf </strong>](#5)
-  - [<strong> 6. Configure the PHP 8.2 </strong>](#6)
+  - [<strong> 6. Configure the PHP 8.4 </strong>](#6)
   - [<strong> 7. Install Redis Extension </strong>](#7)
   - [<strong> 8. Cron in Task Scheduler </strong>](#8)
   - [<strong> 9. Self-Signed SSL </strong>](#9)
@@ -33,14 +33,14 @@ title: Faveo Installation on Windows with Wamp Server
 <a id="1" name="1"></a>
 ## 1. Download and Install WampServer
 
-- <b>Download and Install WampServer with PHP 8.2:</b> If WampServer has been updated to include PHP 8.2, you can start by downloading and installing the latest version of WampServer from their official website.
+- <b>Download and Install WampServer with PHP 8.4:</b> If WampServer has been updated to include PHP 8.4, you can start by downloading and installing the latest version of WampServer from their official website.
 [Click here](https://sourceforge.net/projects/wampserver/files/WampServer%203/WampServer%203.0.0/wampserver3.3.0_x64.exe/download)
 
-- <b>Switch PHP Versions:</b> After installing WampServer with PHP 8.2, you can switch between different PHP versions using the WampServer icon in your system tray:
+- <b>Switch PHP Versions:</b> After installing WampServer with PHP 8.4, you can switch between different PHP versions using the WampServer icon in your system tray:
 
 - Left-click on the WampServer icon in the system tray to open the menu.
 Hover your mouse over "PHP," and you should see a list of available PHP versions.
-Select PHP 8.2 (if available) from the list.
+Select PHP 8.4 (if available) from the list.
 
 <img src="https://raw.githubusercontent.com/ladybirdweb/faveo-server-images/master/_docs/installation/providers/enterprise/windows-images/Wamp-Images/php-version.png" alt="" style=" width:500px">
 
@@ -78,14 +78,14 @@ C:\wamp64\www
 
 - Step 1: Extract the IonCube Loader file downloaded.
 
-- Step 2: Copy the <code><b>ioncube_loader_win_8.2.dll</b></code> file and paste it into the PHP extensions directory <code><b>C:\wamp64\bin\php\php8.2.13\ext</b></code>.
+- Step 2: Copy the <code><b>ioncube_loader_win_8.4.dll</b></code> file and paste it into the PHP extensions directory <code><b>C:\wamp64\bin\php\php8.4.13\ext</b></code>.
 
 - Step 3: Copy the “loader-wizard.php” from the extracted Ioncube folder and paste it into the <code><b>C:\wamp64\www</b></code>.
 
-- Step 4: Edit the <code><b>C:\wamp64\bin\php\php8.2.13\phpForApache.ini</b></code> file and below the last line enter the path to the extension within the <code><b>zend_extension</b></code> parameter:
+- Step 4: Edit the <code><b>C:\wamp64\bin\php\php8.4.13\phpForApache.ini</b></code> file and below the last line enter the path to the extension within the <code><b>zend_extension</b></code> parameter:
 
 ```
-zend_extension = "C:\wamp64\bin\php\php8.2.13\ext\ioncube_loader_win_8.2.dll"
+zend_extension = "C:\wamp64\bin\php\php8.4.13\ext\ioncube_loader_win_8.4.dll"
 ```
 - Step 5: Run the below URL to verify the ionCube Installation.
 - Note: If you didn’t get the below output try restarting the Apache Server.
@@ -120,14 +120,14 @@ Wkhtmltopdf is an open source simple and much effective command-line shell utili
 
 <img src="https://raw.githubusercontent.com/ladybirdweb/faveo-server-images/master/_docs/installation/providers/enterprise/windows-images/wkhtmltopdf3.png" alt="" style=" width:400px ; height:250px ">
 
-- Now copy <code><b>wkhtmltox.dll</b></code> located at <code><b>C:\Program Files\wkhtmltopdf\bin</b></code> and paste it in <code><b>C:\wamp64\bin\php\php8.2.13\ext</b></code>
+- Now copy <code><b>wkhtmltox.dll</b></code> located at <code><b>C:\Program Files\wkhtmltopdf\bin</b></code> and paste it in <code><b>C:\wamp64\bin\php\php8.4.13\ext</b></code>
 
 - Update the Environment variable for <code><b>wkhtmltopdf</b></code>.
 
 <img src="https://raw.githubusercontent.com/ladybirdweb/faveo-server-images/master/_docs/installation/providers/enterprise/windows-images/envwkhtml.png" alt="" style=" width:400px ; height:250px ">
 
 <a id="6" name="6"></a>
-## 6. Configure the PHP 8.2
+## 6. Configure the PHP 8.4
 
 - Left-click on the WampServer icon in the system tray to open the menu.
 - PHP > PHP extensions > ... several extensions to be checked or uncheched
@@ -185,12 +185,12 @@ short_open_tag = On
 
 ## 7. Install Redis Extension
 
-<a href="https://pecl.php.net/package/redis/6.1.0/windows" target="_blank" rel="noopener">Click Here</a> to download PHP 8.2 Non Thread Safe (TS) x64 zip file.
+<a href="https://pecl.php.net/package/redis/6.1.0/windows" target="_blank" rel="noopener">Click Here</a> to download PHP 8.4 Non Thread Safe (TS) x64 zip file.
 
 <img src="https://raw.githubusercontent.com/ladybirdweb/faveo-server-images/master/_docs/installation/providers/enterprise/windows-images/PHPredis.png" style=" width:400px ; height:250px ">
 
-- Unzip the php-redis zip file, a folder will be created, go inside the folder, copy the <code><b>php_redis.dll</b></code> file and paste it in <code><b>C:\wamp64\bin\php\php8.2.13\ext</b></code>. (C:\xampp\php incase of Apache WebServer).
-- Now enable php redis extension in <code><b>phpForApache.ini</b></code> configuration located in <code><b>C:\wamp64\bin\php\php8.2.13</b></code>.  
+- Unzip the php-redis zip file, a folder will be created, go inside the folder, copy the <code><b>php_redis.dll</b></code> file and paste it in <code><b>C:\wamp64\bin\php\php8.4.13\ext</b></code>. (C:\xampp\php incase of Apache WebServer).
+- Now enable php redis extension in <code><b>phpForApache.ini</b></code> configuration located in <code><b>C:\wamp64\bin\php\php8.4.13</b></code>.  
 
 ```
 extension=php_redis.dll
@@ -449,11 +449,11 @@ The above command will create a .pfx file with the name cert.pfx in the SSL dire
 
 
 -   <a href="https://curl.se/docs/caextract.html" target="_blank" rel="noopener">Click Here</a> to download <code><b>cacart.pem</b></code> file. This is required to avoid the “cURL 60 error” which is one of the Probes that Faveo checks.
-- Extract the <code><b>cacert.pem</b></code> file and copy it to <code><b>C:\wamp64\bin\php\php8.2.13</b></code> path.
+- Extract the <code><b>cacert.pem</b></code> file and copy it to <code><b>C:\wamp64\bin\php\php8.4.13</b></code> path.
 
 - Edit the <code><b>phpForApache.ini</b></code>, Uncomment <code><b>curl.cainfo</b></code> and add the location of <code><b> cacert.pem </b></code> to it as below:
 ```
-curl.cainfo = "C:\wamp64\bin\php\php8.2.13\cacert.pem"
+curl.cainfo = "C:\wamp64\bin\php\php8.4.13\cacert.pem"
 ```
 
 - Edit the faveorootCA.crt and copy the content.
@@ -481,7 +481,7 @@ curl.cainfo = "C:\wamp64\bin\php\php8.2.13\cacert.pem"
 
 - if the above is done we need to edit the php.ini file which is found inside the PHP root directory. Uncomment and add the location of <code><b>cacert.pem</b></code> to <code><b>“openssl.cafile”</b></code> like.
 ```
-openssl.cafile = "C:\wamp64\bin\php\php8.2.13\cacert.pem"
+openssl.cafile = "C:\wamp64\bin\php\php8.4.13\cacert.pem"
 ```
 
 - Edit the <code><b>C:\Apache24\conf\extra\httpd-ssl.conf</b></code> file, search for <VirtualHost _default_:443>

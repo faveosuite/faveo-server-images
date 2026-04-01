@@ -4,7 +4,7 @@ type: docs
 permalink: /docs/system-requirement/requirement/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2024-11-12
+last_modified_at: 2026-02-26
 last_modified_by: Mohammad_Asif
 toc: true
 title: "Faveo Helpdesk System Requirements"
@@ -31,7 +31,7 @@ Faveo requires a fairly standard PHP & MySQL server setup in order to be install
 
 <a id="php-versions" name="php-versions"></a>
 ## 1. PHP Version
-PHP versions **8.2.x** are supported.
+PHP versions **8.4.x** are supported.
 
 For assistance installing a new version of PHP please contact your hosting provider or server administrator.
 

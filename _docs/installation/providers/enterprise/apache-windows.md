@@ -24,7 +24,7 @@ title: Faveo Installation on Windows with Apache Web Server
 - [<strong>Installation steps:</strong>](#installation-steps)
 
   - [<strong>1.Install & Configure Apache for Windows</strong>](#1Install-&-Configure-Apache-for-Windows)
-  - [<strong> 2. PHP 8.2 for Apache Web Server </strong>](#2PHP-8.2-for-Apache-Web-Server)
+  - [<strong> 2. PHP 8.4 for Apache Web Server </strong>](#2PHP-8.4-for-Apache-Web-Server)
   - [<strong> 3. Install Ioncube Loader </strong>](#3Install-Ioncube-Loader)
   - [<strong> 4. Install wkhtmltopdf </strong>](#4Install-wkhtmltopdf)
   - [<strong> 5. Upload Faveo </strong>](#5Upload-Faveo)
@@ -272,23 +272,23 @@ LoadModule access_compat_module modules/mod_access_compat.so
 ```
 
 
-<a id="2PHP-8.2-for-Apache-Web-Server" 
-name="2PHP-8.2-for-Apache-Web-Server"></a>
+<a id="2PHP-8.4-for-Apache-Web-Server" 
+name="2PHP-8.4-for-Apache-Web-Server"></a>
 
 
-### <b>2. PHP 8.2 for Apache Web Server</b>
+### <b>2. PHP 8.4 for Apache Web Server</b>
 
 
--   <a href="https://windows.php.net/downloads/releases/archives/" target="_blank" rel="noopener">Click Here</a> to download <code>php-8.2.29-nts-Win32-vs16-x64.zip</code> file.
+-   <a href="https://windows.php.net/downloads/releases/archives/" target="_blank" rel="noopener">Click Here</a> to download <code>php-8.4.29-nts-Win32-vs16-x64.zip</code> file.
 
-<img src="https://raw.githubusercontent.com/ladybirdweb/faveo-server-images/master/_docs/installation/providers/enterprise/GUI-images/php82-a.png" alt="" style=" width:500px ; height:150px ">
+<img src="https://raw.githubusercontent.com/ladybirdweb/faveo-server-images/master/_docs/installation/providers/enterprise/GUI-images/php84-a.png" alt="" style=" width:500px ; height:150px ">
 
 - Extract the zip file & rename it to <code><b>php</b></code>. Now move the renamed <code><b>php</b></code> folder to <code><b>C drive</b></code>.
 
 
 <img src="https://raw.githubusercontent.com/ladybirdweb/faveo-server-images/master/_docs/installation/providers/enterprise/windows-images/apache20.png" alt="" style=" width:500px ; height:150px ">
 
-### <b>b. Configure the PHP 8.2</b>
+### <b>b. Configure the PHP 8.4</b>
 
 With Apache active and functional, you now need to define and configure the <code><b>C:\php\php.ini</b> </code>file so those database extensions and libraries are available for use by Faveo.
 
@@ -417,18 +417,18 @@ name="3Install-Ioncube-Loader"></a>
 ### <b>3. Install Ioncube Loader</b>
 
 
--   <a href="https://downloads.ioncube.com/loader_downloads/ioncube_loaders_win_nonts_vc16_x86-64.zip" target="_blank" rel="noopener">Click Here</a> to download IonCube Loader zip file.
+-   <a href="https://downloads.ioncube.com/loader_downloads/ioncube_loaders_win_nonts_vc17_x86-64.zip" target="_blank" rel="noopener">Click Here</a> to download Ioncube Loader zip file.
 
 - Step 1: Extract the IonCube Loader file downloaded.
 
-- Step 2: Copy the <code><b>ioncube_loader_win_8.2.dll</b></code> file and paste it into the PHP extensions directory <code><b>C:\php\ext</b></code>.
+- Step 2: Copy the <code><b>ioncube_loader_win_8.4.dll</b></code> file and paste it into the PHP extensions directory <code><b>C:\php\ext</b></code>.
 
 - Step 3: Copy the <code><b>“loader-wizard.php”</b></code> from the extracted Ioncube folder and paste it into the <code><b>C:\Apache24\htdocs</b></code>.
 
 - Step 4: Edit the <code><b>C:\php\php.ini</b></code> file and below the last line enter the path to the extension within the <code><b>zend_extension</b></code> parameter:
 
 ```
-zend_extension = "C:\php\ext\ioncube_loader_win_8.2.dll"
+zend_extension = "C:\php\ext\ioncube_loader_win_8.4.dll"
 ```
 
 - Step 5: Run the below URL to verify the ionCube Installation. 

@@ -23,7 +23,7 @@ title: Faveo Installation on Windows with Xampp Server
   - [<strong> 3. Setting up the Database </strong>](#3)
   - [<strong> 4. Install Ioncube Loader </strong>](#3)
   - [<strong> 5. Install wkhtmltopdf </strong>](#4)
-  - [<strong> 6. Configure the PHP 8.2 </strong>](#6)
+  - [<strong> 6. Configure the PHP 8.4 </strong>](#6)
   - [<strong> 7. Install Redis Extension </strong>](#7)
   - [<strong> 8. Cron in Task Scheduler </strong>](#8)
   - [<strong> 9. Self-Signed SSL </strong>](#9)
@@ -71,14 +71,14 @@ C:\xampp\htdocs\faveo
 
 - Step 1: Extract the IonCube Loader file downloaded.
 
-- Step 2: Copy the <code><b>ioncube_loader_win_8.2.dll</b></code> file and paste it into the PHP extensions directory <code><b>C:\xampp\php\ext</b></code>.
+- Step 2: Copy the <code><b>ioncube_loader_win_8.4.dll</b></code> file and paste it into the PHP extensions directory <code><b>C:\xampp\php\ext</b></code>.
 
 - Step 3: Copy the “loader-wizard.php” from the extracted Ioncube folder and paste it into the <code><b>C:\xampp\htdocs</b></code>.
 
 - Step 4: Edit the <code><b>C:\xampp\php\php.ini</b></code> file and below the last line enter the path to the extension within the <code><b>zend_extension</b></code> parameter:
 
 ```
-zend_extension = "C:\xampp\php\ext\ioncube_loader_win_8.2.dll"
+zend_extension = "C:\xampp\php\ext\ioncube_loader_win_8.4.dll"
 ```
 - Step 5: Run the below URL to verify the ionCube Installation.
 - Note: If you didn’t get the below output try restarting the Apache Server.
@@ -117,7 +117,7 @@ Wkhtmltopdf is an open source simple and much effective command-line shell utili
 
 
 <a id="6" name="6"></a>
-## 6. Configure the PHP 8.2
+## 6. Configure the PHP 8.4
 
 - Step 1: Edit the <code><b>C:\xampp\php\php.ini</b></code> file and Enable the extensions listed below, by uncommenting them (Remove the semicolon **;** at beginning of line).
 
@@ -172,7 +172,7 @@ short_open_tag = On
 
 ## 7. Install Redis Extension
 
-<a href="https://pecl.php.net/package/redis/6.1.0/windows" target="_blank" rel="noopener">Click Here</a> to download PHP 8.2 Non Thread Safe (TS) x64 zip file.
+<a href="https://pecl.php.net/package/redis/6.1.0/windows" target="_blank" rel="noopener">Click Here</a> to download PHP 8.4 Non Thread Safe (TS) x64 zip file.
 
 <img src="https://raw.githubusercontent.com/ladybirdweb/faveo-server-images/master/_docs/installation/providers/enterprise/windows-images/PHPredis.png" style=" width:400px ; height:250px ">
 

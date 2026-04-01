@@ -35,7 +35,7 @@ This document is meant for Faveo Freelancer, Paid and Enterprise Versions.
 Faveo depends on the following:
 
 -   **Apache** (with mod_rewrite enabled) 
--   **PHP 8.2+** with the following extensions: curl, dom, gd, json, mbstring, openssl, pdo_mysql, tokenizer, zip
+-   **PHP 8.4+** with the following extensions: curl, dom, gd, json, mbstring, openssl, pdo_mysql, tokenizer, zip
 -   **MySQL 8.0+** or **MariaDB 10.6+**
 -   **SSL** ,Trusted CA Signed or Self-Signed SSL
 
@@ -54,7 +54,7 @@ sudo su
 yum update -y && yum install unzip wget nano yum-utils curl openssl zip git tar -y
 ```
 
-<b> 1.a. Install php-8.2 Packages </b>
+<b> 1.a. Install php-8.4 Packages </b>
 
 
 ### RHEL 8
@@ -84,14 +84,14 @@ Use the dnf module list command to see the options available for php
 ```sh
 dnf module list php
 ```
-Enable PHP 8.2 with the following command.
+Enable PHP 8.4 with the following command.
 ```sh
-sudo dnf module enable php:remi-8.2 -y
+sudo dnf module enable php:remi-8.4 -y
 ```
-Now install php 8.2 and the required extensions.
+Now install php 8.4 and the required extensions.
 ```sh
 sudo dnf install php -y
-yum -y install php-cli php-common php-fpm php-gd php-mbstring php-pecl-mcrypt php-mysqlnd php-odbc php-pdo php-xml  php-opcache php-imap php-bcmath php-ldap php-pecl-zip php-soap php-redis
+yum -y install php-cli php-common php-fpm php-gd php-mbstring php-pecl-mcrypt php-mysqlnd php-odbc php-pdo php-xml  php-opcache php-imap php-bcmath php-ldap php-pecl-zip php-soap php-redis php-process php-posix
 ```
 <b> 1.b. Install and run Apache</b>
 Install and Enable Apache Server
@@ -111,8 +111,8 @@ Copy ioncube loader to PHP modules Directory.
 
 ```sh
 php -i | grep extension_dir
-cp ioncube/ioncube_loader_lin_8.2.so /usr/lib64/php/modules 
-sed -i '2 a zend_extension = "/usr/lib64/php/modules/ioncube_loader_lin_8.2.so"' /etc/php.ini
+cp ioncube/ioncube_loader_lin_8.4.so /usr/lib64/php/modules 
+sed -i '2 a zend_extension = "/usr/lib64/php/modules/ioncube_loader_lin_8.4.so"' /etc/php.ini
 sed -i "s/max_execution_time = .*/max_execution_time = 300/" /etc/php.ini
 ```
 

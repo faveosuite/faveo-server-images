@@ -228,13 +228,3 @@ Example (daily scan at 03:30 AM):
 ---
 
 
-<div style="display: flex; align-items: center;">
-    <a href="https://1.gravatar.com/avatar/c0d70118d1dcf472a3b428453e49e1723127a1d83d8aeb4fb9d7b53a15860d13?size=512">
-        <img src="https://1.gravatar.com/avatar/c0d70118d1dcf472a3b428453e49e1723127a1d83d8aeb4fb9d7b53a15860d13?size=128" alt="Author Image" style="border-radius: 50%; width: 50px; height: 50px; margin-right: 10px;">
-    </a>
-    <div style="text-align: left;">
-        <div style="line-height: 1;">Authored by:</div>
-      <div style="line-height: 1;"> <b>Mohammad Asif</b> </div>
-			<div style="line-height: 1;">Associate DevOps Engineer</div>
-    </div>
-</div>

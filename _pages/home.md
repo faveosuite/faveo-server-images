@@ -88,7 +88,7 @@ The above is the minimum requirements for Faveo Helpdesk, and will vary accordin
 Basically, Faveo depends on the following:
 
 -   **Apache** (with mod_rewrite enabled) or **Nginx** or **IIS**
--   **PHP 8.2.x** with the certain extensions like php-curl, php-gd, php-mbstring, php-pecl-mcrypt, php-mysqlnd, php-odbc, php-pdo etc
+-   **PHP 8.4.x** with the certain extensions like php-curl, php-gd, php-mbstring, php-pecl-mcrypt, php-mysqlnd, php-odbc, php-pdo etc
 -   **Composer**(Optional)
 -   **MySQL 8.0.x** or **MariaDB 10.6.x**
 -   **Redis** 

@@ -33,6 +33,17 @@ Faveo Helpdesk is now powered by <a href="https://laravel.com/docs/12.x" target=
    - [<strong>4. cPanel</strong>](#4cpanel)
 
 
+<p class="notice--warning">
+⚠️ <b>Important Notice:</b> <b>Ubuntu 20.04 LTS has reached End of Life (EOL)</b> and is no longer supported.
+This guide is <b>not applicable for Ubuntu 20.04</b>.
+Please migrate your system to a supported version such as <b>Ubuntu 22.04 LTS or 24.04 LTS</b> before proceeding.
+<br><br>
+For more details, refer to the official EOL timeline:
+<a href="https://endoflife.date/ubuntu" target="_blank" rel="noopener">Ubuntu End of Life Dates</a>
+</p>
+
+
+
 Before proceeding further check your current PHP version. To find out which version of PHP you are currently using, run this in the Terminal or Windows command prompt. 
 
 ```sh

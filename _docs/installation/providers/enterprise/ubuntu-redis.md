@@ -4,9 +4,10 @@ type: docs
 permalink: /docs/installation/providers/enterprise/ubuntu-redis/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2023-10-31
+last_modified_at: 2026-04-09
+last_modified_by: Mohammad_Asif
 toc: true
-title: Install and configure Redis, Supervisor and Worker for Faveo on Ubuntu 20.04 and 22.04
+title: Install and configure Redis, Supervisor and Worker for Faveo on Ubuntu Server
 ---
 
 

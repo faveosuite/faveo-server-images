@@ -4,7 +4,7 @@ type: docs
 permalink: /docs/installation/providers/community/ubuntu-apache/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2023-12-19
+last_modified_at: 2026-04-09
 last_modified_by: Mohammad_Asif
 toc: true
 title: Installing Faveo Helpdesk Community Edition on Ubuntu With Apache Webserver
@@ -13,7 +13,7 @@ title: Installing Faveo Helpdesk Community Edition on Ubuntu With Apache Webserv
 
 <img alt="Ubuntu" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Logo-ubuntu_cof-orange-hex.svg/120px-Logo-ubuntu_cof-orange-hex.svg.png" width="120" height="120" />
 
-Faveo can run on [Ubuntu 20.04 (Focal Fosa), Ubuntu 22.04 (Jammy Jellyfish)](http://releases.ubuntu.com/22.04/).
+Faveo can run on [Ubuntu 22.04 (Jammy Jellyfish), Ubuntu 24.04 (Noble Numbat)](http://releases.ubuntu.com/22.04/).
 
 - [<strong>Installation steps :</strong>](#installation-steps-)
     - [<strong>1. Apache Installation</strong>](#1-apache-installation)
@@ -27,9 +27,6 @@ Faveo can run on [Ubuntu 20.04 (Focal Fosa), Ubuntu 22.04 (Jammy Jellyfish)](htt
     - [<strong>9. Install Faveo</strong>](#9-install-faveo)
     - [<strong>10. Faveo Backup</strong>](#10-faveo-backup)
     - [<strong>11. Final step</strong>](#11-final-step)
-
-> **NOTE** :
-> Ubuntu 22.04 is the recommended version, Ubuntu 20.04 does not support oAuth integration.
 
 
 
@@ -136,32 +133,41 @@ sed -i '2 a zend_extension = "/usr/lib/php/'replaceyourpath'/ioncube_loader_lin_
 systemctl restart apache2 
 ```
 
-<b>2.c. Mysql</b>
+<b>2.c.  Install MySQL/MariaDB</b>
 
 The official Faveo installation uses Mysql/MariaDB as the database system and **this is the only official system we support**. While Laravel technically supports PostgreSQL and SQLite, we can't guarantee that it will work fine with Faveo as we've never tested it. Feel free to read [Laravel's documentation](https://laravel.com/docs/database#configuration) on that topic if you feel adventurous.
 
-Install Mysql 8.0 or MariaDB 10.6. Note that this only installs the package, but does not setup Mysql. This is done later in the instructions:
+You can install either MySQL or MariaDB. We have given options for both MySQL and MariaDB below.
 
- <b> For Ubuntu 20.04 </b>
+<b>2.c.1. MySQL 8.0</b>
+
+Install Mysql 8.0. Note that this only installs the package, but does not setup Mysql. This is done later in the instructions:
 
 ```sh 
-sudo apt install dirmngr ca-certificates software-properties-common gnupg gnupg2 apt-transport-https curl -y
-curl -fsSL http://repo.mysql.com/RPM-GPG-KEY-mysql-2022 | gpg --dearmor | sudo tee /usr/share/keyrings/mysql.gpg > /dev/null
-echo 'deb [signed-by=/usr/share/keyrings/mysql.gpg] http://repo.mysql.com/apt/ubuntu focal mysql-8.0' | sudo tee -a /etc/apt/sources.list.d/mysql.list
-echo 'deb-src [signed-by=/usr/share/keyrings/mysql.gpg] http://repo.mysql.com/apt/ubuntu focal mysql-8.0' | sudo tee -a /etc/apt/sources.list.d/mysql.list
 sudo apt update
-sudo apt install mysql-community-server -y
+sudo apt install mysql-server 
 sudo systemctl start mysql
 sudo systemctl enable mysql
 ```
- <b> For Ubuntu 22.04 </b>
 
+
+Secure your MySql installation by executing the below command. Set Password for mysql root user, remove anonymous users, disallow remote root login, remove the test databases and finally reload the privilege tables.
+```sh
+mysql_secure_installation 
 ```
+
+<b>2.c.2.MariaDB 10.6</b>
+
+Install MariaDB 10.6. Note that this only installs the package, but does not setup Mysql. This is done later in the instructions:
+
+
+```sh 
 sudo apt update
 sudo apt install mariadb-server mariadb-client -y
 sudo systemctl start mariadb
 sudo systemctl enable mariadb
 ```
+> NOTE: Ubuntu 24.04 doesn't officially support MariaDb 10.6, so only MySQL 8.0 can be installed for Ubuntu 22.04
 
 Secure your MySql installation by executing the below command. Set Password for mysql root user, remove anonymous users, disallow remote root login, remove the test databases and finally reload the privilege tables.
 ```sh
@@ -175,12 +181,6 @@ Wkhtmltopdf is an open source simple and much effective command-line shell utili
 
 It uses WebKit rendering layout engine to convert HTML pages to PDF document without losing the quality of the pages. Its is really very useful and trustworthy solution for creating and storing snapshots of web pages in real-time.
 
-**For Ubuntu 20.04**
-
-```sh
-apt-get -y install wkhtmltopdf
-```
-**For Ubuntu 22.04**
 
 ```
 apt install libfontenc1 xfonts-75dpi xfonts-base xfonts-encodings xfonts-utils

@@ -4,14 +4,14 @@ type: docs
 permalink: /docs/installation/providers/enterprise/rocky-apache-ssl/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2023-12-14
-last_modified_by: TamilSelvan_M
+last_modified_at: 2026-04-09
+last_modified_by: Mohammad_Asif
 toc: true
 title: Install LetsEncrypt SSL for Faveo on Rocky Running Apache Web Server
 ---
 
 
-<img alt="Rocky OS Logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Rocky_Linux_wordmark.svg/800px-Rocky_Linux_wordmark.svg.png"  width="200"  />
+<img alt="Rocky OS Logo" src="https://upload.wikimedia.org/wikipedia/commons/9/9c/Rocky_Linux_wordmark.svg"  width="200"  />
 
 
 ## Introduction

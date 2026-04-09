@@ -4,9 +4,10 @@ type: docs
 permalink: /docs/installation/providers/enterprise/ubuntu-apache-ssl/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2023-10-31
+last_modified_at: 2026-04-09
+last_modified_by: Mohammad_Asif
 toc: true
-title: Install LetsEncrypt SSL for Faveo on Ubuntu 20.04 and 22.04 Running Apache Web Server
+title: Install LetsEncrypt SSL for Faveo on Ubuntu Server Running Apache Web Server
 ---
 
 <img alt="Ubuntu" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Logo-ubuntu_cof-orange-hex.svg/120px-Logo-ubuntu_cof-orange-hex.svg.png" width="120" height="120" />
@@ -19,7 +20,7 @@ PS : Please replace example.com with your valid domain name which is mapped with
 We will install following dependencies in order to make LetsEncrypt SSL work:
 
 - python-certbot-apache
-## Downloading the LetsEncrypt client for Ubuntu 20.04 or 22.04
+## Downloading the LetsEncrypt client 
 
 ```sh
 apt install python3-certbot-apache

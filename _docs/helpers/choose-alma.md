@@ -4,13 +4,13 @@ type: docs
 permalink: /docs/helpers/choose-alma/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2023-02-02
+last_modified_at: 2026-04-09
 last_modified_by: Mohammad_Asif
 toc: true
 title: Installing Faveo on Alma Linux
 ---
 
-<img alt="Alma Linux Logo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/AlmaLinux_Icon_Logo.svg/1024px-AlmaLinux_Icon_Logo.svg.png?20211201021832" width="150"  />
+<img alt="Alma Linux Logo" src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Almalinux_logo.png" width="150"  />
 
 Faveo can run on [Alma Linux](https://almalinux.org/).
 

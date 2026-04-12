@@ -4,13 +4,13 @@ type: docs
 permalink: /docs/installation/providers/community/debian-apache/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2023-12-19
+last_modified_at: 2026-04-12
 last_modified_by: Mohammad_Asif
 toc: true
 title: Installing Faveo Helpdesk Community Edition on Debian With Apache Webserver
 ---
 
-<img alt="debian" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Debian-OpenLogo.svg/109px-Debian-OpenLogo.svg.png" width="96" height="127" />
+<img alt="debian" src="https://upload.wikimedia.org/wikipedia/commons/0/04/Debian_logo.png" width="96" height="100" />
 
 Faveo can run on Debian 11 (Bullseye), Debian 12 (Bookworm).
 

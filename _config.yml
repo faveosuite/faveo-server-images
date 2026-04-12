@@ -76,7 +76,7 @@ social:
   type                   : # Person or Organization (defaults to Person)
   name                   : # If the user or organization name differs from the site's name
   links: # An array of links to social media profiles
-    - "https://twitter.com/faveohelpdesk"
+    - "https://x.com/faveohelpdesk"
     - "https://www.facebook.com/faveohelpdesk"
 
 # Analytics
@@ -97,12 +97,12 @@ author:
     - label: "Made Mistakes"
       icon: "fas fa-fw fa-link"
       url: "https://faveohelpdesk.com"
-    - label: "Twitter"
-      icon: "fab fa-fw fa-twitter-square"
-      url: "https://twitter.com/faveohelpdesk"
+    - label: "X"
+      icon: "fab fa-fw fa-x-twitter"
+      url: "https://x.com/faveohelpdesk"
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
-      url: "https://github.com/ladybirdweb"
+      url: "https://github.com/faveosuite"
     - label: "Instagram"
       icon: "fab fa-fw fa-instagram"
       url: "https://instagram.com/faveohelpdesk"
@@ -111,12 +111,12 @@ author:
 # Site Footer
 footer:
   links:
-    - label: "Twitter"
-      icon: "fab fa-fw fa-twitter-square"
-      url: "https://twitter.com/faveohelpdesk"
+    - label: "X"
+      icon: "fab fa-fw fa-x-twitter"
+      url: "https://x.com/faveohelpdesk"
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
-      url: "https://github.com/ladybirdweb"
+      url: "https://github.com/faveosuite"
     - label: "Instagram"
       icon: "fab fa-fw fa-instagram"
       url: "https://instagram.com/faveohelpdesk"

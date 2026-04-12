@@ -4,7 +4,7 @@ type: docs
 permalink: /docs/installation/providers/enterprise/memcached/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2023-12-12
+last_modified_at: 2026-04-12
 last_modified_by: Mohammad_Asif
 toc: true
 title: Installing Memcached for Faveo
@@ -35,15 +35,15 @@ a. Debian 11 (Bullseye)
 
 b. Debian 12 (Bookworm)  
 
-c. Ubuntu 20.04 (Focal Fosa) 
+c. Ubuntu 22.04 (Jammy Jellyfish)
 
-d. Ubuntu 22.04 (Jammy Jellyfish)
+d. c. Ubuntu 24.04 (Noble Numbat) 
 
 
 #### Installing PHP extension
 
 ```
-apt-get install -y libapache2-mod-php8.1 php8.1-memcached
+apt-get install -y libapache2-mod-php8.4 php8.4-memcached
 ```
 
 #### Installing Memcached
@@ -284,18 +284,18 @@ sudo systemctl restart memcached
 
 #### Installing PHP extension
 
-<a href="https://pecl.php.net/package/memcached/3.2.0/windows" target="_blank" rel="noopener">Click Here</a> to download PHP 8.1 x64 extension zip file (NTS or TS depending on the PHP type) for Memcached.
+<a href="https://pecl.php.net/package/memcached/3.4.0/windows" target="_blank" rel="noopener">Click Here</a> to download PHP 8.4 x64 extension zip file (NTS or TS depending on the PHP type) for Memcached.
 
 <img src="https://raw.githubusercontent.com/ladybirdweb/faveo-server-images/master/_docs/installation/providers/enterprise/GUI-images/memcached.png" alt="" style=" width:400px ; height:150px ">
 
-- Unzip the downloaded zip file *(php_memcached-3.2.0rc2-8.1-nts-vs16-x64.zip file or php_memcached-3.2.0.8.1-ts-vs16-x64.zip file)*.
+- Unzip the downloaded zip file *(php_memcached-3.2.0rc2-8.4-nts-vs16-x64.zip file or php_memcached-3.4.0.8.4-nts-vs17-x64.zip file)*.
 
-- Copy the *libmemcached.dll* file from the extracted zip content and paste it in C:\php8.1\ext. (C:\php\ext incase of Apache WebServer).
+- Copy the *libmemcached.dll* file from the extracted zip content and paste it in C:\php8.4\ext. (C:\php\ext incase of Apache WebServer).
 
 - Also copy *php_memcached.dll* and *libhashkit.dll* and paste it in C:\windows.
 
 
-- Now enable php memcached extension in php.ini configuration located in C:\php8.1. (C:\php incase of Apache WebServer).
+- Now enable php memcached extension in php.ini configuration located in C:\php8.4. (C:\php incase of Apache WebServer).
 
 ```
 extension=php_memcached

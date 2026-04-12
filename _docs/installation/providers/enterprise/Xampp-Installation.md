@@ -4,15 +4,15 @@ type: docs
 permalink: /docs/installation/providers/enterprise/xampp-windows/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2024-11-12
-last_modified_by: TamilSelvan_M
+last_modified_at: 2026-04-12
+last_modified_by: Mohammad_Asif
 toc: true
 title: Faveo Installation on Windows with Xampp Server
 ---
 
 <style>p>code, a>code, li>code, figcaption>code, td>code {background: #dedede;}</style>
 
-<img alt="Wamp" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Xampp_logo.svg/2560px-Xampp_logo.svg.png" width="200"  /> 
+<img alt="xamp" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Xampp_logo.svg/1280px-Xampp_logo.svg.png" width="200"  /> 
 
 [<strong>Faveo Installation on Windows with Xampp Server</strong>](#Faveo-Installation-on-Windows-with-Xampp-Server)
 

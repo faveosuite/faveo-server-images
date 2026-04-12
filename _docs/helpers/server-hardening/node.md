@@ -4,12 +4,12 @@ type: docs
 permalink: /docs/helpers/node
 redirect_from:
   - /theme-setup/
-last_modified_at: 2024-09-12
+last_modified_at: 20246-04-12
 last_modified_by: Mohammad_Asif
 toc: true
 title: "Installing Node.js and Puppeteer for Faveo's Graphical Reports"
 ---
-<img alt="node" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Node.js_logo_2015.svg/2560px-Node.js_logo_2015.svg.png" width="100"  />
+<img alt="node" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Node.js_logo.svg/3840px-Node.js_logo.svg.png" width="100"  />
 
 This guide provides instructions to install the required Node.js packages and Puppeteer to enable the graphical reports feature in Faveo Helpdesk on Debian-based servers, RHEL-based servers, and Windows servers.
 

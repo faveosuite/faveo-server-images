@@ -4,7 +4,7 @@ type: docs
 permalink: /docs/helpers/meshcentral/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2025-11-25
+last_modified_at: 2026-04-12
 last_modified_by: Mohammad_Asif
 toc: true
 title: MeshCentral Setup for Agent Remote Access
@@ -18,7 +18,7 @@ title: MeshCentral Setup for Agent Remote Access
  is a powerful open-source remote management tool. This guide explains how to install and configure MeshCentral on an Ubuntu server using Apache, PHP, Node.js, and Let’s Encrypt SSL.
 
 ## Prerequisites:
-- Ubuntu 22.04+ server with sudo or root access
+- Ubuntu 22.04/Ubuntu 24.04 server with sudo or root access
 - A valid domain name (e.g. YOURDOMAIN.COM) pointing to your server
 - Ports 80 (HTTP) and 443 (HTTPS) open
 

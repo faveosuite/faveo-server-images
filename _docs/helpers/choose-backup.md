@@ -4,13 +4,13 @@ type: docs
 permalink: /docs/helpers/choose-backup/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2023-01-24
+last_modified_at: 2026-04-12
 last_modified_by: Mohammad_Asif
 toc: true
 title: Faveo Backup Options Guide
 ---
 
-<img alt="Backup" src="https://elements-cover-images-0.imgix.net/2cc7c062-05fc-4439-8ae6-ac0d24de3012?auto=compress&h=630&w=1200&fit=crop&crop=edges&fm=jpeg&s=c05e58b0049ca74ae7cbd8af367ea244" width="200" />
+<img alt="Backup" src="https://static.thenounproject.com/png/4446671-200.png" width="200" />
 
 ---
 

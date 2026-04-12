@@ -4,7 +4,7 @@ type: docs
 permalink: /docs/installation/providers/enterprise/network-discovery/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2025-07-03
+last_modified_at: 2026-04-12
 last_modified_by: Mohammad_Asif
 toc: true
 title: Installing Faveo Network Discovery Tool on Linux Distributions.
@@ -26,26 +26,30 @@ Faveo Network Discovery Tool can run on the Linux Distributions listed below. Ch
     - [<strong>1. Rocky Linux 9</strong>](#1-rocky-linux-9)
     - [<strong>2. Alma Linux 9:</strong>](#2-alma-linix-9)
     - [<strong>3. RHEL 9</strong>](#3-rhel-9)
-    - [<strong>4. Ubuntu 20.04 & 22.04</strong>](#4-ubuntu-20.04-&-22.04)
+    - [<strong>4. Ubuntu 22.04 & 24.04</strong>](#4-ubuntu-22.04-&-22.04)
     - [<strong>5. Debian 11 & 12</strong>](#5-debian-11-&-12)
  
 
  Faveo Network Discovery uses the below protocols to gather the information about the Assets/Devices present on a network.
 
-- SSH
-- NMAP
-- SNMP
+| Protocol | Description |
+|----------|------------|
+| SSH      | Used for secure remote access and data collection |
+| NMAP     | Used for network scanning and discovery |
+| SNMP     | Used for information gathering |
 
-Also PING should be enabled on the devices to be scanned.
+Also `PING` should be enabled on the devices to be scanned.
 
 The below ports should be Open on the Faveo Network Discovery Server:
 
-- HTTP: 80
-- HTTPS: 443
-- Redis: 6379
-- SMTP: 587
-- SSH: 22
-- SNMP: 161, 162
+| Service | Port(s) |
+|--------|--------|
+| HTTP   | 80     |
+| HTTPS  | 443    |
+| Redis  | 6379   |
+| SMTP   | 587    |
+| SSH    | 22     |
+| SNMP   | 161, 162 |
 
 
 ---
@@ -159,9 +163,9 @@ Now you can now install Faveo Network Discovery Tool via <a href="https://docs.f
 ---
 
 
-<a id="4-ubuntu-20.04-&-22.04" name="4-ubuntu-20.04-&-22.04"></a>
+<a id="4-ubuntu-22.04-&-24.04" name="4-ubuntu-22.04-&-24.04"></a>
 
-### <strong>4. Ubuntu 20.04 & 22.04</strong>
+### <strong>4. Ubuntu 22.04 & 22.04</strong>
 
 <a href="https://docs.faveohelpdesk.com/docs/installation/providers/enterprise/ubuntu-apache/" target="_blank" rel="noopener">Click Here</a> to follow the installation steps of Faveo Helpdesk.
 
@@ -174,7 +178,7 @@ apt install -y nmap arp-scan nbtscan avahi-utils net-tools
 ```
 
 ```
-apt install -y php8.2-snmp
+apt install -y php8.4-snmp
 ```
 
 Sudo Configuration:
@@ -211,7 +215,7 @@ apt install -y nmap arp-scan nbtscan avahi-utils net-tools
 ```
 
 ```
-apt install -y php8.2-snmp
+apt install -y php8.4-snmp
 ```
 
 Sudo Configuration:

@@ -4,8 +4,8 @@ type: docs
 permalink: /docs/helpers/email-server/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2024-08-21
-last_modified_by: TamilSelvan_M
+last_modified_at: 2026-04-12
+last_modified_by: Mohammad_Asif
 toc: true
 title: "Setup Email Server for Faveo"
 ---
@@ -14,7 +14,7 @@ title: "Setup Email Server for Faveo"
 # Introduction: 
 Setting up your own email server on Ubuntu Server allows you to have complete control over your email communication without relying on third-party services. By following these instructions, you can bypass daily email limits and ensure reliable delivery for your business or personal needs.
 
-Setting up your own email server on Ubuntu 22.04 involves several steps including installing and configuring the necessary software, setting up DNS records, and securing your server. Below are the instructions, commands, and DNS records you'll need:
+Setting up your own email server on Ubuntu 22.04/Ubuntu 24.04 involves several steps including installing and configuring the necessary software, setting up DNS records, and securing your server. Below are the instructions, commands, and DNS records you'll need:
 
 
 ### 1. Set the Server Hostname.

@@ -4,12 +4,12 @@ type: docs
 permalink: /docs/installation/providers/enterprise/docker-migration/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2024-10-04
+last_modified_at: 2026-04-12
 last_modified_by: Mohammad_Asif
 toc: true
 title: Faveo Helpdesk Migration to Docker
 ---
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Docker_%28container_engine%29_logo.svg/440px-Docker_%28container_engine%29_logo.svg.png" alt="drawing" width="300"/>
+<img src="https://upload.wikimedia.org/wikipedia/commons/1/1e/Docker_Logo.png" alt="drawing" width="300"/>
 
 This documentation outlines the step-by-step process for migrating Faveo Helpdesk from a legacy server to a Dockerized environment.
 

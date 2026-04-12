@@ -4,12 +4,13 @@ type: docs
 permalink: /docs/installation/providers/enterprise/debian-redis/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2020-06-09
+last_modified_at: 2026-04-12
+last_modified_by: Mohammad_Asif
 toc: true
 title: Install and configure Redis, Supervisor and Worker for Faveo on Debian
 ---
 
-<img alt="debian" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Debian-OpenLogo.svg/109px-Debian-OpenLogo.svg.png" width="120" height="120" />
+<img alt="debian" src="https://upload.wikimedia.org/wikipedia/commons/0/04/Debian_logo.png" width="100" height="100" />
 
 ## Introduction
 This document will list steps on how to install Redis, Supervisor and Worker for faveo.

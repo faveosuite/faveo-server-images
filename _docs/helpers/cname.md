@@ -4,7 +4,8 @@ type: docs
 permalink: /docs/helper/cname/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2023-05-29
+last_modified_at: 2026-04-12
+last_modified_by: Mohammad_Asif
 toc: true
 title: Creating Custom Domains for Faveo Cloud
 ---
@@ -15,7 +16,7 @@ This document will guide you on how to create a custom domain for your Faveo Clo
 
 ### Prerequisites:
 
-1. To create a custom domain, it is necessary to have a registered domain with a reputable vendor such as GoDaddy, Namecheap, Freenom, or other similar providers. If you currently do not possess a domain to create a custom domain, you have the option to register one through our platform at [store.faveohelpdesk.com](https://store.faveohelpdesk.com/) or through your preferred domain vendor.
+1. To create a custom domain, it is necessary to have a registered domain with a reputable vendor such as GoDaddy, Namecheap, Freenom, or other similar providers. If you currently do not possess a domain to create a custom domain, you have the option to register one through our platform at [domain.faveohelpdesk.com](https://domain.faveohelpdesk.com/) or through your preferred domain vendor.
 
 2. We understand that acquiring a domain is a crucial step in establishing your online presence. Thus, we offer the convenience of domain registration directly through our platform, ensuring a seamless experience for our global audience. Alternatively, if you have a preferred domain vendor that you trust, you can register a domain through them as well.
 

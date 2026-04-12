@@ -98,7 +98,7 @@ author:
       icon: "fas fa-fw fa-link"
       url: "https://faveohelpdesk.com"
     - label: "X"
-      icon: "fab fa-fw fa-x-twitter"
+      icon: "fa-brands fa-x-twitter"
       url: "https://x.com/faveohelpdesk"
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
@@ -112,7 +112,7 @@ author:
 footer:
   links:
     - label: "X"
-      icon: "fab fa-fw fa-x-twitter"
+      icon: "fa-brands fa-x-twitter"
       url: "https://x.com/faveohelpdesk"
     - label: "GitHub"
       icon: "fab fa-fw fa-github"

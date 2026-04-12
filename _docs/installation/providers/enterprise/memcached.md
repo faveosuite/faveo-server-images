@@ -286,7 +286,7 @@ sudo systemctl restart memcached
 
 <a href="https://pecl.php.net/package/memcached/3.4.0/windows" target="_blank" rel="noopener">Click Here</a> to download PHP 8.4 x64 extension zip file (NTS or TS depending on the PHP type) for Memcached.
 
-<img src="https://raw.githubusercontent.com/ladybirdweb/faveo-server-images/master/_docs/installation/providers/enterprise/GUI-images/memcached.png" alt="" style=" width:400px ; height:150px ">
+<img src="https://raw.githubusercontent.com/faveosuite/faveo-server-images/refs/heads/master/_docs/installation/providers/enterprise/windows-images/memcached-php84.png" alt="" style=" width:400px ; height:150px ">
 
 - Unzip the downloaded zip file *(php_memcached-3.2.0rc2-8.4-nts-vs16-x64.zip file or php_memcached-3.4.0.8.4-nts-vs17-x64.zip file)*.
 
@@ -305,7 +305,7 @@ extension=php_memcached
 
 #### Installing Memcached
 
-<a href="https://static.runoob.com/download/memcached-win64-1.4.4-14.zip" target="_blank" rel="noopener">Click Here</a> to download the stable version of Memcached for windows Server.
+<a href="https://github.com/faveosuite/faveo-server-images/raw/master/_docs/installation/providers/enterprise/windows-images/memcached.zip" target="_blank" rel="noopener">Click Here</a> to download the stable version of Memcached for Windows Server.
 
 - Unzip it in some hard drive folder. For example *C:\memcached*
 

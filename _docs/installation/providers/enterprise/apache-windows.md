@@ -4,7 +4,7 @@ type: docs
 permalink: /docs/installation/providers/enterprise/apache-windows/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2025-07-15
+last_modified_at: 2026-04-12
 last_modified_by: Mohammad_Asif
 toc: true
 title: Faveo Installation on Windows with Apache Web Server
@@ -17,7 +17,7 @@ title: Faveo Installation on Windows with Apache Web Server
 
 
 
-<img alt="Apache" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Apache_HTTP_server_logo_%282019-present%29.svg/2560px-Apache_HTTP_server_logo_%282019-present%29.svg.png" width="200"  /> 
+<img alt="Apache" src="https://upload.wikimedia.org/wikipedia/commons/a/a8/Apache_HTTP_Server_Logo_%282016%29.svg" width="200"  /> 
 
 [<strong>Faveo Installation on Windows with Apache Web Server</strong>](#Faveo-Installation-on-Windows-with-Apache-Web-Server)
 
@@ -28,7 +28,7 @@ title: Faveo Installation on Windows with Apache Web Server
   - [<strong> 3. Install Ioncube Loader </strong>](#3Install-Ioncube-Loader)
   - [<strong> 4. Install wkhtmltopdf </strong>](#4Install-wkhtmltopdf)
   - [<strong> 5. Upload Faveo </strong>](#5Upload-Faveo)
-  - [<strong> 6. Install MariaDB 10.6/MySQL 8.0  </strong>](#3Install-MariaDB-10.6/MySQL-8.0)
+  - [<strong> 6. Install MariaDB 10.6/MySQL 8.0  </strong>](#6Install-MariaDB-10.6/MySQL-8.0)
   - [<strong> 7. Setting up the Database </strong>](#7Setting-up-the-Database)
   - [<strong> 8. Set Cron & Configure Queue Driver </strong>](#8Configure-Task-Scheduler)
   - [<strong> 9. Install Meilisearch </strong>](#9Install-meilisearch)

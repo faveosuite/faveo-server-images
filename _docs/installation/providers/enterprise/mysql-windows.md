@@ -4,7 +4,7 @@ type: docs
 permalink: /docs/installation/providers/enterprise/mysql-windows/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2022-06-29
+last_modified_at: 2026-04-12
 last_modified_by: Mohammad_Asif
 toc: true
 title: Installing MySQL 8.0 on Windows Server
@@ -14,7 +14,7 @@ title: Installing MySQL 8.0 on Windows Server
 <img alt="Windows" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e2/Windows_logo_and_wordmark_-_2021.svg/250px-Windows_logo_and_wordmark_-_2021.svg.png" width="200"  /> 
 
 
-<img alt="mysql" src="https://redpaladin.com/wp-content/uploads/2017/03/mysql-logo.jpg" width="200"  />
+<img alt="mysql" src="https://upload.wikimedia.org/wikipedia/fr/thumb/6/62/MySQL.svg/3840px-MySQL.svg.png" width="200"  />
 
 [<strong>Install MySQL 8.0 on Windows Server</strong>](#Install-MySQL-8.0-on-Windows-Server)
 

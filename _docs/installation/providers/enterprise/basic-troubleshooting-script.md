@@ -52,9 +52,9 @@ This script includes the following diagnostic checks:
 
 ## How to execute the script:
 
-- To download the script, **[Click here](/installation-scripts/FaveoInstallationScripts/basic-troubleshoot.sh)** or run the *wget* command below.
+- To download the script, **[Click here](/installation-scripts/scripts/basic-troubleshoot.sh)** or run the *wget* command below.
 ```sh
-wget http://raw.githubusercontent.com/faveosuite/faveo-server-images/refs/heads/master/installation-scripts/FaveoInstallationScripts/basic-troubleshoot.sh
+wget http://raw.githubusercontent.com/faveosuite/faveo-server-images/refs/heads/master/installation-scripts/scripts/basic-troubleshoot.sh
 ```
 
 - Once the file is downloaded to the faveo server, we have to give the script executable permissions. To do this, run the command below inside the directory where the script is present.

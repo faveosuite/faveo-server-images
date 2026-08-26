@@ -21,11 +21,11 @@ Prerequisites:
 - "curl" and "tar" tools installed.
 - sudo or root user privileges.
 
-* [View folder on GitHub](https://github.com/faveosuite/faveo-server-images/tree/master/installation-scripts/scripts/faveo_helpdesk) or run the command below to download the scripts directly:
+* [View folder on GitHub](https://github.com/faveosuite/faveo-server-images/tree/master/scripts/installation-scripts/faveo_helpdesk) or run the command below to download the scripts directly:
  
 ```sh
 curl -sL "https://github.com/faveosuite/faveo-server-images/archive/refs/heads/master.tar.gz" \
-  | tar -xz --strip-components=3 "faveo-server-images-master/installation-scripts/scripts/faveo_helpdesk"
+  | tar -xz --strip-components=3 "faveo-server-images-master/scripts/installation-scripts/faveo_helpdesk"
 ```
 
 Once the Folder is downlaoded to the faveo server provide executable permission to the script.

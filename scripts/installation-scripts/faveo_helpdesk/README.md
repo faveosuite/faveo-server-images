@@ -149,7 +149,7 @@ The installation suite is split into a modular orchestrator and distribution-spe
 
 ```bash
 curl -sL "https://github.com/faveosuite/faveo-server-images/archive/refs/heads/master.tar.gz" \
-  | tar -xz --strip-components=3 "faveo-server-images-master/installation-scripts/scripts/faveo_helpdesk"
+  | tar -xz --strip-components=3 "faveo-server-images-master/scripts/installation-scripts/faveo_helpdesk"
 cd faveo_heldpesk
 chmod +x *
 ```

@@ -418,7 +418,7 @@ The installation suite includes a self-healing rollback routine (`rollback()`). 
 ## 👥 Maintainers & Support
 
 - **Author**: Thirumoorthi Duraipandi
-- **Email**: `thirumoorthi.duraipandi@ladybirdweb.com` | `thirumoorthi3706@gmail.com`
-- **Official Repository**: [ladybirdweb/faveo-server-images](https://github.com/ladybirdweb/faveo-server-images/)
+- **Email**: `thirumoorthi.duraipandi@faveohelpdesk.com`
+- **Official Repository**: [faveosuite/faveo-server-images](https://github.com/faveosuite/faveo-server-images/)
 - **Faveo Official Portal**: [https://www.faveohelpdesk.com](https://www.faveohelpdesk.com)
 - **Knowledge Base & Documentation**: [Faveo Helpdesk Documentation](https://support.faveohelpdesk.com)

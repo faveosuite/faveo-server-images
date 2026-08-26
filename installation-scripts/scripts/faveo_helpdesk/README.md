@@ -360,26 +360,8 @@ cat ./credentials.txt
 
 ### 🔍 Verification Commands
 
-Check the health of all backing services:
+Check the health of all backing services by using the troubleshooting script by following this: [Click Here](https://docs.faveohelpdesk.com/docs/installation/providers/enterprise/basic-troubleshooting-script)
 
-```bash
-# Web Server
-systemctl status nginx          # or systemctl status httpd / apache2
-
-# PHP-FPM
-systemctl status php*-fpm
-
-# Database & Cache
-systemctl status mysql          # or systemctl status mariadb
-systemctl status redis          # or systemctl status redis-server
-
-# Search & Supervisors
-systemctl status meilisearch
-systemctl status supervisor     # or systemctl status supervisord
-
-# Horizon Queue Workers status
-sudo -u www-data php /var/www/faveo/artisan horizon:status
-```
 
 ---
 

@@ -1,7 +1,7 @@
 ---
 layout: single
 type: docs
-permalink: /docs/installation/providers/enterprise/faveo-invoicing-docker
+permalink: /docs/installation/providers/enterprise/faveo-invoicing-docker/
 redirect_from:
   - /theme-setup/
 last_modified_at: 2026-09-17
@@ -12,7 +12,7 @@ toc: true
 # <b>Deploying Faveo Invoicing (Community Edition) on Docker</b>   <!-- omit in toc -->
 <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4e/Docker_%28container_engine%29_logo.svg/960px-Docker_%28container_engine%29_logo.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="drawing" width="300"/>
 
-## <b>Faveo Invoicing Docker</b>
+## <b>Faveo Invoicing on Docker</b>
 
 A simplified Docker Compose workflow that sets up a network of containers for **Faveo Invoicing (Community Edition)**.
 

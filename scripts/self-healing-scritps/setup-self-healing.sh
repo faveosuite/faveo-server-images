@@ -2,57 +2,70 @@
 #
 # setup-self-healing.sh
 #
-# Production-grade self-healing, monitoring, and alerting for Linux services.
+# Self-healing, monitoring, and alerting for Linux services + Supervisor jobs.
 # Works on Debian/Ubuntu and RHEL/CentOS/Fedora/AlmaLinux/Rocky.
 #
 # WHAT THIS INSTALLS
-#   1. systemd Restart=on-failure drop-ins for detected/configured services
-#      (crash -> auto-restart, handled entirely by systemd, no custom loop)
-#   2. A failure logger (ExecStopPost) that counts crashes per service
-#   3. A rate-limited notifier (Slack webhook, Google Chat webhook, and/or
-#      email) fired by systemd's OnFailure= once a service exhausts its
-#      restart budget
-#   4. An ACTIVE health-check watchdog (systemd timer, default 60s) that
-#      TCP/HTTP-probes services that can be "up" per systemd but hung
-#      (e.g. accepting no connections) and restarts + alerts on them too
-#   5. A heartbeat so you can tell if the watchdog itself has died
-#      (dead-man's-switch, surfaced in the MOTD banner)
-#   6. logrotate config so the event log doesn't grow unbounded
-#   7. A login MOTD banner showing service + resource health
-#   8. --uninstall to cleanly remove everything and restore prior config
+#   1. A persistent watchdog daemon (systemd service, Restart=always) that
+#      polls every service (and every Supervisor job) on a fixed interval.
+#   2. A scripted recovery routine: on detecting a stopped/crashed/unhealthy
+#      service it restarts it, waits, and health-checks - up to 3 attempts,
+#      30 seconds apart (configurable). After each attempt it logs the
+#      outcome. If all attempts fail, it stops retrying and sends a
+#      notification (Slack, Google Chat, and/or Email) with service name,
+#      server name, attempts made, status, and error detail.
+#   3. Automatic recovery detection: once a previously-failing service is
+#      seen healthy again, its restart counter and give-up state reset, so
+#      the next failure gets a fresh 3 attempts.
+#   4. Supervisor integration: every job known to `supervisorctl status` is
+#      monitored and healed the same way (supervisorctl restart, not
+#      systemctl).
+#   5. A full event log (checks, restart attempts, recoveries, failures).
+#   6. logrotate config so the event log doesn't grow unbounded.
+#   7. A login MOTD banner showing service + resource health.
+#   8. Disk space monitoring (`df -h`) on configured mountpoints: WARNING at
+#      80% used, CRITICAL at 90%, EMERGENCY at 95% (all thresholds are
+#      configurable). Alerts repeat every 30 minutes (configurable) as long
+#      as usage stays at/above a threshold, and a RESOLVED notice is sent
+#      once usage drops back below the warning threshold. This check is
+#      read-only monitoring only - the script never deletes files, logs, or
+#      anything else to free up space.
+#   9. --uninstall to cleanly remove everything.
 #
 # USAGE
 #   sudo ./setup-self-healing.sh [options]
 #
 # OPTIONS
 #   --services "svc1,svc2"        Extra services to manage (comma separated,
-#                                  systemd unit name without .service)
-#   --http-check "svc=URL"        Add/override an HTTP health check for a
-#                                  service, e.g. --http-check "nginx=http://127.0.0.1/health"
-#                                  (repeatable)
-#   --tcp-check "svc=PORT"        Add/override a TCP health check for a
-#                                  service, e.g. --tcp-check "redis-server=6379"
-#                                  (repeatable)
-#   --slack-webhook URL           Slack incoming webhook URL for alerts
-#   --googlechat-webhook URL      Google Chat incoming webhook URL for alerts
-#   --email-to ADDR               Email address to notify (requires mail
-#                                  transport; script attempts to install one)
-#   --email-from ADDR             From address for email alerts (optional)
-#   --cooldown SECONDS            Minimum seconds between repeat alerts for
-#                                  the same service (default: 1800 / 30 min)
-#   --interval SECONDS            Active health-check interval (default: 60)
-#   --fail-threshold N            Consecutive failed health checks before the
-#                                  watchdog restarts a service (default: 2)
-#   --restart-burst N             Crash-restarts allowed within the restart
-#                                  window before systemd gives up and marks
-#                                  the service failed (default: 3)
-#   --restart-window SECONDS      Rolling window for --restart-burst; once N
-#                                  crashes happen inside this window, systemd
-#                                  stops restarting and fires the failure
-#                                  notification (default: 600 / 10 min)
-#   --dry-run                     Show what would be done, change nothing
-#   --uninstall                   Remove all self-healing configuration
-#   -h, --help                    Show this help
+#                                  systemd unit name without .service), even
+#                                  if currently inactive.
+#   --http-check "svc=URL"        Health check a service over HTTP instead of
+#                                  the default (repeatable).
+#   --tcp-check "svc=PORT"        Health check a service over TCP instead of
+#                                  the default (repeatable).
+#   --slack-webhook URL           Slack incoming webhook URL for alerts.
+#   --googlechat-webhook URL      Google Chat incoming webhook URL for alerts.
+#   --email-to ADDR               Email address to notify (requires a mail
+#                                  transport; script attempts to install one).
+#   --email-from ADDR             From address for email alerts (optional).
+#   --max-attempts N               Restart attempts before giving up (default 3)
+#   --retry-delay SECONDS         Delay between restart attempts, and before
+#                                  the post-restart health check (default 30)
+#   --check-interval SECONDS      How often the daemon polls each service
+#                                  when everything is healthy (default 30)
+#   --cooldown SECONDS            Minimum seconds between repeat "still down"
+#                                  notifications for the same service once
+#                                  retries are exhausted (default 1800)
+#   --no-disk-check                Disable disk space monitoring entirely.
+#   --disk-mounts "/,/data"        Mountpoints to watch with `df -h` (default "/")
+#   --disk-warn PCT                Warning threshold, percent used (default 80)
+#   --disk-critical PCT            Critical threshold, percent used (default 90)
+#   --disk-emergency PCT           Emergency threshold, percent used (default 95)
+#   --disk-cooldown SECONDS        Repeat interval for an unresolved disk alert
+#                                  at the same severity (default 1800 = 30 min)
+#   --dry-run                     Show what would be done, change nothing.
+#   --uninstall                   Remove all self-healing configuration.
+#   -h, --help                    Show this help.
 #
 # You can re-run this script safely to add services or change notification
 # settings; existing config is merged, not clobbered.
@@ -60,32 +73,100 @@
 # FILES
 #   /etc/self-healing/config.conf     - notification + tuning settings
 #   /etc/self-healing/services.conf   - name:checktype:target per service
-#   /var/lib/self-healing/            - counters, state, heartbeat
+#   /var/lib/self-healing/            - per-service attempt/give-up state
 #   /var/log/self-healing/events.log  - event log (rotated)
+#
+# CHECK STATUS
+#   systemctl status self-healing-watchdog.service
+
+# Color variables (ANSI codes with escaped octal for portability)
+red='\033[1;31m'
+green='\033[1;32m'
+yellow='\033[1;33m'
+blue='\033[1;34m'
+cyan='\033[1;36m'
+reset='\033[0m'
+bold='\033[1m'
+
+
+# Get terminal width directly from the shell.
+# COLUMNS is preferred when available; otherwise use tput.
+if [[ -n "${COLUMNS:-}" && "$COLUMNS" =~ ^[0-9]+$ ]]; then
+    TERM_WIDTH=$COLUMNS
+else
+    TERM_WIDTH=$(tput cols 2>/dev/null || echo 80)
+fi
+
+# Minimum sane terminal width
+(( TERM_WIDTH > 0 )) || TERM_WIDTH=80
+
+# Banner
+BANNER=$(cat <<'EOF'
+███████╗ █████╗ ██╗   ██╗███████╗ ██████╗
+██╔════╝██╔══██╗██║   ██║██╔════╝██╔═══██╗
+█████╗  ███████║██║   ██║█████╗  ██║   ██║
+██╔══╝  ██╔══██║╚██╗ ██╔╝██╔══╝  ██║   ██║
+██║     ██║  ██║ ╚████╔╝ ███████╗╚██████╔╝
+╚═╝     ╚═╝  ╚═╝  ╚═══╝  ╚══════╝ ╚═════╝
+
+██╗  ██╗███████╗██╗     ██████╗ ██████╗ ███████╗███████╗██╗  ██╗
+██║  ██║██╔════╝██║     ██╔══██╗██╔══██╗██╔════╝██╔════╝██║ ██╔╝
+███████║█████╗  ██║     ██████╔╝██║  ██║█████╗  ███████╗█████╔╝
+██╔══██║██╔══╝  ██║     ██╔═══╝ ██║  ██║██╔══╝  ╚════██║██╔═██╗
+██║  ██║███████╗███████╗██║     ██████╔╝███████╗███████║██║  ██╗
+╚═╝  ╚═╝╚══════╝╚══════╝╚═╝     ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝
+EOF
+)
+
+# Find the widest line using Bash only.
+BANNER_WIDTH=0
+
+while IFS= read -r LINE; do
+    LINE_WIDTH=${#LINE}
+
+    if (( LINE_WIDTH > BANNER_WIDTH )); then
+        BANNER_WIDTH=$LINE_WIDTH
+    fi
+done <<< "$BANNER"
+
+# Calculate ONE padding value for the entire banner.
+if (( TERM_WIDTH > BANNER_WIDTH )); then
+    PADDING=$(( (TERM_WIDTH - BANNER_WIDTH) / 2 ))
+else
+    PADDING=0
+fi
+
+# Create indentation using Bash printf.
+INDENT=$(printf '%*s' "$PADDING" '')
+
+# Print banner.
+printf '%b\n' "${cyan}${bold}"
+
+while IFS= read -r LINE; do
+    printf '%s%s\n' "$INDENT" "$LINE"
+done <<< "$BANNER"
+
+printf '%b\n' "${reset}"
 
 set -Eeuo pipefail
 
-SCRIPT_VERSION="2.0.0"
+SCRIPT_VERSION="1.0.0"
 
 CONF_DIR="/etc/self-healing"
 CONFIG_FILE="${CONF_DIR}/config.conf"
 SERVICES_FILE="${CONF_DIR}/services.conf"
 
 BASE_DIR="/var/lib/self-healing"
-COUNT_DIR="${BASE_DIR}/counts"
 STATE_DIR="${BASE_DIR}/state"
 HEARTBEAT_FILE="${BASE_DIR}/heartbeat"
-LOCK_FILE="${BASE_DIR}/self-healing.lock"
+LOCK_DIR="${BASE_DIR}/locks"
 
 LOG_DIR="/var/log/self-healing"
 LOG_FILE="${LOG_DIR}/events.log"
 
-LOGGER_SCRIPT="/usr/local/bin/self-healing-log-failure.sh"
 NOTIFIER_SCRIPT="/usr/local/bin/self-healing-notify.sh"
 WATCHDOG_SCRIPT="/usr/local/bin/self-healing-watchdog.sh"
-NOTIFIER_UNIT="/etc/systemd/system/service-notifier@.service"
 WATCHDOG_SERVICE="/etc/systemd/system/self-healing-watchdog.service"
-WATCHDOG_TIMER="/etc/systemd/system/self-healing-watchdog.timer"
 LOGROTATE_FILE="/etc/logrotate.d/self-healing"
 MOTD_PATH="/etc/profile.d/99-server-health.sh"
 
@@ -93,9 +174,18 @@ BACKUP_DIR="${BASE_DIR}/backup/$(date +%Y%m%d-%H%M%S)"
 
 DEFAULT_SERVICES=(
     nginx apache2 httpd mariadb mysqld mysql redis-server redis
-    supervisor supervisord cron crond
-    php-fpm php8.0-fpm php8.1-fpm php8.2-fpm php8.3-fpm php8.4-fpm php8.5-fpm
-    postgresql sshd docker containerd 
+    supervisor
+    php-fpm php7.4-fpm php8.0-fpm php8.1-fpm php8.2-fpm php8.3-fpm php8.4-fpm php8.5-fpm
+    meilisearch cron crond
+)
+
+# Sensible default TCP health-check ports, applied only when the user has
+# not supplied --tcp-check/--http-check and there is no prior override.
+declare -A DEFAULT_TCP_PORT=(
+    [apache2]=80 [httpd]=80 [nginx]=80
+    [mysql]=3306 [mysqld]=3306 [mariadb]=3306
+    [redis-server]=6379 [redis]=6379
+    [meilisearch]=7700
 )
 
 # ---------------------------------------------------------------------------
@@ -109,11 +199,16 @@ SLACK_WEBHOOK=""
 GOOGLECHAT_WEBHOOK=""
 EMAIL_TO=""
 EMAIL_FROM=""
+MAX_ATTEMPTS="3"
+RETRY_DELAY="30"
+CHECK_INTERVAL="30"
 COOLDOWN_SECONDS="1800"
-CHECK_INTERVAL="60"
-FAIL_THRESHOLD="2"
-RESTART_BURST="3"
-RESTART_WINDOW="600"
+DISK_CHECK_ENABLED="1"
+DISK_MOUNTPOINTS="/"
+DISK_WARN_PCT="80"
+DISK_CRITICAL_PCT="90"
+DISK_EMERGENCY_PCT="95"
+DISK_COOLDOWN_SECONDS="1800"
 DRY_RUN="0"
 UNINSTALL="0"
 
@@ -139,11 +234,16 @@ while [[ $# -gt 0 ]]; do
         --googlechat-webhook) GOOGLECHAT_WEBHOOK="$2"; shift 2 ;;
         --email-to) EMAIL_TO="$2"; shift 2 ;;
         --email-from) EMAIL_FROM="$2"; shift 2 ;;
+        --max-attempts) MAX_ATTEMPTS="$2"; shift 2 ;;
+        --retry-delay) RETRY_DELAY="$2"; shift 2 ;;
+        --check-interval) CHECK_INTERVAL="$2"; shift 2 ;;
         --cooldown) COOLDOWN_SECONDS="$2"; shift 2 ;;
-        --interval) CHECK_INTERVAL="$2"; shift 2 ;;
-        --fail-threshold) FAIL_THRESHOLD="$2"; shift 2 ;;
-        --restart-burst) RESTART_BURST="$2"; shift 2 ;;
-        --restart-window) RESTART_WINDOW="$2"; shift 2 ;;
+        --no-disk-check) DISK_CHECK_ENABLED="0"; shift ;;
+        --disk-mounts) DISK_MOUNTPOINTS="$2"; shift 2 ;;
+        --disk-warn) DISK_WARN_PCT="$2"; shift 2 ;;
+        --disk-critical) DISK_CRITICAL_PCT="$2"; shift 2 ;;
+        --disk-emergency) DISK_EMERGENCY_PCT="$2"; shift 2 ;;
+        --disk-cooldown) DISK_COOLDOWN_SECONDS="$2"; shift 2 ;;
         --dry-run) DRY_RUN="1"; shift ;;
         --uninstall) UNINSTALL="1"; shift ;;
         -h|--help) usage ;;
@@ -157,14 +257,14 @@ error() { echo "[ERROR] $1" >&2; }
 die()   { error "$1"; exit 1; }
 
 # ---------------------------------------------------------------------------
-# Interactive mode — if invoked with no CLI options at all and connected to
+# Interactive mode - if invoked with no CLI options at all and connected to
 # a terminal, ask for the settings instead of silently applying defaults.
 # Non-interactive invocations (cron, CI, piped input) skip this and just
 # use the defaults, so automation never hangs waiting on stdin.
 # ---------------------------------------------------------------------------
 
 prompt_for_config() {
-    echo "No options supplied — interactive setup (press Enter to accept the default shown)."
+    echo "No options supplied - interactive setup (press Enter to accept the default shown)."
     echo
 
     read -rp "Extra services to monitor, comma separated [none]: " reply
@@ -183,7 +283,7 @@ prompt_for_config() {
         EMAIL_TO="${reply:-${EMAIL_TO}}"
 
         if [[ -z "${SLACK_WEBHOOK}" && -z "${GOOGLECHAT_WEBHOOK}" && -z "${EMAIL_TO}" ]]; then
-            read -rp "No notification channel entered — alerts will not be sent anywhere. Continue without alerts? [y/N]: " reply
+            read -rp "No notification channel entered - alerts will not be sent anywhere. Continue without alerts? [y/N]: " reply
             case "${reply,,}" in
                 y|yes) break ;;
                 *) echo "Okay, let's set at least one channel (or confirm 'y' to skip)."; echo ;;
@@ -198,23 +298,49 @@ prompt_for_config() {
         EMAIL_FROM="${reply:-${EMAIL_FROM}}"
     fi
 
-    read -rp "Cooldown between repeat alerts, seconds [${COOLDOWN_SECONDS}]: " reply
-    COOLDOWN_SECONDS="${reply:-${COOLDOWN_SECONDS}}"
+    read -rp "Restart attempts before giving up [${MAX_ATTEMPTS}]: " reply
+    MAX_ATTEMPTS="${reply:-${MAX_ATTEMPTS}}"
 
-    read -rp "Active health-check interval, seconds [${CHECK_INTERVAL}]: " reply
+    read -rp "Delay between restart attempts, seconds [${RETRY_DELAY}]: " reply
+    RETRY_DELAY="${reply:-${RETRY_DELAY}}"
+
+    read -rp "Poll interval when healthy, seconds [${CHECK_INTERVAL}]: " reply
     CHECK_INTERVAL="${reply:-${CHECK_INTERVAL}}"
 
-    read -rp "Failed health checks before restart [${FAIL_THRESHOLD}]: " reply
-    FAIL_THRESHOLD="${reply:-${FAIL_THRESHOLD}}"
-
-    read -rp "Crash-restarts allowed before giving up, i.e. restart burst [${RESTART_BURST}]: " reply
-    RESTART_BURST="${reply:-${RESTART_BURST}}"
-
-    read -rp "Restart-burst rolling window, seconds [${RESTART_WINDOW}]: " reply
-    RESTART_WINDOW="${reply:-${RESTART_WINDOW}}"
+    read -rp "Cooldown between repeat 'still down' alerts, seconds [${COOLDOWN_SECONDS}]: " reply
+    COOLDOWN_SECONDS="${reply:-${COOLDOWN_SECONDS}}"
 
     echo
-    log "Using: services=[${EXTRA_SERVICES:-none}] slack=[${SLACK_WEBHOOK:+set}] googlechat=[${GOOGLECHAT_WEBHOOK:+set}] email=[${EMAIL_TO:-none}] cooldown=${COOLDOWN_SECONDS}s interval=${CHECK_INTERVAL}s fail-threshold=${FAIL_THRESHOLD} restart-burst=${RESTART_BURST}/${RESTART_WINDOW}s"
+    read -rp "Enable disk space monitoring (df -h, alerts only - nothing is ever deleted)? [Y/n]: " reply
+    case "${reply,,}" in
+        n|no) DISK_CHECK_ENABLED="0" ;;
+        *) DISK_CHECK_ENABLED="1" ;;
+    esac
+
+    if [[ "${DISK_CHECK_ENABLED}" == "1" ]]; then
+        read -rp "Mountpoints to watch, comma separated [${DISK_MOUNTPOINTS}]: " reply
+        DISK_MOUNTPOINTS="${reply:-${DISK_MOUNTPOINTS}}"
+
+        read -rp "Warning threshold, percent used [${DISK_WARN_PCT}]: " reply
+        DISK_WARN_PCT="${reply:-${DISK_WARN_PCT}}"
+
+        read -rp "Critical threshold, percent used [${DISK_CRITICAL_PCT}]: " reply
+        DISK_CRITICAL_PCT="${reply:-${DISK_CRITICAL_PCT}}"
+
+        read -rp "Emergency threshold, percent used [${DISK_EMERGENCY_PCT}]: " reply
+        DISK_EMERGENCY_PCT="${reply:-${DISK_EMERGENCY_PCT}}"
+
+        read -rp "Repeat interval for an unresolved disk alert, seconds [${DISK_COOLDOWN_SECONDS}]: " reply
+        DISK_COOLDOWN_SECONDS="${reply:-${DISK_COOLDOWN_SECONDS}}"
+    fi
+
+    echo
+    log "Using: services=[${EXTRA_SERVICES:-none}] slack=[${SLACK_WEBHOOK:+set}] googlechat=[${GOOGLECHAT_WEBHOOK:+set}] email=[${EMAIL_TO:-none}] max-attempts=${MAX_ATTEMPTS} retry-delay=${RETRY_DELAY}s check-interval=${CHECK_INTERVAL}s cooldown=${COOLDOWN_SECONDS}s"
+    if [[ "${DISK_CHECK_ENABLED}" == "1" ]]; then
+        log "Disk monitoring: mounts=[${DISK_MOUNTPOINTS}] warn=${DISK_WARN_PCT}% critical=${DISK_CRITICAL_PCT}% emergency=${DISK_EMERGENCY_PCT}% repeat=${DISK_COOLDOWN_SECONDS}s"
+    else
+        log "Disk monitoring: disabled"
+    fi
     echo
 }
 
@@ -306,22 +432,11 @@ ensure_pkg curl curl
 if [[ "${UNINSTALL}" == "1" ]]; then
     log "Uninstalling self-healing configuration..."
 
-    if [[ -f "${SERVICES_FILE}" ]]; then
-        while IFS=: read -r svc _ _; do
-            [[ -z "${svc}" || "${svc}" == \#* ]] && continue
-            DROP_FILE="/etc/systemd/system/${svc}.service.d/self-healing.conf"
-            if [[ -f "${DROP_FILE}" ]]; then
-                run rm -f "${DROP_FILE}"
-                log "Removed drop-in for ${svc}"
-            fi
-        done < "${SERVICES_FILE}"
-    fi
-
-    run rm -f "${NOTIFIER_UNIT}" "${WATCHDOG_SERVICE}" "${WATCHDOG_TIMER}"
-    run rm -f "${LOGGER_SCRIPT}" "${NOTIFIER_SCRIPT}" "${WATCHDOG_SCRIPT}"
+    run systemctl disable --now self-healing-watchdog.service 2>/dev/null || true
+    run rm -f "${WATCHDOG_SERVICE}"
+    run rm -f "${NOTIFIER_SCRIPT}" "${WATCHDOG_SCRIPT}"
     run rm -f "${MOTD_PATH}" "${LOGROTATE_FILE}"
     run systemctl daemon-reload || true
-    run systemctl reset-failed || true
 
     echo
     log "Uninstall complete. Config/state left in place for reference:"
@@ -337,11 +452,10 @@ fi
 # ---------------------------------------------------------------------------
 
 log "Creating directories..."
-run mkdir -p "${CONF_DIR}" "${COUNT_DIR}" "${STATE_DIR}" "${LOG_DIR}" "${BASE_DIR}/backup"
-run touch "${LOG_FILE}" "${LOCK_FILE}" "${HEARTBEAT_FILE}"
-run chmod 755 "${CONF_DIR}" "${BASE_DIR}" "${COUNT_DIR}" "${STATE_DIR}" "${LOG_DIR}"
+run mkdir -p "${CONF_DIR}" "${STATE_DIR}" "${LOCK_DIR}" "${LOG_DIR}" "${BASE_DIR}/backup"
+run touch "${LOG_FILE}" "${HEARTBEAT_FILE}"
+run chmod 755 "${CONF_DIR}" "${BASE_DIR}" "${STATE_DIR}" "${LOCK_DIR}" "${LOG_DIR}"
 run chmod 640 "${LOG_FILE}"
-run chmod 600 "${LOCK_FILE}"
 
 # ---------------------------------------------------------------------------
 # Config file (merge, don't clobber, on re-run)
@@ -353,25 +467,28 @@ if [[ -f "${CONFIG_FILE}" ]]; then
 fi
 
 SLACK_WEBHOOK="${SLACK_WEBHOOK:-${EXISTING_SLACK_WEBHOOK:-}}"
-[[ -n "${SLACK_WEBHOOK}" ]] || SLACK_WEBHOOK="${EXISTING_SLACK_WEBHOOK:-}"
 GOOGLECHAT_WEBHOOK="${GOOGLECHAT_WEBHOOK:-${EXISTING_GOOGLECHAT_WEBHOOK:-}}"
-[[ -n "${GOOGLECHAT_WEBHOOK}" ]] || GOOGLECHAT_WEBHOOK="${EXISTING_GOOGLECHAT_WEBHOOK:-}"
 EMAIL_TO="${EMAIL_TO:-${EXISTING_EMAIL_TO:-}}"
 EMAIL_FROM="${EMAIL_FROM:-${EXISTING_EMAIL_FROM:-self-healing@$(hostname -f 2>/dev/null || hostname)}}"
 
 log "Writing ${CONFIG_FILE}..."
 if [[ "${DRY_RUN}" != "1" ]]; then
     cat > "${CONFIG_FILE}" <<EOF
-# Managed by setup-self-healing.sh — edit and re-run script, or edit directly.
+# Managed by setup-self-healing.sh - edit and re-run script, or edit directly.
 EXISTING_SLACK_WEBHOOK="${SLACK_WEBHOOK}"
 EXISTING_GOOGLECHAT_WEBHOOK="${GOOGLECHAT_WEBHOOK}"
 EXISTING_EMAIL_TO="${EMAIL_TO}"
 EXISTING_EMAIL_FROM="${EMAIL_FROM}"
-COOLDOWN_SECONDS="${COOLDOWN_SECONDS}"
+MAX_ATTEMPTS="${MAX_ATTEMPTS}"
+RETRY_DELAY="${RETRY_DELAY}"
 CHECK_INTERVAL="${CHECK_INTERVAL}"
-FAIL_THRESHOLD="${FAIL_THRESHOLD}"
-RESTART_BURST="${RESTART_BURST}"
-RESTART_WINDOW="${RESTART_WINDOW}"
+COOLDOWN_SECONDS="${COOLDOWN_SECONDS}"
+DISK_CHECK_ENABLED="${DISK_CHECK_ENABLED}"
+DISK_MOUNTPOINTS="${DISK_MOUNTPOINTS}"
+DISK_WARN_PCT="${DISK_WARN_PCT}"
+DISK_CRITICAL_PCT="${DISK_CRITICAL_PCT}"
+DISK_EMERGENCY_PCT="${DISK_EMERGENCY_PCT}"
+DISK_COOLDOWN_SECONDS="${DISK_COOLDOWN_SECONDS}"
 EOF
     chmod 640 "${CONFIG_FILE}"
 fi
@@ -381,7 +498,8 @@ if [[ -n "${EMAIL_TO}" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
-# Discover services
+# Discover services - only currently-active ones are auto-monitored;
+# anything passed via --services is added regardless of current state.
 # ---------------------------------------------------------------------------
 
 service_exists() {
@@ -395,26 +513,31 @@ resolve_service() {
 
 declare -A FOUND=()
 
-CANDIDATES=("${DEFAULT_SERVICES[@]}")
-if [[ -n "${EXTRA_SERVICES}" ]]; then
-    IFS=',' read -ra EXTRA_ARR <<< "${EXTRA_SERVICES}"
-    CANDIDATES+=("${EXTRA_ARR[@]}")
-fi
-
-log "Detecting installed services..."
-for candidate in "${CANDIDATES[@]}"; do
-    candidate="$(echo "${candidate}" | xargs)"
-    [[ -z "${candidate}" ]] && continue
+log "Detecting installed + active services..."
+for candidate in "${DEFAULT_SERVICES[@]}"; do
     service_exists "${candidate}" || continue
     resolved="$(resolve_service "${candidate}" || true)"
     [[ -z "${resolved}" ]] && continue
-    FOUND["${resolved%.service}"]=1
+    resolved="${resolved%.service}"
+    systemctl is-active --quiet "${resolved}.service" 2>/dev/null || continue
+    FOUND["${resolved}"]=1
 done
+
+if [[ -n "${EXTRA_SERVICES}" ]]; then
+    IFS=',' read -ra EXTRA_ARR <<< "${EXTRA_SERVICES}"
+    for candidate in "${EXTRA_ARR[@]}"; do
+        candidate="$(echo "${candidate}" | xargs)"
+        [[ -z "${candidate}" ]] && continue
+        service_exists "${candidate}" || { warn "Skipping --services ${candidate}: not installed."; continue; }
+        resolved="$(resolve_service "${candidate}" || true)"
+        [[ -z "${resolved}" ]] && continue
+        FOUND["${resolved%.service}"]=1
+    done
+fi
 
 # De-duplicate common aliases
 [[ -n "${FOUND[mariadb]+x}" ]] && { unset 'FOUND[mysql]'; unset 'FOUND[mysqld]'; }
 [[ -n "${FOUND[redis-server]+x}" ]] && unset 'FOUND[redis]'
-[[ -n "${FOUND[supervisor]+x}" ]] && unset 'FOUND[supervisord]'
 [[ -n "${FOUND[apache2]+x}" ]] && unset 'FOUND[httpd]'
 [[ -n "${FOUND[cron]+x}" ]] && unset 'FOUND[crond]'
 
@@ -424,15 +547,13 @@ while IFS= read -r svc; do
 done < <(printf '%s\n' "${!FOUND[@]}" | sort)
 
 if [[ "${#MONITORED_SERVICES[@]}" -eq 0 ]]; then
-    warn "No supported services detected. Framework will still be installed."
+    warn "No active supported services detected. Framework will still be installed."
 elif [[ "${INTERACTIVE}" == "1" ]]; then
     echo
-    log "Found these services on this system — choose which to self-heal:"
+    log "Found these active services - choose which to self-heal:"
     CONFIRMED_SERVICES=()
     for svc in "${MONITORED_SERVICES[@]}"; do
-        status="stopped"
-        systemctl is-active --quiet "${svc}.service" 2>/dev/null && status="running"
-        read -rp "  ${svc} (${status}) — add self-healing for this service? [Y/n]: " reply
+        read -rp "  ${svc} (running) - add self-healing for this service? [Y/n]: " reply
         case "${reply,,}" in
             n|no) log "    skipping ${svc}" ;;
             *) CONFIRMED_SERVICES+=("${svc}") ;;
@@ -440,19 +561,36 @@ elif [[ "${INTERACTIVE}" == "1" ]]; then
     done
     MONITORED_SERVICES=("${CONFIRMED_SERVICES[@]}")
     echo
-    if [[ "${#MONITORED_SERVICES[@]}" -eq 0 ]]; then
-        warn "No services selected. Framework will still be installed."
-    else
-        log "Managing services:"
-        for s in "${MONITORED_SERVICES[@]}"; do echo "  -> ${s}"; done
-    fi
 else
     log "Managing services:"
     for s in "${MONITORED_SERVICES[@]}"; do echo "  -> ${s}"; done
 fi
 
 # ---------------------------------------------------------------------------
+# Supervisor jobs - discovered via supervisorctl, monitored the same way
+# ---------------------------------------------------------------------------
+
+SUPERVISOR_JOBS=()
+if printf '%s\n' "${MONITORED_SERVICES[@]}" | grep -qx supervisor && command -v supervisorctl >/dev/null 2>&1; then
+    log "Detecting Supervisor jobs..."
+    while read -r line; do
+        [[ -z "${line}" ]] && continue
+        job="$(awk '{print $1}' <<< "${line}")"
+        [[ -n "${job}" ]] && SUPERVISOR_JOBS+=("${job}")
+    done < <(supervisorctl status 2>/dev/null || true)
+    if [[ "${#SUPERVISOR_JOBS[@]}" -gt 0 ]]; then
+        log "Found Supervisor jobs:"
+        for j in "${SUPERVISOR_JOBS[@]}"; do echo "  -> ${j}"; done
+    else
+        warn "Supervisor is active but no jobs were returned by 'supervisorctl status'."
+    fi
+fi
+
+# ---------------------------------------------------------------------------
 # Build services.conf (name:checktype:target), preserving prior overrides
+# format: name:checktype:target
+#   checktype: none | tcp | http | supervisor
+#   for checktype=supervisor, target is the supervisorctl program name
 # ---------------------------------------------------------------------------
 
 declare -A PRIOR_CHECK=()
@@ -464,9 +602,10 @@ if [[ -f "${SERVICES_FILE}" ]]; then
 fi
 
 log "Writing ${SERVICES_FILE}..."
+SERVICES_TMP="$(mktemp)"
 {
     echo "# Managed by setup-self-healing.sh"
-    echo "# format: service_name:checktype:target   (checktype: none|tcp|http)"
+    echo "# format: service_name:checktype:target   (checktype: none|tcp|http|supervisor)"
     echo "# Add lines manually for custom apps, e.g.:"
     echo "#   myapp:tcp:8080"
     echo "#   myapp:http:http://127.0.0.1:8080/health"
@@ -478,185 +617,119 @@ log "Writing ${SERVICES_FILE}..."
             checktype="tcp"; target="${TCP_OVERRIDES[${svc}]}"
         elif [[ -n "${PRIOR_CHECK[${svc}]+x}" ]]; then
             IFS=: read -r checktype target <<< "${PRIOR_CHECK[${svc}]}"
+        elif [[ -n "${DEFAULT_TCP_PORT[${svc}]+x}" ]]; then
+            checktype="tcp"; target="${DEFAULT_TCP_PORT[${svc}]}"
         fi
         echo "${svc}:${checktype}:${target}"
     done
-} > "${SERVICES_FILE}.new"
+    for job in "${SUPERVISOR_JOBS[@]}"; do
+        echo "${job}:supervisor:${job}"
+    done
+} > "${SERVICES_TMP}"
 
 if [[ "${DRY_RUN}" != "1" ]]; then
-    mv "${SERVICES_FILE}.new" "${SERVICES_FILE}"
+    mv "${SERVICES_TMP}" "${SERVICES_FILE}"
     chmod 644 "${SERVICES_FILE}"
 else
-    cat "${SERVICES_FILE}.new"; rm -f "${SERVICES_FILE}.new"
+    cat "${SERVICES_TMP}"; rm -f "${SERVICES_TMP}"
 fi
 
 # ---------------------------------------------------------------------------
-# Backup existing drop-ins
+# Backup prior state (informational)
 # ---------------------------------------------------------------------------
 
 run mkdir -p "${BACKUP_DIR}"
-for svc in "${MONITORED_SERVICES[@]}"; do
-    d="/etc/systemd/system/${svc}.service.d"
-    if [[ -d "${d}" ]]; then
-        run mkdir -p "${BACKUP_DIR}/${svc}.service.d"
-        cp -a "${d}/." "${BACKUP_DIR}/${svc}.service.d/" 2>/dev/null || true
-    fi
-done
-
-# ---------------------------------------------------------------------------
-# Logger script (ExecStopPost) — reads systemd env vars, not argv
-# ---------------------------------------------------------------------------
-
-log "Installing ${LOGGER_SCRIPT}..."
-if [[ "${DRY_RUN}" != "1" ]]; then
-cat > "${LOGGER_SCRIPT}" <<'EOF'
-#!/usr/bin/env bash
-# Invoked by systemd ExecStopPost=... %n
-# systemd sets SERVICE_RESULT / EXIT_CODE / EXIT_STATUS as environment
-# variables for ExecStopPost — read them directly, don't rely on argv
-# expansion inside the unit file.
-set -Eeuo pipefail
-
-RAW_NAME="${1:-unknown}"
-SERVICE_NAME="${RAW_NAME%.service}"
-SERVICE_RESULT="${SERVICE_RESULT:-unknown}"
-EXIT_CODE="${EXIT_CODE:-unknown}"
-EXIT_STATUS="${EXIT_STATUS:-unknown}"
-
-BASE_DIR="/var/lib/self-healing"
-COUNT_DIR="${BASE_DIR}/counts"
-STATE_DIR="${BASE_DIR}/state"
-LOCK_FILE="${BASE_DIR}/self-healing.lock"
-LOG_FILE="/var/log/self-healing/events.log"
-CONFIG_FILE="/etc/self-healing/config.conf"
-TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S')"
-
-[[ -f "${CONFIG_FILE}" ]] && source "${CONFIG_FILE}"
-RESTART_WINDOW="${RESTART_WINDOW:-600}"
-
-[[ "${SERVICE_NAME}" =~ ^[a-zA-Z0-9_.@-]+$ ]] || SERVICE_NAME="unknown"
-
-# Ignore clean stops (manual `systemctl stop`, reboots, etc.)
-[[ "${SERVICE_RESULT}" == "success" ]] && exit 0
-
-mkdir -p "${COUNT_DIR}" "${STATE_DIR}"
-touch "${LOG_FILE}" "${LOCK_FILE}"
-
-COUNT_FILE="${COUNT_DIR}/${SERVICE_NAME}"
-STATE_FILE="${STATE_DIR}/${SERVICE_NAME}.state"
-WINDOW_FILE="${STATE_DIR}/${SERVICE_NAME}.window"
-
-(
-    flock -x 200
-    CUR=0
-    [[ -f "${COUNT_FILE}" ]] && CUR="$(<"${COUNT_FILE}")"
-    [[ "${CUR}" =~ ^[0-9]+$ ]] || CUR=0
-    NEW=$((CUR + 1))
-    echo "${NEW}" > "${COUNT_FILE}"
-
-    # Rolling crash count within RESTART_WINDOW seconds — lets the notifier
-    # tell a one-off crash apart from a genuine crash-loop, since systemd's
-    # OnFailure= fires on every single failed-restart cycle, not just once
-    # the restart budget (StartLimitBurst) is actually exhausted.
-    NOW_EPOCH="$(date +%s)"
-    WIN_START="${NOW_EPOCH}"
-    WIN_COUNT=1
-    if [[ -f "${WINDOW_FILE}" ]]; then
-        IFS=: read -r PREV_START PREV_COUNT < "${WINDOW_FILE}" || true
-        [[ "${PREV_START}" =~ ^[0-9]+$ ]] || PREV_START=0
-        [[ "${PREV_COUNT}" =~ ^[0-9]+$ ]] || PREV_COUNT=0
-        if (( NOW_EPOCH - PREV_START <= RESTART_WINDOW )); then
-            WIN_START="${PREV_START}"
-            WIN_COUNT=$((PREV_COUNT + 1))
-        fi
-    fi
-    echo "${WIN_START}:${WIN_COUNT}" > "${WINDOW_FILE}"
-
-    cat > "${STATE_FILE}" <<STATE
-service=${SERVICE_NAME}
-last_failure=${TIMESTAMP}
-service_result=${SERVICE_RESULT}
-exit_code=${EXIT_CODE}
-exit_status=${EXIT_STATUS}
-failure_count=${NEW}
-window_count=${WIN_COUNT}
-STATE
-    echo "[${TIMESTAMP}] WARNING: ${SERVICE_NAME} failed. result=${SERVICE_RESULT} exit_code=${EXIT_CODE} exit_status=${EXIT_STATUS} total_failures=${NEW} window=${WIN_COUNT}" >> "${LOG_FILE}"
-) 200>"${LOCK_FILE}"
-exit 0
-EOF
-chmod 755 "${LOGGER_SCRIPT}"
+if [[ -f "${SERVICES_FILE}" ]]; then
+    cp -a "${SERVICES_FILE}" "${BACKUP_DIR}/" 2>/dev/null || true
 fi
 
 # ---------------------------------------------------------------------------
-# Notifier script — Slack + email, with per-service cooldown
+# Notifier script - Slack + Google Chat + Email
 # ---------------------------------------------------------------------------
 
 log "Installing ${NOTIFIER_SCRIPT}..."
 if [[ "${DRY_RUN}" != "1" ]]; then
 cat > "${NOTIFIER_SCRIPT}" <<'EOF'
 #!/usr/bin/env bash
-# Usage: self-healing-notify.sh <service-or-label> <reason text> [mode]
-# mode "crash" (used by OnFailure=) is gated on the rolling crash-window
-# counter the logger maintains — systemd fires OnFailure= on every single
-# failed-restart cycle, not just once the restart budget is exhausted, so
-# without this gate every crash would page immediately instead of only
-# once RESTART_BURST crashes happen within RESTART_WINDOW seconds.
-# Any other mode (e.g. the active health-check watchdog) alerts unconditionally
-# since that caller already does its own consecutive-failure gating.
+# Usage: self-healing-notify.sh <service> <status> <attempts> <error-detail...>
 set -Eeuo pipefail
 
-RAW_NAME="${1:-unknown}"
-SERVICE_NAME="${RAW_NAME%.service}"
-REASON="${2:-Service entered a failed/unhealthy state}"
-MODE="${3:-direct}"
+SERVICE_NAME="${1:-unknown}"
+STATUS="${2:-DOWN}"
+ATTEMPTS="${3:-0}"
+shift 3 || true
+ERROR_DETAIL="${*:-no additional detail captured}"
 
 CONFIG_FILE="/etc/self-healing/config.conf"
 STATE_DIR="/var/lib/self-healing/state"
 LOG_FILE="/var/log/self-healing/events.log"
-HOSTNAME="$(hostname -f 2>/dev/null || hostname)"
+HOSTNAME_FQDN="$(hostname -f 2>/dev/null || hostname)"
 TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S %Z')"
 
 [[ -f "${CONFIG_FILE}" ]] && source "${CONFIG_FILE}"
-
 COOLDOWN_SECONDS="${COOLDOWN_SECONDS:-1800}"
-RESTART_BURST="${RESTART_BURST:-3}"
-NOTIFY_FLAG="${STATE_DIR}/${SERVICE_NAME}.last_notify"
+DISK_COOLDOWN_SECONDS="${DISK_COOLDOWN_SECONDS:-1800}"
+case "${STATUS}" in
+    DISK_*) ACTIVE_COOLDOWN="${DISK_COOLDOWN_SECONDS}" ;;
+    *)      ACTIVE_COOLDOWN="${COOLDOWN_SECONDS}" ;;
+esac
+# Keyed by status too, so a RECOVERED notification is never suppressed by
+# the cooldown of the DOWN notification that preceded it (or vice versa).
+NOTIFY_FLAG="${STATE_DIR}/${SERVICE_NAME}.${STATUS,,}.last_notify"
 NOW="$(date +%s)"
 
 mkdir -p "${STATE_DIR}"
 touch "${LOG_FILE}"
 
-if [[ "${MODE}" == "crash" ]]; then
-    WINDOW_FILE="${STATE_DIR}/${SERVICE_NAME}.window"
-    WIN_COUNT=0
-    if [[ -f "${WINDOW_FILE}" ]]; then
-        IFS=: read -r _ WIN_COUNT < "${WINDOW_FILE}" || true
-    fi
-    [[ "${WIN_COUNT}" =~ ^[0-9]+$ ]] || WIN_COUNT=0
-    if (( WIN_COUNT < RESTART_BURST )); then
-        echo "[${TIMESTAMP}] ${SERVICE_NAME} crashed (${WIN_COUNT}/${RESTART_BURST} within the restart window) — systemd is still auto-restarting it, no alert yet." >> "${LOG_FILE}"
-        exit 0
-    fi
-    REASON="Crashed ${WIN_COUNT} times within the restart window — restart budget exhausted"
-fi
-
-MSG="[${HOSTNAME}] CRITICAL: ${SERVICE_NAME} — ${REASON} (${TIMESTAMP})"
-echo "[${TIMESTAMP}] ${MSG}" >> "${LOG_FILE}"
-
 LAST=0
 [[ -f "${NOTIFY_FLAG}" ]] && LAST="$(<"${NOTIFY_FLAG}")"
 [[ "${LAST}" =~ ^[0-9]+$ ]] || LAST=0
 
-if (( NOW - LAST < COOLDOWN_SECONDS )); then
-    echo "[${TIMESTAMP}] Notification for ${SERVICE_NAME} suppressed (cooldown active)." >> "${LOG_FILE}"
+# RECOVERED/DISK_RECOVERED are one-time transitions, not repeat spam, so
+# they are never cooldown-suppressed - they must always get through so
+# they can clear the prior alert's cooldown below. Only repeated "still
+# down"/"still over threshold" alerts get throttled (every ACTIVE_COOLDOWN
+# seconds, e.g. every 30 minutes by default).
+if [[ "${STATUS}" != "RECOVERED" && "${STATUS}" != "DISK_RECOVERED" ]] && (( NOW - LAST < ACTIVE_COOLDOWN )); then
+    echo "[${TIMESTAMP}] Notification for ${SERVICE_NAME} (${STATUS}) suppressed (cooldown active)." >> "${LOG_FILE}"
     exit 0
 fi
+
+case "${STATUS}" in
+    RECOVERED|DISK_RECOVERED)
+        HEADER="RESOLVED"
+        STATUS_EMOJI="✅"
+        ;;
+    DISK_WARNING)
+        HEADER="WARNING"
+        STATUS_EMOJI="⚠️"
+        ;;
+    DISK_CRITICAL)
+        HEADER="CRITICAL"
+        STATUS_EMOJI="🔴"
+        ;;
+    DISK_EMERGENCY)
+        HEADER="EMERGENCY"
+        STATUS_EMOJI="🚨"
+        ;;
+    *)
+        HEADER="CRITICAL"
+        STATUS_EMOJI="❌"
+        ;;
+esac
+
+MSG="${STATUS_EMOJI} ${HEADER}: *${SERVICE_NAME}* on *${HOSTNAME_FQDN}*
+Status: *${STATUS}*
+Restart attempts: ${ATTEMPTS}
+Time: ${TIMESTAMP}
+Detail: ${ERROR_DETAIL}"
+
+echo "[${TIMESTAMP}] NOTIFY ${SERVICE_NAME}: status=${STATUS} attempts=${ATTEMPTS}" >> "${LOG_FILE}"
 
 SENT=0
 
 if [[ -n "${EXISTING_SLACK_WEBHOOK:-}" ]] && command -v curl >/dev/null 2>&1; then
-    PAYLOAD="$(printf '{"text":"%s"}' "${MSG//\"/\\\"}")"
+    PAYLOAD="$(printf '{"text":"%s"}' "${MSG//\"/\\\"}" | sed ':a;N;$!ba;s/\n/\\n/g')"
     if curl -fsS -m 5 -X POST -H 'Content-type: application/json' \
         --data "${PAYLOAD}" "${EXISTING_SLACK_WEBHOOK}" >/dev/null 2>&1; then
         SENT=1
@@ -666,7 +739,7 @@ if [[ -n "${EXISTING_SLACK_WEBHOOK:-}" ]] && command -v curl >/dev/null 2>&1; th
 fi
 
 if [[ -n "${EXISTING_GOOGLECHAT_WEBHOOK:-}" ]] && command -v curl >/dev/null 2>&1; then
-    PAYLOAD="$(printf '{"text":"%s"}' "${MSG//\"/\\\"}")"
+    PAYLOAD="$(printf '{"text":"%s"}' "${MSG//\"/\\\"}" | sed ':a;N;$!ba;s/\n/\\n/g')"
     if curl -fsS -m 5 -X POST -H 'Content-type: application/json; charset=UTF-8' \
         --data "${PAYLOAD}" "${EXISTING_GOOGLECHAT_WEBHOOK}" >/dev/null 2>&1; then
         SENT=1
@@ -676,7 +749,7 @@ if [[ -n "${EXISTING_GOOGLECHAT_WEBHOOK:-}" ]] && command -v curl >/dev/null 2>&
 fi
 
 if [[ -n "${EXISTING_EMAIL_TO:-}" ]] && command -v mail >/dev/null 2>&1; then
-    if echo "${MSG}" | mail -s "[self-healing] ${SERVICE_NAME} on ${HOSTNAME}" \
+    if echo "${MSG}" | mail -s "[self-healing] ${STATUS_EMOJI} ${SERVICE_NAME} on ${HOSTNAME_FQDN} - ${STATUS}" \
         ${EXISTING_EMAIL_FROM:+-r "${EXISTING_EMAIL_FROM}"} "${EXISTING_EMAIL_TO}" 2>/dev/null; then
         SENT=1
     else
@@ -686,6 +759,17 @@ fi
 
 if [[ "${SENT}" == "1" ]]; then
     echo "${NOW}" > "${NOTIFY_FLAG}"
+    # A confirmed recovery closes out the incident that the last DOWN alert
+    # was about - clear its cooldown so the *next* distinct failure always
+    # alerts, instead of possibly being silently swallowed by a cooldown
+    # window left over from an outage that has already been resolved.
+    if [[ "${STATUS}" == "RECOVERED" ]]; then
+        rm -f "${STATE_DIR}/${SERVICE_NAME}.down.last_notify"
+    elif [[ "${STATUS}" == "DISK_RECOVERED" ]]; then
+        rm -f "${STATE_DIR}/${SERVICE_NAME}.disk_warning.last_notify" \
+              "${STATE_DIR}/${SERVICE_NAME}.disk_critical.last_notify" \
+              "${STATE_DIR}/${SERVICE_NAME}.disk_emergency.last_notify"
+    fi
 else
     echo "[${TIMESTAMP}] No notification channel configured/succeeded for ${SERVICE_NAME}." >> "${LOG_FILE}"
 fi
@@ -695,157 +779,290 @@ chmod 755 "${NOTIFIER_SCRIPT}"
 fi
 
 # ---------------------------------------------------------------------------
-# systemd notifier@ template (fired by OnFailure=)
-# ---------------------------------------------------------------------------
-
-log "Installing ${NOTIFIER_UNIT}..."
-if [[ "${DRY_RUN}" != "1" ]]; then
-cat > "${NOTIFIER_UNIT}" <<EOF
-[Unit]
-Description=Self-Healing Failure Notification for %i
-After=network-online.target
-Wants=network-online.target
-
-[Service]
-Type=oneshot
-ExecStart=${NOTIFIER_SCRIPT} %i "Crashed and was auto-restarted by systemd" crash
-EOF
-chmod 644 "${NOTIFIER_UNIT}"
-fi
-
-# ---------------------------------------------------------------------------
-# Apply per-service systemd drop-ins
-# ---------------------------------------------------------------------------
-
-log "Applying systemd drop-ins..."
-for svc in "${MONITORED_SERVICES[@]}"; do
-    DROP_DIR="/etc/systemd/system/${svc}.service.d"
-    DROP_FILE="${DROP_DIR}/self-healing.conf"
-    run mkdir -p "${DROP_DIR}"
-    if [[ "${DRY_RUN}" != "1" ]]; then
-cat > "${DROP_FILE}" <<EOF
-# Managed by setup-self-healing.sh — do not hand-edit.
-[Unit]
-StartLimitIntervalSec=${RESTART_WINDOW}
-StartLimitBurst=${RESTART_BURST}
-OnFailure=service-notifier@%n.service
-
-[Service]
-Restart=on-failure
-RestartSec=5s
-ExecStopPost=${LOGGER_SCRIPT} %n
-EOF
-        chmod 644 "${DROP_FILE}"
-    fi
-    log "  configured: ${svc}"
-done
-
-# ---------------------------------------------------------------------------
-# Active health-check watchdog (catches "up but hung" services)
+# Watchdog daemon - owns detection, restart retries, and recovery/give-up
+# state for both systemd services and Supervisor jobs.
 # ---------------------------------------------------------------------------
 
 log "Installing ${WATCHDOG_SCRIPT}..."
 if [[ "${DRY_RUN}" != "1" ]]; then
 cat > "${WATCHDOG_SCRIPT}" <<'EOF'
 #!/usr/bin/env bash
-# Active health-check watchdog. Restarts services that are "active" per
-# systemd but not actually responding (TCP/HTTP), after N consecutive
-# failed checks. Complements — does not replace — systemd's own
-# Restart=on-failure, which only fires when the process itself dies.
+# Persistent self-healing watchdog daemon.
+#
+# Every CHECK_INTERVAL seconds, every configured service/Supervisor job is
+# health-checked. On failure the watchdog itself performs up to MAX_ATTEMPTS
+# restarts, RETRY_DELAY seconds apart, health-checking after each one. If
+# every attempt fails it stops retrying and fires a notification; the next
+# time the service is observed healthy its state resets so a future failure
+# gets a fresh set of attempts.
 set -Eeuo pipefail
 
 CONFIG_FILE="/etc/self-healing/config.conf"
 SERVICES_FILE="/etc/self-healing/services.conf"
 STATE_DIR="/var/lib/self-healing/state"
-LOCK_FILE="/var/lib/self-healing/self-healing.lock"
+LOCK_DIR="/var/lib/self-healing/locks"
 HEARTBEAT_FILE="/var/lib/self-healing/heartbeat"
 LOG_FILE="/var/log/self-healing/events.log"
 NOTIFIER="/usr/local/bin/self-healing-notify.sh"
+HOSTNAME_FQDN="$(hostname -f 2>/dev/null || hostname)"
 
 [[ -f "${CONFIG_FILE}" ]] && source "${CONFIG_FILE}"
-FAIL_THRESHOLD="${FAIL_THRESHOLD:-2}"
+MAX_ATTEMPTS="${MAX_ATTEMPTS:-3}"
+RETRY_DELAY="${RETRY_DELAY:-30}"
+CHECK_INTERVAL="${CHECK_INTERVAL:-30}"
+DISK_CHECK_ENABLED="${DISK_CHECK_ENABLED:-1}"
+DISK_MOUNTPOINTS="${DISK_MOUNTPOINTS:-/}"
+DISK_WARN_PCT="${DISK_WARN_PCT:-80}"
+DISK_CRITICAL_PCT="${DISK_CRITICAL_PCT:-90}"
+DISK_EMERGENCY_PCT="${DISK_EMERGENCY_PCT:-95}"
 
-mkdir -p "${STATE_DIR}"
-touch "${LOG_FILE}" "${LOCK_FILE}"
-date +%s > "${HEARTBEAT_FILE}"
+mkdir -p "${STATE_DIR}" "${LOCK_DIR}"
+touch "${LOG_FILE}"
 
-[[ -f "${SERVICES_FILE}" ]] || exit 0
+logline() {
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "${LOG_FILE}"
+}
+
+# --- health / control primitives -------------------------------------------
 
 check_tcp() {
-    local port="$1"
-    timeout 3 bash -c "exec 3<>/dev/tcp/127.0.0.1/${port}" 2>/dev/null
+    timeout 3 bash -c "exec 3<>/dev/tcp/127.0.0.1/$1" 2>/dev/null
 }
 
 check_http() {
-    local url="$1"
-    curl -fsS -o /dev/null -m 5 "${url}" 2>/dev/null
+    curl -fsS -o /dev/null -m 5 "$1" 2>/dev/null
 }
 
-while IFS=: read -r svc checktype target; do
-    [[ -z "${svc}" || "${svc}" == \#* ]] && continue
-    [[ "${checktype}" == "none" || -z "${checktype}" ]] && continue
-
-    systemctl is-active --quiet "${svc}.service" 2>/dev/null || continue
-
-    OK=1
+is_healthy() {
+    local name="$1" checktype="$2" target="$3"
     case "${checktype}" in
-        tcp)  check_tcp "${target}"  || OK=0 ;;
-        http) check_http "${target}" || OK=0 ;;
-        *) continue ;;
+        supervisor)
+            supervisorctl status "${target}" 2>/dev/null | awk '{print $2}' | grep -qx RUNNING
+            ;;
+        *)
+            systemctl is-active --quiet "${name}.service" 2>/dev/null || return 1
+            case "${checktype}" in
+                tcp)  check_tcp "${target}" ;;
+                http) check_http "${target}" ;;
+                *) return 0 ;;
+            esac
+            ;;
     esac
+}
 
-    FAIL_STATE_FILE="${STATE_DIR}/${svc}.healthchecks"
+restart_unit() {
+    local name="$1" checktype="$2" target="$3"
+    if [[ "${checktype}" == "supervisor" ]]; then
+        supervisorctl restart "${target}" >/dev/null 2>&1
+    else
+        systemctl restart "${name}.service" >/dev/null 2>&1
+    fi
+}
+
+error_detail() {
+    local name="$1" checktype="$2" target="$3"
+    if [[ "${checktype}" == "supervisor" ]]; then
+        supervisorctl status "${target}" 2>&1 | tr '\n' ' '
+    else
+        local sub result
+        sub="$(systemctl show "${name}.service" --property=SubState --value 2>/dev/null)"
+        result="$(systemctl show "${name}.service" --property=Result --value 2>/dev/null)"
+        local jlines
+        jlines="$(journalctl -u "${name}.service" -n 5 --no-pager -o cat 2>/dev/null | tr '\n' ' | ')"
+        echo "substate=${sub:-unknown} result=${result:-unknown} recent_log: ${jlines:-none}"
+    fi
+}
+
+# --- disk space monitoring --------------------------------------------------
+# Read-only: this only checks `df -h` and notifies. It never deletes files,
+# rotates logs, or frees space on its own.
+
+disk_key() {
+    # Turn a mountpoint into a safe token for state filenames / notifier
+    # "service name", e.g. "/" -> "disk-root", "/data" -> "disk-data".
+    local mp="${1#/}"
+    mp="${mp//\//-}"
+    [[ -z "${mp}" ]] && mp="root"
+    echo "disk-${mp}"
+}
+
+check_disk_usage() {
+    local mount="$1"
+    local key; key="$(disk_key "${mount}")"
+    local state_file="${STATE_DIR}/${key}.state"
+    local lock_file="${LOCK_DIR}/${key}.lock"
+
     (
         flock -x 200
-        FAILS=0
-        [[ -f "${FAIL_STATE_FILE}" ]] && FAILS="$(<"${FAIL_STATE_FILE}")"
-        [[ "${FAILS}" =~ ^[0-9]+$ ]] || FAILS=0
 
-        if [[ "${OK}" == "1" ]]; then
-            [[ "${FAILS}" != "0" ]] && echo "0" > "${FAIL_STATE_FILE}"
-        else
-            FAILS=$((FAILS + 1))
-            echo "${FAILS}" > "${FAIL_STATE_FILE}"
-            TIMESTAMP="$(date '+%Y-%m-%d %H:%M:%S')"
-            echo "[${TIMESTAMP}] WATCHDOG: ${svc} failed active health check (${checktype}:${target}), consecutive=${FAILS}" >> "${LOG_FILE}"
-
-            if (( FAILS >= FAIL_THRESHOLD )); then
-                echo "[${TIMESTAMP}] WATCHDOG: restarting ${svc} after ${FAILS} consecutive failed health checks" >> "${LOG_FILE}"
-                systemctl restart "${svc}.service" 2>>"${LOG_FILE}" || true
-                echo "0" > "${FAIL_STATE_FILE}"
-                "${NOTIFIER}" "${svc}" "Active health check (${checktype}) failed ${FAILS}x in a row; watchdog restarted it" || true
-            fi
+        local used total pct
+        read -r used total pct <<< "$(df -hP "${mount}" 2>/dev/null | awk 'NR==2{gsub("%","",$5); print $3,$2,$5}')"
+        if [[ ! "${pct}" =~ ^[0-9]+$ ]]; then
+            logline "DISK CHECK ${mount}: unable to read usage via df -h (bad mountpoint?)"
+            return 0
         fi
-    ) 200>"${LOCK_FILE}"
-done < "${SERVICES_FILE}"
+
+        local level="OK"
+        if (( pct >= DISK_EMERGENCY_PCT )); then
+            level="EMERGENCY"
+        elif (( pct >= DISK_CRITICAL_PCT )); then
+            level="CRITICAL"
+        elif (( pct >= DISK_WARN_PCT )); then
+            level="WARNING"
+        fi
+
+        local prev_level="OK"
+        [[ -f "${state_file}" ]] && prev_level="$(<"${state_file}")"
+
+        logline "DISK CHECK ${mount}: ${pct}% used (${used}/${total}), level=${level}"
+
+        if [[ "${level}" == "OK" ]]; then
+            if [[ "${prev_level}" != "OK" ]]; then
+                echo "OK" > "${state_file}"
+                logline "DISK RECOVERED ${mount}: back to ${pct}% used, below ${DISK_WARN_PCT}% warning threshold"
+                "${NOTIFIER}" "${key}" "DISK_RECOVERED" "-" \
+                    "Disk usage on ${mount} (${HOSTNAME_FQDN}) is now ${pct}% used (${used}/${total}), below the ${DISK_WARN_PCT}% warning threshold" || true
+            fi
+            return 0
+        fi
+
+        echo "${level}" > "${state_file}"
+        # Re-notify every check; the notifier's own DISK_COOLDOWN_SECONDS
+        # (default 1800s/30min) throttles this to one actual alert per
+        # window per severity level, same pattern as service DOWN alerts.
+        "${NOTIFIER}" "${key}" "DISK_${level}" "-" \
+            "Disk usage on ${mount} (${HOSTNAME_FQDN}) is ${pct}% used (${used}/${total}) - threshold ${level,,}: warn=${DISK_WARN_PCT}% critical=${DISK_CRITICAL_PCT}% emergency=${DISK_EMERGENCY_PCT}%" || true
+    ) 200>"${lock_file}"
+}
+
+# --- per-service handling ---------------------------------------------------
+
+handle_unit() {
+    local name="$1" checktype="$2" target="$3"
+    local state_file="${STATE_DIR}/${name}.state"
+    local lock_file="${LOCK_DIR}/${name}.lock"
+
+    (
+        flock -x 200
+
+        local attempts=0 given_up=0
+        if [[ -f "${state_file}" ]]; then
+            attempts="$(grep -m1 '^attempts=' "${state_file}" 2>/dev/null | cut -d= -f2)"
+            given_up="$(grep -m1 '^given_up=' "${state_file}" 2>/dev/null | cut -d= -f2)"
+        fi
+        [[ "${attempts}" =~ ^[0-9]+$ ]] || attempts=0
+        [[ "${given_up}" =~ ^[01]$ ]] || given_up=0
+
+        if is_healthy "${name}" "${checktype}" "${target}"; then
+            logline "CHECK ${name}: OK"
+            if [[ "${attempts}" != "0" || "${given_up}" == "1" ]]; then
+                local was_given_up="${given_up}"
+                attempts=0; given_up=0
+                { echo "attempts=${attempts}"; echo "given_up=${given_up}"; } > "${state_file}"
+                logline "RECOVERED ${name}: healthy again, restart counter reset"
+                if [[ "${was_given_up}" == "1" ]]; then
+                    "${NOTIFIER}" "${name}" "RECOVERED" "0/${MAX_ATTEMPTS}" "Service is healthy again (recovered on its own or was fixed manually) after previously exhausting all restart attempts" || true
+                fi
+            fi
+            return 0
+        fi
+
+        logline "CHECK ${name}: FAILED (${checktype}:${target})"
+
+        if [[ "${given_up}" == "1" ]]; then
+            logline "SKIP ${name}: retries already exhausted, waiting for it to recover or be fixed manually"
+            # Still down - re-notify. The notifier's own cooldown (COOLDOWN_SECONDS,
+            # default 1800s/30min) throttles this to one actual alert per window
+            # and logs "suppressed" for the rest, so this is safe to call every cycle.
+            "${NOTIFIER}" "${name}" "DOWN" "${attempts}/${MAX_ATTEMPTS}" "$(error_detail "${name}" "${checktype}" "${target}")" || true
+            return 0
+        fi
+
+        local ok=0
+        while (( attempts < MAX_ATTEMPTS )); do
+            attempts=$((attempts + 1))
+            { echo "attempts=${attempts}"; echo "given_up=0"; } > "${state_file}"
+            logline "RESTART ${name}: attempt ${attempts}/${MAX_ATTEMPTS}"
+            restart_unit "${name}" "${checktype}" "${target}"
+            sleep "${RETRY_DELAY}"
+            if is_healthy "${name}" "${checktype}" "${target}"; then
+                ok=1
+                logline "RECOVERED ${name}: healthy after restart attempt ${attempts}/${MAX_ATTEMPTS}"
+                attempts=0; given_up=0
+                { echo "attempts=${attempts}"; echo "given_up=${given_up}"; } > "${state_file}"
+                break
+            else
+                logline "RESTART ${name}: attempt ${attempts}/${MAX_ATTEMPTS} did not bring it healthy - $(error_detail "${name}" "${checktype}" "${target}")"
+            fi
+        done
+
+        if [[ "${ok}" != "1" ]]; then
+            given_up=1
+            { echo "attempts=${attempts}"; echo "given_up=${given_up}"; } > "${state_file}"
+            local detail
+            detail="$(error_detail "${name}" "${checktype}" "${target}")"
+            logline "GIVEUP ${name}: exhausted ${MAX_ATTEMPTS} restart attempts, notifying"
+            "${NOTIFIER}" "${name}" "DOWN" "${attempts}/${MAX_ATTEMPTS}" "${detail}" || true
+        fi
+    ) 200>"${lock_file}"
+}
+
+# --- main loop ---------------------------------------------------------------
+
+[[ -f "${SERVICES_FILE}" ]] || { logline "No ${SERVICES_FILE} found, watchdog idling"; }
+
+while true; do
+    date +%s > "${HEARTBEAT_FILE}"
+    if [[ -f "${SERVICES_FILE}" ]]; then
+        pids=()
+        while IFS=: read -r name checktype target; do
+            [[ -z "${name}" || "${name}" == \#* ]] && continue
+            handle_unit "${name}" "${checktype}" "${target}" &
+            pids+=($!)
+        done < "${SERVICES_FILE}"
+        for pid in "${pids[@]:-}"; do
+            [[ -n "${pid}" ]] && wait "${pid}" 2>/dev/null || true
+        done
+    fi
+
+    if [[ "${DISK_CHECK_ENABLED}" == "1" ]]; then
+        disk_pids=()
+        IFS=',' read -ra _DISK_MOUNTS <<< "${DISK_MOUNTPOINTS}"
+        for mount in "${_DISK_MOUNTS[@]}"; do
+            mount="$(echo "${mount}" | xargs)"
+            [[ -z "${mount}" ]] && continue
+            check_disk_usage "${mount}" &
+            disk_pids+=($!)
+        done
+        for pid in "${disk_pids[@]:-}"; do
+            [[ -n "${pid}" ]] && wait "${pid}" 2>/dev/null || true
+        done
+    fi
+
+    sleep "${CHECK_INTERVAL}"
+done
 EOF
 chmod 755 "${WATCHDOG_SCRIPT}"
 fi
 
-log "Installing watchdog systemd service + timer (every ${CHECK_INTERVAL}s)..."
+log "Installing watchdog systemd service..."
 if [[ "${DRY_RUN}" != "1" ]]; then
 cat > "${WATCHDOG_SERVICE}" <<EOF
 [Unit]
-Description=Self-Healing Active Health-Check Watchdog
+Description=Self-Healing Watchdog (services + Supervisor jobs)
+After=network-online.target
+Wants=network-online.target
 
 [Service]
-Type=oneshot
+Type=simple
 ExecStart=${WATCHDOG_SCRIPT}
-EOF
-
-cat > "${WATCHDOG_TIMER}" <<EOF
-[Unit]
-Description=Run Self-Healing Watchdog every ${CHECK_INTERVAL}s
-
-[Timer]
-OnBootSec=30s
-OnUnitActiveSec=${CHECK_INTERVAL}s
-AccuracySec=5s
+Restart=always
+RestartSec=5s
 
 [Install]
-WantedBy=timers.target
+WantedBy=multi-user.target
 EOF
-chmod 644 "${WATCHDOG_SERVICE}" "${WATCHDOG_TIMER}"
+chmod 644 "${WATCHDOG_SERVICE}"
 fi
 
 # ---------------------------------------------------------------------------
@@ -856,8 +1073,8 @@ log "Installing logrotate config..."
 if [[ "${DRY_RUN}" != "1" ]]; then
 cat > "${LOGROTATE_FILE}" <<EOF
 ${LOG_FILE} {
-    weekly
-    rotate 8
+    daily
+    rotate 7
     compress
     delaycompress
     missingok
@@ -879,9 +1096,16 @@ cat > "${MOTD_PATH}" <<'EOF'
 case $- in *i*) ;; *) exit 0 ;; esac
 
 BASE_DIR="/var/lib/self-healing"
-COUNT_DIR="${BASE_DIR}/counts"
+STATE_DIR="${BASE_DIR}/state"
 HEARTBEAT_FILE="${BASE_DIR}/heartbeat"
 SERVICES_FILE="/etc/self-healing/services.conf"
+CONFIG_FILE="/etc/self-healing/config.conf"
+[[ -f "${CONFIG_FILE}" ]] && source "${CONFIG_FILE}"
+DISK_CHECK_ENABLED="${DISK_CHECK_ENABLED:-1}"
+DISK_MOUNTPOINTS="${DISK_MOUNTPOINTS:-/}"
+DISK_WARN_PCT="${DISK_WARN_PCT:-80}"
+DISK_CRITICAL_PCT="${DISK_CRITICAL_PCT:-90}"
+DISK_EMERGENCY_PCT="${DISK_EMERGENCY_PCT:-95}"
 
 echo ""
 echo "==================================================================="
@@ -891,14 +1115,38 @@ echo "==================================================================="
 LOAD="$(uptime 2>/dev/null | awk -F'load average:' '{print $2}' | xargs || true)"
 MEM_INFO="$(free -m 2>/dev/null | awk '/^Mem:/{used=$3; total=$2; pct=(total>0)?used*100/total:0; printf "%d %d %d", used, total, pct}')"
 read -r MEM_USED MEM_TOTAL MEM_PCT <<< "${MEM_INFO:-0 0 0}"
-DISK_INFO="$(df -hP / 2>/dev/null | awk 'NR==2{printf "%s %s %s", $3,$2,$5}')"
-read -r DISK_USED DISK_TOTAL DISK_PCT <<< "${DISK_INFO:-? ? ?}"
 OS_INFO="$(awk -F= '/^PRETTY_NAME=/{gsub(/"/,"",$2);print $2;exit}' /etc/os-release 2>/dev/null)"
 
 echo " OS: ${OS_INFO:-unknown}"
 echo " CPU Load: ${LOAD:-N/A}"
 echo " Memory: ${MEM_USED}MB / ${MEM_TOTAL}MB (${MEM_PCT}% used)"
-echo " Root Disk: ${DISK_USED} / ${DISK_TOTAL} (${DISK_PCT} used)"
+
+if [[ "${DISK_CHECK_ENABLED}" == "1" ]]; then
+    IFS=',' read -ra _MOTD_MOUNTS <<< "${DISK_MOUNTPOINTS}"
+    for _mp in "${_MOTD_MOUNTS[@]}"; do
+        _mp="$(echo "${_mp}" | xargs)"
+        [[ -z "${_mp}" ]] && continue
+        DISK_INFO="$(df -hP "${_mp}" 2>/dev/null | awk 'NR==2{gsub("%","",$5); print $3,$2,$5}')"
+        read -r DISK_USED DISK_TOTAL DISK_PCT <<< "${DISK_INFO:-? ? 0}"
+        if [[ "${DISK_PCT}" =~ ^[0-9]+$ ]]; then
+            if (( DISK_PCT >= DISK_EMERGENCY_PCT )); then
+                echo " Disk ${_mp}: ${DISK_USED} / ${DISK_TOTAL} (${DISK_PCT}% used) - [EMERGENCY]"
+            elif (( DISK_PCT >= DISK_CRITICAL_PCT )); then
+                echo " Disk ${_mp}: ${DISK_USED} / ${DISK_TOTAL} (${DISK_PCT}% used) - [CRITICAL]"
+            elif (( DISK_PCT >= DISK_WARN_PCT )); then
+                echo " Disk ${_mp}: ${DISK_USED} / ${DISK_TOTAL} (${DISK_PCT}% used) - [WARNING]"
+            else
+                echo " Disk ${_mp}: ${DISK_USED} / ${DISK_TOTAL} (${DISK_PCT}% used)"
+            fi
+        else
+            echo " Disk ${_mp}: unable to read usage"
+        fi
+    done
+else
+    DISK_INFO="$(df -hP / 2>/dev/null | awk 'NR==2{printf "%s %s %s", $3,$2,$5}')"
+    read -r DISK_USED DISK_TOTAL DISK_PCT <<< "${DISK_INFO:-? ? ?}"
+    echo " Root Disk: ${DISK_USED} / ${DISK_TOTAL} (${DISK_PCT} used) - disk monitoring disabled"
+fi
 
 if [[ -f "${HEARTBEAT_FILE}" ]]; then
     NOW="$(date +%s)"
@@ -906,7 +1154,7 @@ if [[ -f "${HEARTBEAT_FILE}" ]]; then
     [[ "${LAST}" =~ ^[0-9]+$ ]] || LAST=0
     AGE=$((NOW - LAST))
     if (( AGE > 300 )); then
-        echo " Watchdog heartbeat: STALE (${AGE}s old) — self-healing watchdog may be down!"
+        echo " Watchdog heartbeat: STALE (${AGE}s old) - self-healing watchdog may be down!"
     else
         echo " Watchdog heartbeat: OK (${AGE}s ago)"
     fi
@@ -915,18 +1163,32 @@ else
 fi
 
 echo ""
-echo " --- Monitored Services ---"
+echo " --- Monitored Services / Jobs ---"
 if [[ -f "${SERVICES_FILE}" ]]; then
     found=0
     while IFS=: read -r svc checktype target; do
         [[ -z "${svc}" || "${svc}" == \#* ]] && continue
         found=1
-        FAIL_COUNT=0
-        [[ -f "${COUNT_DIR}/${svc}" ]] && FAIL_COUNT="$(<"${COUNT_DIR}/${svc}")"
-        if systemctl is-active --quiet "${svc}.service" 2>/dev/null; then
-            echo " [ OK ] ${svc} (failures logged: ${FAIL_COUNT}, check: ${checktype:-none})"
+        attempts=0; given_up=0
+        state_file="${STATE_DIR}/${svc}.state"
+        if [[ -f "${state_file}" ]]; then
+            attempts="$(grep -m1 '^attempts=' "${state_file}" 2>/dev/null | cut -d= -f2)"
+            given_up="$(grep -m1 '^given_up=' "${state_file}" 2>/dev/null | cut -d= -f2)"
+        fi
+        [[ "${attempts}" =~ ^[0-9]+$ ]] || attempts=0
+        [[ "${given_up}" =~ ^[01]$ ]] || given_up=0
+        if [[ "${checktype}" == "supervisor" ]]; then
+            status_line="$(supervisorctl status "${target}" 2>/dev/null | awk '{print $2}')"
+            [[ "${status_line}" == "RUNNING" ]] && ok=1 || ok=0
         else
-            echo " [FAIL] ${svc} (failures logged: ${FAIL_COUNT}) - OFFLINE"
+            systemctl is-active --quiet "${svc}.service" 2>/dev/null && ok=1 || ok=0
+        fi
+        if [[ "${given_up}" == "1" ]]; then
+            echo " [FAIL] ${svc} (check: ${checktype}) - retries exhausted, awaiting manual fix"
+        elif [[ "${ok}" == "1" ]]; then
+            echo " [ OK ] ${svc} (check: ${checktype})"
+        else
+            echo " [WARN] ${svc} (check: ${checktype}) - down, attempts so far: ${attempts}"
         fi
     done < "${SERVICES_FILE}"
     [[ "${found}" -eq 0 ]] && echo " No monitored services configured."
@@ -952,27 +1214,13 @@ fi
 log "Reloading systemd..."
 systemctl daemon-reload
 
-log "Validating generated units..."
-systemd-analyze verify "${NOTIFIER_UNIT}" "${WATCHDOG_SERVICE}" "${WATCHDOG_TIMER}" || \
-    warn "systemd-analyze verify reported issues above — review before relying on this in production."
+log "Validating generated unit..."
+systemd-analyze verify "${WATCHDOG_SERVICE}" || \
+    warn "systemd-analyze verify reported issues above - review before relying on this in production."
 
-for svc in "${MONITORED_SERVICES[@]}"; do
-    # Verify the merged unit (base unit + our drop-in), not the drop-in
-    # fragment by itself — systemd-analyze verify requires a full unit
-    # file name/suffix and rejects a bare ".conf" override snippet.
-    systemd-analyze verify "${svc}.service" || \
-        warn "Verification issue for ${svc} — check its drop-in."
-done
-
-log "Enabling and starting watchdog timer..."
-systemctl enable --now self-healing-watchdog.timer
-
-log "Checking applied restart policies..."
-for svc in "${MONITORED_SERVICES[@]}"; do
-    pol="$(systemctl show "${svc}.service" --property=Restart --value)"
-    echo "  ${svc}: Restart=${pol}"
-    [[ "${pol}" == "on-failure" ]] || warn "${svc}: expected Restart=on-failure, got '${pol}'"
-done
+log "Enabling and starting watchdog..."
+systemctl enable --now self-healing-watchdog.service
+systemctl restart self-healing-watchdog.service
 
 # ---------------------------------------------------------------------------
 # Summary
@@ -985,12 +1233,21 @@ echo "============================================================"
 echo " OS:                ${OS_NAME}"
 echo " Services managed:  ${#MONITORED_SERVICES[@]}"
 for s in "${MONITORED_SERVICES[@]}"; do echo "   - ${s}"; done
-echo " Watchdog interval: ${CHECK_INTERVAL}s (systemd timer)"
-echo " Restart policy:    ${RESTART_BURST} tries per ${RESTART_WINDOW}s, then notify"
-echo " Notify cooldown:   ${COOLDOWN_SECONDS}s per service"
-echo " Slack configured:      $([[ -n "${SLACK_WEBHOOK}" ]] && echo yes || echo no)"
+if [[ "${#SUPERVISOR_JOBS[@]}" -gt 0 ]]; then
+    echo " Supervisor jobs managed: ${#SUPERVISOR_JOBS[@]}"
+    for j in "${SUPERVISOR_JOBS[@]}"; do echo "   - ${j}"; done
+fi
+echo " Restart policy:    ${MAX_ATTEMPTS} attempts, ${RETRY_DELAY}s apart, then notify + stop retrying"
+echo " Poll interval:     ${CHECK_INTERVAL}s"
+echo " Notify cooldown:   ${COOLDOWN_SECONDS}s per service (once retries are exhausted)"
+if [[ "${DISK_CHECK_ENABLED}" == "1" ]]; then
+    echo " Disk monitoring:   mounts=[${DISK_MOUNTPOINTS}] warn=${DISK_WARN_PCT}% critical=${DISK_CRITICAL_PCT}% emergency=${DISK_EMERGENCY_PCT}% repeat every ${DISK_COOLDOWN_SECONDS}s (read-only, never deletes anything)"
+else
+    echo " Disk monitoring:   disabled"
+fi
+echo " Slack configured:       $([[ -n "${SLACK_WEBHOOK}" ]] && echo yes || echo no)"
 echo " Google Chat configured: $([[ -n "${GOOGLECHAT_WEBHOOK}" ]] && echo yes || echo no)"
-echo " Email configured:      $([[ -n "${EMAIL_TO}" ]] && echo "yes (${EMAIL_TO})" || echo no)"
+echo " Email configured:       $([[ -n "${EMAIL_TO}" ]] && echo "yes (${EMAIL_TO})" || echo no)"
 echo
 echo " Config:    ${CONFIG_FILE}"
 echo " Services:  ${SERVICES_FILE}  (edit to add checktype/target per app)"
@@ -999,12 +1256,11 @@ echo " Backup:    ${BACKUP_DIR}"
 echo
 echo " Useful commands:"
 echo "   tail -f ${LOG_FILE}"
-echo "   systemctl status self-healing-watchdog.timer"
-echo "   systemctl list-timers self-healing-watchdog.timer"
+echo "   systemctl status self-healing-watchdog.service"
 echo "   cat ${SERVICES_FILE}"
 echo "   sudo ./setup-self-healing.sh --uninstall"
 echo
 echo " Add a custom app: edit ${SERVICES_FILE} directly, e.g.:"
 echo "   myapp:http:http://127.0.0.1:8080/health"
-echo " then run: systemctl restart self-healing-watchdog.timer"
+echo " then run: systemctl restart self-healing-watchdog.service"
 echo "============================================================"

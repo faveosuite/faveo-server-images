@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <!-- Background Radial Gradient -->
+    <radialGradient id="bgGlow" cx="50%" cy="45%" r="65%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="60%" stop-color="#090d16" />
+      <stop offset="100%" stop-color="#020617" />
+    </radialGradient>
+
+    <!-- Shield Border Gradient -->
+    <linearGradient id="shieldBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#06b6d4" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+
+    <!-- Inner Core Gradient -->
+    <linearGradient id="coreGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#34d399" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+
+    <!-- Pulse Line Gradient -->
+    <linearGradient id="pulseGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.2" />
+      <stop offset="25%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#ffffff" />
+      <stop offset="75%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#10b981" stop-opacity="0.2" />
+    </linearGradient>
+
+    <!-- Neon Glow Filter -->
+    <filter id="neonGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur" />
+      <feMerge>
+        <feMergeNode in="coloredBlur" />
+        <feMergeNode in="coloredBlur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <!-- Soft Depth Shadow -->
+    <filter id="shieldShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#06b6d4" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <!-- Outer Shield Shell -->
+  <path d="M 250,45 
+           L 400,105 
+           C 400,270 250,405 250,445 
+           C 250,405 100,270 100,105 Z" 
+        fill="url(#bgGlow)" 
+        stroke="url(#shieldBorder)" 
+        stroke-width="12" 
+        stroke-linejoin="round" 
+        filter="url(#shieldShadow)" />
+
+  <!-- Inner Inset Shield Contour -->
+  <path d="M 250,68 
+           L 378,120 
+           C 378,260 250,378 250,412 
+           C 250,378 122,260 122,120 Z" 
+        fill="none" 
+        stroke="#1e293b" 
+        stroke-width="2.5" 
+        stroke-dasharray="6 6" />
+
+  <!-- Refresh / Auto-Heal Loop Arrows -->
+  <g stroke="url(#shieldBorder)" stroke-width="5" fill="none" stroke-linecap="round">
+    <!-- Top-Right Arc -->
+    <path d="M 250,140 A 95,95 0 0,1 345,235" />
+    <path d="M 337,225 L 345,235 L 357,227" fill="none" />
+
+    <!-- Bottom-Left Arc -->
+    <path d="M 250,330 A 95,95 0 0,1 155,235" />
+    <path d="M 163,245 L 155,235 L 143,243" fill="none" />
+  </g>
+
+  <!-- Medical Self-Healing Cross Base -->
+  <path d="M 230,175 Q 230,170 235,170 L 265,170 Q 270,170 270,175 L 270,215 L 310,215 Q 315,215 315,220 L 315,250 Q 315,255 310,255 L 270,255 L 270,295 Q 270,300 265,300 L 235,300 Q 230,300 230,295 L 230,255 L 190,255 Q 185,255 185,250 L 185,220 Q 185,215 190,215 L 230,215 Z" 
+        fill="url(#coreGrad)" 
+        opacity="0.18" />
+
+  <path d="M 230,175 Q 230,170 235,170 L 265,170 Q 270,170 270,175 L 270,215 L 310,215 Q 315,215 315,220 L 315,250 Q 315,255 310,255 L 270,255 L 270,295 Q 270,300 265,300 L 235,300 Q 230,300 230,295 L 230,255 L 190,255 Q 185,255 185,250 L 185,220 Q 185,215 190,215 L 230,215 Z" 
+        fill="none" 
+        stroke="#10b981" 
+        stroke-width="3.5" 
+        stroke-linejoin="round" />
+
+  <!-- Dynamic Heartbeat Pulse Line (Foreground) -->
+  <path d="M 135,235 
+           L 195,235 
+           L 215,235 
+           L 228,190 
+           L 248,285 
+           L 262,205 
+           L 274,250 
+           L 284,235 
+           L 305,235 
+           L 365,235" 
+        fill="none" 
+        stroke="url(#pulseGrad)" 
+        stroke-width="7" 
+        stroke-linecap="round" 
+        stroke-linejoin="round" 
+        filter="url(#neonGlow)" />
+
+  <!-- Central Pulse Indicator Point -->
+  <circle cx="248" cy="285" r="4.5" fill="#ffffff" filter="url(#neonGlow)" />
+</svg>

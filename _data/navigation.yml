@@ -65,6 +65,8 @@ docs:
         url: /docs/helpers/choose-php/
       - title: Troubleshooting Script
         url: /docs/installation/providers/enterprise/basic-troubleshooting-script
+      - title: Self Healing Setup Script
+        url: /docs/installation/providers/enterprise/setup-self-healing/
 #      - title: Upgrade PHP to 8.1
 #        url: /docs/installation/providers/enterprise/php-upgrade/
 #      - title: Upgrade PHP to 8.2

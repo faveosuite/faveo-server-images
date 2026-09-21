@@ -10,8 +10,7 @@ toc: true
 title: Self-Healing Setup Script
 ---
 
-<img alt="Troubleshoot" src="self-healing-shield.svg" width="200"  />
-
+<img alt="Troubleshoot" src="/docs/installation/providers/enterprise/self-healing-shield.svg" width="200"  />
 
 # How to Set Up the Self-Healing Script
 

@@ -120,6 +120,8 @@ docs:
         url: /docs/installation/providers/enterprise/faveo-helpdesk-docker/
       - title: Faveo Invoicing on Docker
         url: /docs/installation/providers/enterprise/faveo-invoicing-docker/
+      - title: Faveo Network Discovery on Docker
+        url: /docs/installation/providers/enterprise/faveo-nd-docker/
   # - title: Community Edition
   #   children:
   #     - title: Alma Linux with Apache

@@ -46,7 +46,7 @@ chmod +x faveo-run.sh
 2. Sudo privilege.
 3. Unreserved ports 80 and 443. (If reserved, feel free to edit and change the ports of your choice in `docker-compose.yml`.)
 4. SSL Certificate (for Paid SSL users) - if you're using a paid SSL, have the SSL certificate files ready before installation.
-5. Operating Systems Ubuntu 20,22,24
+5. Operating Systems Ubuntu 22,24
 6. Internet connectivity - the script clones the Faveo Invoicing Community Edition source from GitHub, and (for the Apache/Supervisor images) builds Docker images locally on first run.
 
 ---

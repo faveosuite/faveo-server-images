@@ -4,13 +4,13 @@ type: docs
 permalink: /docs/installation/providers/enterprise/faveo-helpdesk-docker/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2026-04-12
-last_modified_by: Mohammad_Asif
+last_modified_at: 2026-10-06
+last_modified_by: Sivakumar_C
 toc: true
 ---
 ---
 # <b>Deploying Faveo Helpdesk on Docker</b>   <!-- omit in toc -->
-<img src="https://upload.wikimedia.org/wikipedia/commons/1/1e/Docker_Logo.png" alt="drawing" width="300"/>
+<img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4e/Docker_%28container_engine%29_logo.svg/960px-Docker_%28container_engine%29_logo.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="drawing" width="300"/>
 
 ## <b>Faveo Helpdesk Docker</b>
 
@@ -19,16 +19,16 @@ A pretty simplified Docker Compose workflow that sets up a network of containers
 All the Faveo Helpdesk editions are supported except the community edition.
 
 ## <b>Usage</b>
-___
 
 To get started, make sure you have Docker and Docker-Compose installed on your system, and then clone the below Git-Hub repository with the below command.
 
-```
+```sh
 git clone https://github.com/ladybirdweb/faveo-helpdesk-docker-v2.git
 ```
+
 ---
 ```
-cd faveo-helpdesk-docker-v2
+cd faveo-helpdesk-docker-v2/faveo-helpdesk-docker
 ```
 Next, navigate in your terminal to the directory you cloned this, and give the executable permissions to bash scripts.
 
@@ -51,7 +51,7 @@ chmod +x faveo-community-run.sh
 2. Sudo Privilege.
 3. Faveo license and Order number. (This can be obtained from <a href="https://billing.faveohelpdesk.com" target="_blank" rel="noopener">billing.faveohelpdesk.com</a>).<b> (This is not required for Community Edition)</b>
 4. Unreserved ports 80 and 443. (If it is reserved feel free to edit and change the ports of your choice in docker-copompose.yml)
-5. Operating Systems Ubuntu 20,22,24
+5. Operating Systems Ubuntu 22,24
 6. SSL Certificate (For Paid SSL Users), If you're using a paid SSL, have the SSL certificate files ready before installation.
 
 ---
@@ -72,7 +72,7 @@ Run the script <code><b>faveo-run.sh</b></code> by passing the necessary argumen
 
 - Option B: Self-Signed SSL
 
-- Option C: Paid SSL 
+- Option C: Paid SSL (
   
   Incase of Paid SSL, please ensure your SSL files are ready in your system. If you choose Option C (Paid SSL), you must specify the paths of the SSL certificate files.
 
@@ -105,7 +105,7 @@ Run the script <code><b>faveo-communtiy-run.sh</b></code>  by passing the necess
 
 - Option B: Self-Signed SSL
 
-- Option C: Paid SSL 
+- Option C: Paid SSL (
   
   Incase of Paid SSL, please ensure your SSL files are ready in your system. If you choose Option C (Paid SSL), you must specify the paths of the SSL certificate files.
 
@@ -128,7 +128,11 @@ Example: It should look something like this.
 
 ---
 
-After the docker installation is completed you will be prompted with Database Credentials and Credentials are saved in filename <code><b>credentials.txt</b></code>  them somewhere safe and a cronjob will be set to auto-renew SSL certificates from Letsencrypt.
+The script also automatically sets up a <b>MeiliSearch</b> container for search functionality. Its hostname and master key are generated during installation.
+
+MeiliSearch Hostname: <code><b>http://yourdomainname-meilisearch:7700</b></code>
+
+After the docker installation is completed you will be prompted with Database Credentials and MeiliSearch Credentials (Hostname and Master Key), and Credentials are saved in filename <code><b>credentials.txt</b></code>  them somewhere safe and a cronjob will be set to auto-renew SSL certificates from Letsencrypt.
 
 Visit  <code><b>https://yourdomainname.com</b></code> complete the readiness probe, input the Database Details when prompted, and complete the installation.
 
@@ -172,5 +176,4 @@ DELETE FROM plugins WHERE name = '';
 
 Once the entry is removed, you can access the helpdesk via the browser and continue using it.
 
----
 ---

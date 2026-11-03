@@ -47,7 +47,7 @@ Select PHP 8.4 (if available) from the list.
 
 <a id="2" name="2"></a>
 ## 2. Upload Faveo
-- Download the Faveo Helpdesk from <b>[https://billing.faveohelpdesk.com](https://billing.faveohelpdesk.com)</b> and upload it to the below directory.
+- Download the Faveo Helpdesk from <b>[https://store.faveohelpdesk.com](https://store.faveohelpdesk.com)</b> and upload it to the below directory.
 
 ```
 C:\wamp64\www

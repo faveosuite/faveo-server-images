@@ -487,7 +487,7 @@ name="7Upload-Faveo"></a>
 ### <strong>7. Upload Faveo</strong>
 
 
-- Download the Faveo Helpdesk from https://billing.faveohelpdesk.com and upload it to the below directory.
+- Download the Faveo Helpdesk from https://store.faveohelpdesk.com and upload it to the below directory.
 
 ```
  C:\Apache24\htdocs

@@ -135,7 +135,7 @@ Once the softwares above are installed:
 <a id="3-upload-faveo" name="3-upload-faveo"></a>
 
 ### <strong>3. Upload Faveo</strong>
-Please download Faveo Helpdesk from [https://billing.faveohelpdesk.com](https://billing.faveohelpdesk.com) and upload it to below directory
+Please download Faveo Helpdesk from [https://store.faveohelpdesk.com](https://store.faveohelpdesk.com) and upload it to below directory
 
 ```sh
 mkdir -p /var/www/faveo/

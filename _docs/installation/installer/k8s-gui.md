@@ -16,7 +16,7 @@ Before getting started make sure your server meets following [minimum requiremen
 <a id="getting-started" name="getting-started"></a>
 ## Getting Started
 
-Download the latest version of Faveo from [https://billing.faveohelpdesk.com](https://billing.faveohelpdesk.com) and upload the .zip files in the folder/directory on your server.
+Download the latest version of Faveo from [https://store.faveohelpdesk.com](https://store.faveohelpdesk.com) and upload the .zip files in the folder/directory on your server.
 
 Faveo Community version can also be downloaded directly from [Github](https://github.com/ladybirdweb/faveo-helpdesk)
 

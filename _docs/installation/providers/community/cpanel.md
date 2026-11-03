@@ -30,7 +30,7 @@ Faveo can run on [cPanel](https://cpanel.net/).
 
 <a id="1-upload-faveo" name="1-upload-faveo"></a>
 ### 1. Upload Faveo
-Please download Faveo Helpdesk from [https://billing.faveohelpdesk.com](https://billing.faveohelpdesk.com) and upload the .zip files in the folder of your choice on your server.
+Please download Faveo Helpdesk from [https://store.faveohelpdesk.com](https://store.faveohelpdesk.com) and upload the .zip files in the folder of your choice on your server.
 
 
 <img alt="" src="https://lh6.googleusercontent.com/QvogNHnM9veEU-FO2RBah-5BlD0bqhL3Tp_2Td2R2aunRBxwEbbKfCkmbb9DhW9TT9IwkFh8RdDScutANFZ01rHFrx8O5V_EU71NSbDgTjsrGLulJcv5b74Tc_FeoYHlD1TwVbMu"  />

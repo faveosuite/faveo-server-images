@@ -163,4 +163,4 @@ Redis requires "supervisor" daemon service we need to install the same for Redis
 
 <a id="firewall-requirements" name="firewall-requirements"></a>
 ## 6. Firewall Requirements
-Please open outbound access to billing.faveohelpdesk.com
+Please open outbound access to store.faveohelpdesk.com

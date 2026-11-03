@@ -235,7 +235,7 @@ MeiliSearch is an open-source search engine developed in Rust that delivers flex
 
 ### <strong>2. Upload Faveo</strong>
 
-Please download Faveo Helpdesk from [https://billing.faveohelpdesk.com](https://billing.faveohelpdesk.com) and upload it to below directory
+Please download Faveo Helpdesk from [https://store.faveohelpdesk.com](https://store.faveohelpdesk.com) and upload it to below directory
 
 ```sh
 mkdir -p /var/www/faveo/

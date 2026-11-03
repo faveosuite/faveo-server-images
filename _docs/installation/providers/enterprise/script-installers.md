@@ -62,8 +62,8 @@ Faveo Helpdesk Compatibility Check:  [OK]
  Enter the following details required by the Faveo Helpdesk Installation. 
  Domain Name [For Faveo Installation without https://]: test.test.com
  Email [Valid email address for Server Side Installation]: test@yahoo.com
- License Code (16 chars) This can be obtained from [https://billing.faveohelpdesk.com]: 5856545251525356    
- Order Number (8 chars) This can be obtained from [https://billing.faveohelpdesk.com]: 87654321
+ License Code (16 chars) This can be obtained from [https://store.faveohelpdesk.com]: 5856545251525356    
+ Order Number (8 chars) This can be obtained from [https://store.faveohelpdesk.com]: 87654321
 
  Select the release type for installation:
  1) Official (stable - recommended)

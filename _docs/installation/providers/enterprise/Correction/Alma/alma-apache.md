@@ -177,7 +177,7 @@ sudo dnf install ./wkhtmltox-0.12.6.1-2.almalinux9.x86_64.rpm
 ### <strong>2. Upload Faveo</strong> 
 **For Faveo Freelancer, Paid and Enterprise Version**
 
-Please download Faveo Helpdesk from [https://billing.faveohelpdesk.com](https://billing.faveohelpdesk.com) and upload it to below directory
+Please download Faveo Helpdesk from [https://store.faveohelpdesk.com](https://store.faveohelpdesk.com) and upload it to below directory
 
 ```sh
 mkdir -p /var/www/faveo/

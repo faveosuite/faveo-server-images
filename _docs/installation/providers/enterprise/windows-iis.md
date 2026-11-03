@@ -299,7 +299,7 @@ name="7Upload-Faveo"></a>
 
 ### <strong>7. Upload Faveo</strong>
 
-- Download the Faveo Helpdesk from <code><b>https://billing.faveohelpdesk.com</b></code> and extract the contents inside IIS Root Directory.
+- Download the Faveo Helpdesk from <code><b>https://store.faveohelpdesk.com</b></code> and extract the contents inside IIS Root Directory.
 ```
 C:\inetpub\wwwroot\
 ```

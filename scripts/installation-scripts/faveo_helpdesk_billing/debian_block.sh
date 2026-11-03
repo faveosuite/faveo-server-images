@@ -763,7 +763,7 @@ faveo_configure () {
 
     # Download Faveo ZIP
     FAVEO_ZIP="$PWD/faveo.zip"
-    DOWNLOAD_URL="https://billing.faveohelpdesk.com/download/faveo?order_number=$OrderNumber&serial_key=$LicenseCode&release=$ReleaseSelection"
+    DOWNLOAD_URL="https://store.faveohelpdesk.com/download/faveo?order_number=$OrderNumber&serial_key=$LicenseCode&release=$ReleaseSelection"
 
     echo -e "$yellow Downloading Faveo package... $reset"
 
@@ -2778,7 +2778,7 @@ attributes () {
     if [[ -z "$LicenseCode" ]]; then
         retries=0
         while true; do
-            read -p "$(echo -e "$yellow License Code (16 chars) This can be obtained from [https://billing.faveohelpdesk.com]: $reset")" LicenseCode
+            read -p "$(echo -e "$yellow License Code (16 chars) This can be obtained from [https://store.faveohelpdesk.com]: $reset")" LicenseCode
             [[ ${#LicenseCode} -eq 16 ]] && break
             retries=$((retries+1))
             echo -e "$red Must be exactly 16 characters. ($retries/$max_retries)$reset"
@@ -2790,7 +2790,7 @@ attributes () {
     if [[ -z "$OrderNumber" ]]; then
         retries=0
         while true; do
-            read -p "$(echo -e "$yellow Order Number (8 chars) This can be obtained from [https://billing.faveohelpdesk.com]: $reset")" OrderNumber
+            read -p "$(echo -e "$yellow Order Number (8 chars) This can be obtained from [https://store.faveohelpdesk.com]: $reset")" OrderNumber
             [[ ${#OrderNumber} -eq 8 ]] && break
             retries=$((retries+1))
             echo -e "$red Must be exactly 8 characters. ($retries/$max_retries)$reset"

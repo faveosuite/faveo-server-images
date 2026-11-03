@@ -27,7 +27,7 @@ Download and install latest version of WAMP server on your Windows dekstop/serve
 <a id="step2" name="step2"></a>
 ## <strong>2: Download Faveo Helpdesk Software</strong>
 
-Please download Faveo Helpdesk from [https://billing.faveohelpdesk.com](https://billing.faveohelpdesk.com) and upload it to below directory
+Please download Faveo Helpdesk from [https://store.faveohelpdesk.com](https://store.faveohelpdesk.com) and upload it to below directory
 
 Upload the .zip file (c:\\Wamp 64\www\Faveo) to the required location and unzip the file.
 

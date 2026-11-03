@@ -47,7 +47,7 @@ The new domain name is now shown in the list at the bottom of the screen.
 
 ### To upload a website using File Manager:
 
-- Download the Faveo Helpdesk from [https://billing.faveohelpdesk.com](https://billing.faveohelpdesk.com)
+- Download the Faveo Helpdesk from [https://store.faveohelpdesk.com](https://store.faveohelpdesk.com)
 
 Go to <b>Websites & Domains > domain name > Files</b>.
 

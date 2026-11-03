@@ -83,7 +83,7 @@ Now get back to home dashboard and click on Add Domain and enter the FQDN and fi
 
 <img src="https://support.faveohelpdesk.com/uploads/2020/9/29/plesk12.png" alt=""/>
 
-Now that we have created a domain account in plesk its time to move our faveo files. Download the Faveo Variant of your choice from billing.faveohelpdesk.com .
+Now that we have created a domain account in plesk its time to move our faveo files. Download the Faveo Variant of your choice from store.faveohelpdesk.com .
 
 Open file manager of your domain account and delete the default files under httpdocs, upload the downloaded faveo zip file and extract it all this operations can be performed in the file manager itself. Later you can delete the zip file or leave it as backup.
 

@@ -802,7 +802,7 @@ check_billing_connection() {
 
     tbl_head "44:Endpoint" "10:HTTP" "12:Status" "20:Response Time"
 
-    for ep in "https://billing.faveohelpdesk.com" "https://license.faveohelpdesk.com"; do
+    for ep in "https://store.faveohelpdesk.com" "https://license.faveohelpdesk.com"; do
         READ_OUT=$(curl -sL -o /dev/null -w "%{http_code} %{time_total}" --max-time 15 "$ep" 2>/dev/null)
         CODE=$(echo "$READ_OUT" | awk '{print $1}')
         TIME=$(echo "$READ_OUT" | awk '{printf "%.3f", $2}')
@@ -1160,7 +1160,7 @@ check_network() {
     HOSTS=(
         "8.8.8.8"
         "google.com"
-        "billing.faveohelpdesk.com"
+        "store.faveohelpdesk.com"
         "license.faveohelpdesk.com"
     )
 

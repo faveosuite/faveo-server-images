@@ -349,7 +349,7 @@ OK | CPU: 0.1% | MEM: 1.1% | php-fpm: pool www
 Network Connectivity Test:
 Pinging 8.8.8.8 ... OK (avg: 6.303 ms)
 Pinging google.com ... OK (avg: 6.149 ms)
-Pinging billing.faveohelpdesk.com ... SLOW (avg: 156.857 ms | SLA breached)
+Pinging store.faveohelpdesk.com ... SLOW (avg: 156.857 ms | SLA breached)
 Pinging license.faveohelpdesk.com ... SLOW (avg: 156.862 ms | SLA breached)
 
 Faveo Storage Usage (No MySQL login required):
@@ -995,7 +995,7 @@ Execution complete.
 
 - Enter <code><b>9</b></code> to check Faveo Billing Connection
 
-- This check will check the curl connection between the faveo server and billing.faveohelpdesk.com, faveo needs this to validate the license and faveo updates, etc..
+- This check will check the curl connection between the faveo server and store.faveohelpdesk.com, faveo needs this to validate the license and faveo updates, etc..
 
 Example Output:
 
@@ -1055,7 +1055,7 @@ Execution complete.
 
  - To fix, we can try following the steps. If the issue persists, please reach (**support@faveohelpdesk.com***)
 
- - Try whitelisting this domain in your firewall, <code><b>billing.faveohelpdesk.com</b></code>.
+ - Try whitelisting this domain in your firewall, <code><b>store.faveohelpdesk.com</b></code>.
 
 ---
 
@@ -1655,7 +1655,7 @@ Date: Thursday 19 June 2025 02:36:24 PM IST
 Network Connectivity Test:
 Pinging 8.8.8.8 ... OK (avg: 6.380 ms)
 Pinging google.com ... OK (avg: 6.271 ms)
-Pinging billing.faveohelpdesk.com ... SLOW (avg: 157.093 ms | SLA breached)
+Pinging store.faveohelpdesk.com ... SLOW (avg: 157.093 ms | SLA breached)
 Pinging license.faveohelpdesk.com ... SLOW (avg: 156.836 ms | SLA breached)
 
 

@@ -103,7 +103,7 @@ spec:
       initContainers:
       - name: fetch
         image: ladybird/faveo-k8s:fetcher-v9.2.2
-        command: ['sh','-c','apt update;apt install git -y; curl https://billing.faveohelpdesk.com/download/faveo\?order_number\=order-no\&serial_key\=license-key --output faveo.zip; unzip faveo.zip -d html;chown -R www-data:www-data /html']
+        command: ['sh','-c','apt update;apt install git -y; curl https://store.faveohelpdesk.com/download/faveo\?order_number\=order-no\&serial_key\=license-key --output faveo.zip; unzip faveo.zip -d html;chown -R www-data:www-data /html']
         volumeMounts:
         - name: volume-data
           mountPath: /html
@@ -379,7 +379,7 @@ spec:
       initContainers:
       - name: fetch
         image: ladybird/fetcher-v9.2.2
-       command: ['sh','-c','apt update;apt install git -y; curl https://billing.faveohelpdesk.com/download/faveo\?order_number\=order-no\&serial_key\=license-key --output faveo.zip; unzip faveo.zip -d html;chown -R www-data:www-data /html']
+       command: ['sh','-c','apt update;apt install git -y; curl https://store.faveohelpdesk.com/download/faveo\?order_number\=order-no\&serial_key\=license-key --output faveo.zip; unzip faveo.zip -d html;chown -R www-data:www-data /html']
         volumeMounts:
         - name: volume-data
           mountPath: /html

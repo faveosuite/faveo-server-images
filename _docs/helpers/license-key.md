@@ -15,7 +15,7 @@ There is no license code for commnity edition. Only for freelance, paid and ente
 
 ## Get License Code
 
-Login to your billing portal [https://billing.faveohelpdesk.com](https://billing.faveohelpdesk.com) using your credentials. 
+Login to your billing portal [https://store.faveohelpdesk.com](https://store.faveohelpdesk.com) using your credentials. 
 Navigate to the My Orders and click on the view in orders to get the license code.
 
 <img alt="" src="https://lh6.googleusercontent.com/oqgG9Xsff3jxWqX7rBlCnq8zIa94Xvw4hnGNcqJli8wyHNvEXH2ZdM3UMLMX80WPk3dffAd6JUaF3QM-Ih9Wbx5MNFC9vwNjurdhQQzC0Hx0q0PJRVVcUddCPHqGga2ZKxIy8R1r"  />

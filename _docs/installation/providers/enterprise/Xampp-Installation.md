@@ -40,7 +40,7 @@ title: Faveo Installation on Windows with Xampp Server
 <a id="2" name="2"></a>
 ## 2. Upload Faveo
 
-- Download the Faveo Helpdesk from https://billing.faveohelpdesk.com and upload it to the below directory.
+- Download the Faveo Helpdesk from https://store.faveohelpdesk.com and upload it to the below directory.
 
 ```
 C:\xampp\htdocs\faveo

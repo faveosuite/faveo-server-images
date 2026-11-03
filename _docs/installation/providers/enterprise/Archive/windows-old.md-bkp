@@ -183,7 +183,7 @@ localhost\loader-wizard.php
 
 <b>2.a. Upload Faveo </b>
 
-- Please download the Faveo Helpdesk from https://billing.faveohelpdesk.com and upload it to the below directory.
+- Please download the Faveo Helpdesk from https://store.faveohelpdesk.com and upload it to the below directory.
 ```
 c:\inetpub\wwwroot\
 ```

@@ -124,10 +124,10 @@ The installation suite is split into a modular orchestrator and distribution-spe
 
 ### Licensing & Domain Prerequisites
 1. **Domain Name**: A fully qualified domain name (FQDN) with an `A` record pointing to the server's public IP address.(Also supports internal installation).
-2. **Faveo License Key**: A 16-character license key obtained from [Faveo Billing Portal](https://billing.faveohelpdesk.com).
+2. **Faveo License Key**: A 16-character license key obtained from [Faveo Billing Portal](https://store.faveohelpdesk.com).
 3. **Faveo Order Number**: An 8-character order identifier associated with your license.
 4. **Elevated Privileges**: `root` or `sudo` access.
-5. **Billing Access**: Server needs to have an active access to out billing and lincese portal domain's : (billing.faveohelpdesk.com & license.faveohelpdesk.com).
+5. **Billing Access**: Server needs to have an active access to out billing and lincese portal domain's : (store.faveohelpdesk.com & license.faveohelpdesk.com).
 
 ---
 

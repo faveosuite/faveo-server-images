@@ -262,7 +262,7 @@ Get_Faveo_Prerequisties ()
 
     #Enter License code:
 
-        echo "$yellow You can find the License and Order Number of your product by visiting https://billing.faveohelpdesk.com $reset";
+        echo "$yellow You can find the License and Order Number of your product by visiting https://store.faveohelpdesk.com $reset";
         echo -e "                                   "
         read -p "$yellow License Code $reset" LicenseCode
         echo -e "                                 "
@@ -773,7 +773,7 @@ Ubuntu_Installation ()
         echo -e "$yellow Uploading Faveo Code $reset";
         mkdir -p /var/www/faveo
         cd /var/www/faveo
-        curl https://billing.faveohelpdesk.com/download/faveo\?order_number\="$OrderNumber"\&serial_key\="$LicenseCode" --output /var/www/faveo.zip
+        curl https://store.faveohelpdesk.com/download/faveo\?order_number\="$OrderNumber"\&serial_key\="$LicenseCode" --output /var/www/faveo.zip
         unzip /var/www/faveo.zip -d /var/www/faveo 
 
     # Faveo Folder permissions:
@@ -1420,7 +1420,7 @@ CentOS_Installation  ()
         echo -e "$yellow Uploading Faveo $reset";
         mkdir -p /var/www/faveo
         cd /var/www/faveo     
-        curl https://billing.faveohelpdesk.com/download/faveo\?order_number\="$OrderNumber"\&serial_key\="$LicenseCode" --output faveo.zip
+        curl https://store.faveohelpdesk.com/download/faveo\?order_number\="$OrderNumber"\&serial_key\="$LicenseCode" --output faveo.zip
         unzip -q "faveo.zip" -d /var/www/faveo
 
     # Faveo Folder permissions:

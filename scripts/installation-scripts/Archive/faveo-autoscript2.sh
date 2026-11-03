@@ -287,7 +287,7 @@ MYSQL_SCRIPT
 faveo_configure ()
 {
     #echo $1 $2 $3 
-    curl https://billing.faveohelpdesk.com/download/faveo\?order_number\=$3\&serial_key\=$2 --output $PWD/faveo.zip 
+    curl https://store.faveohelpdesk.com/download/faveo\?order_number\=$3\&serial_key\=$2 --output $PWD/faveo.zip 
     unzip $PWD/faveo.zip -d /var/www/faveo  >>/dev/null
     rm -f $PWD/faveo.zip
     if [[ $? != 0 ]]; then
@@ -603,7 +603,7 @@ attributes ()
     fi
 
 #Enter License code:
-    echo "$yellow You can find the License and Order Number of your product by visiting https://billing.faveohelpdesk.com $reset";
+    echo "$yellow You can find the License and Order Number of your product by visiting https://store.faveohelpdesk.com $reset";
     echo -e "                                   "
     read -n 16 -p "$yellow License Code:  $reset" LicenseCode
     echo -e "                                 "

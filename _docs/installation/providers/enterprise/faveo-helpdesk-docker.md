@@ -4,12 +4,13 @@ type: docs
 permalink: /docs/installation/providers/enterprise/faveo-helpdesk-docker/
 redirect_from:
   - /theme-setup/
-last_modified_at: 2026-10-06
+last_modified_at: 2026-11-03
 last_modified_by: Sivakumar_C
 toc: true
 ---
 ---
 # <b>Deploying Faveo Helpdesk on Docker</b>   <!-- omit in toc -->
+
 # Faveo Helpdesk on Docker - Installation Guide   <!-- omit in toc -->
 
 <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4e/Docker_%28container_engine%29_logo.svg/960px-Docker_%28container_engine%29_logo.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="Docker" width="220"/>
@@ -338,8 +339,13 @@ All values are checked **before anything is changed**. With options, every error
 
 1. Wait until the installer shows **SUCCESS** and **VERIFIED** (license).
 2. Open **`https://<your domain>`** in your browser (custom port: `https://<your domain>:<port>`).
-3. **Self-signed SSL:** the browser shows a warning - click *Advanced → Continue*, or import `ssl_copy/faveorootCA.crt` to remove it.
-4. **Test domain** (not in public DNS): first add `<server IP> <your domain>` to the hosts file of your computer.
+3. **Test domain** (not in public DNS): first add `<server IP> <your domain>` to the hosts file of your computer.
+4. **Self-signed SSL:** the browser shows a warning - click *Advanced → Continue*, or import `ssl_copy/faveorootCA.crt` to remove it.
+5. **Log in** with the Faveo admin username and password saved in `credentials.txt` (default: `demo_admin` / `demopass`):
+   ```sh
+   sudo cat /opt/faveo/<domain>/credentials.txt
+   ```
+   Change the password after the first login.
 
 Site does not open? See [Troubleshooting](#12-troubleshooting).
 

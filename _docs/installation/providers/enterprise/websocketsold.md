@@ -1,13 +1,13 @@
 ---
 layout: single
 type: docs
-permalink: /docs/installation/providers/enterprise/websockets/
+permalink: /docs/installation/providers/enterprise/websockets-old/
 redirect_from:
   - /theme-setup/
 last_modified_at: 2025-11-13
 last_modified_by: Mohammad_Asif
 toc: true
-title: Enabling WebSockets in Faveo Helpdesk
+title: Enabling WebSockets in Faveo Helpdesk (Old - Socket.IO)
 ---
 
 <img alt="MeshCentral" src="https://www.svgrepo.com/show/354553/websocket.svg" width="170" height="150" />

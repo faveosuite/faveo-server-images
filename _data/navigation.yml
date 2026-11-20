@@ -93,6 +93,8 @@ docs:
         url: /docs/installation/providers/enterprise/memcached
       - title: Enable Websockets
         url: /docs/installation/providers/enterprise/websockets 
+      - title: Install MongoDB
+        url: /docs/installation/providers/enterprise/mongodb
       - title: Setup Email Server
         url: /docs/helpers/email-server   
       - title: Configure LDAPS

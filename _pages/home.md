@@ -59,6 +59,7 @@ Faveo can be installed on a variety of platforms. The choice of the platform is 
 - Install Meilisearch for Faveo [click here](/docs/installation/providers/enterprise/meilisearch/)
 - Install Memcached for Faveo [click here](/docs/installation/providers/enterprise/memcached/)
 - Enable Websockets for Faveo [click here](/docs/installation/providers/enterprise/websockets/)
+- Install MongoDB for Elea AI Assistant [click here](/docs/installation/providers/enterprise/mongodb/)
 - Setup Email Server for Faveo [click here](/docs/helpers/email-server/)
 - Configure LDAPS for Faveo [click here](/docs/helpers/ldaps/)
 - Secure Server for security implications [click here](/docs/helpers/server-hardening/home)

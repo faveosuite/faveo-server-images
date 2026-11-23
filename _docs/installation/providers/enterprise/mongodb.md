@@ -61,7 +61,7 @@ Make sure the following are true:
 | Ubuntu | 22.04 LTS (Jammy), 24.04 LTS (Noble) |
 | Debian | 12 (Bookworm), 13 (Trixie) |
 | RHEL / Alma Linux / Rocky Linux | 8, 9, 10 |
-| Windows | Windows 11, Windows Server 2022 |
+| Windows | Windows Server 2022 |
 
 ### Names used on each OS
 

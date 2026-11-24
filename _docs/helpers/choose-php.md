@@ -10,7 +10,7 @@ toc: true
 title: Upgrade PHP Version for Faveo
 ---
 
-<img alt="PHP" src="https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/111635005/original/9512c03fd5c7518c9d15a50a956913e859caf5d6/update-your-php-code-to-latest-version.jpg" width="200" />
+<img alt="PHP" src="https://www.php.net/images/logos/new-php-logo.svg" width="200" />
 
 ---
 
